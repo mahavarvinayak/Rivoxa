@@ -24,7 +24,6 @@ http.route({
     }
 
     try {
-      // Get current user from auth
       const userId = await ctx.auth.getUserIdentity();
       
       if (!userId) {
@@ -88,6 +87,80 @@ http.route({
         { status: 200, headers: { "Content-Type": "text/html" } }
       );
     }
+  }),
+});
+
+// Instagram Webhook
+http.route({
+  path: "/api/webhooks/instagram",
+  method: "GET",
+  handler: httpAction(async (ctx, req) => {
+    const url = new URL(req.url);
+    const mode = url.searchParams.get("hub.mode");
+    const token = url.searchParams.get("hub.verify_token");
+    const challenge = url.searchParams.get("hub.challenge");
+    
+    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "autoflow_verify_token";
+    
+    if (mode === "subscribe" && token === verifyToken) {
+      return new Response(challenge, { status: 200 });
+    }
+    
+    return new Response("Forbidden", { status: 403 });
+  }),
+});
+
+http.route({
+  path: "/api/webhooks/instagram",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    const payload = await req.json();
+    
+    await ctx.runAction(internal.webhooks.handleInstagramWebhook, {
+      payload,
+    });
+    
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }),
+});
+
+// WhatsApp Webhook
+http.route({
+  path: "/api/webhooks/whatsapp",
+  method: "GET",
+  handler: httpAction(async (ctx, req) => {
+    const url = new URL(req.url);
+    const mode = url.searchParams.get("hub.mode");
+    const token = url.searchParams.get("hub.verify_token");
+    const challenge = url.searchParams.get("hub.challenge");
+    
+    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "autoflow_verify_token";
+    
+    if (mode === "subscribe" && token === verifyToken) {
+      return new Response(challenge, { status: 200 });
+    }
+    
+    return new Response("Forbidden", { status: 403 });
+  }),
+});
+
+http.route({
+  path: "/api/webhooks/whatsapp",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    const payload = await req.json();
+    
+    await ctx.runAction(internal.webhooks.handleWhatsAppWebhook, {
+      payload,
+    });
+    
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   }),
 });
 
