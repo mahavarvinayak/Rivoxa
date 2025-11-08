@@ -508,7 +508,7 @@ export default function Landing() {
               <h3 className="font-semibold text-sm">Get in Touch</h3>
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                 <a 
-                  href="https://www.linkedin.com/company/the-pi-lab" 
+                  href="https://www.linkedin.com/company/the-%CF%80-lab/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors flex items-center gap-2"
@@ -519,7 +519,7 @@ export default function Landing() {
                   LinkedIn
                 </a>
                 <a 
-                  href="mailto:contact@thepilab.com" 
+                  href="mailto:thepilab77@gmail.com" 
                   className="hover:text-primary transition-colors flex items-center gap-2"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
