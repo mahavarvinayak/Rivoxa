@@ -37,6 +37,8 @@ export const create = mutation({
       type: triggerTypeValidator,
       keywords: v.optional(v.array(v.string())),
       conditions: v.optional(v.any()),
+      postId: v.optional(v.string()),
+      scheduleTime: v.optional(v.string()),
     }),
     actions: v.array(v.object({
       type: v.string(),
@@ -71,6 +73,8 @@ export const update = mutation({
       type: triggerTypeValidator,
       keywords: v.optional(v.array(v.string())),
       conditions: v.optional(v.any()),
+      postId: v.optional(v.string()),
+      scheduleTime: v.optional(v.string()),
     })),
     actions: v.optional(v.array(v.object({
       type: v.string(),
