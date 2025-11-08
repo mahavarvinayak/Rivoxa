@@ -109,7 +109,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
               <CardHeader className="text-center">
               <div className="flex justify-center">
                     <img
-                      src="https://i.postimg.cc/3wBgmcH3/Chat-Flow-Logo-new.png"
+                      src="/logo.png"
                       alt="Lock Icon"
                       width={64}
                       height={64}
