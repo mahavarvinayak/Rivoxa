@@ -56,7 +56,7 @@ export default function Integrations() {
     const clientId = import.meta.env.VITE_META_APP_ID;
     
     if (!clientId) {
-      toast.error("Meta App ID not configured. Please add VITE_META_APP_ID to your environment variables.");
+      toast.error("Integration not configured. Please contact support to enable social media connections.");
       return;
     }
     
@@ -282,6 +282,7 @@ export default function Integrations() {
         </div>
 
         {/* Setup Instructions */}
+        {/* Help Section - Only show if user is having issues */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -290,33 +291,35 @@ export default function Integrations() {
         >
           <Card className="shadow-md bg-muted/50">
             <CardHeader>
-              <CardTitle className="text-lg">Setup Instructions</CardTitle>
+              <CardTitle className="text-lg">How to Connect</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-muted-foreground">
               <div>
-                <h4 className="font-semibold text-foreground mb-2">Before connecting:</h4>
+                <h4 className="font-semibold text-foreground mb-2">Connecting your accounts:</h4>
                 <ol className="list-decimal list-inside space-y-2">
-                  <li>Create a Meta Developer account at <a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">developers.facebook.com</a></li>
-                  <li>Create a new app and add Instagram/WhatsApp products</li>
-                  <li>Configure OAuth redirect URIs in your app settings:
-                    <ul className="list-disc list-inside ml-6 mt-1">
-                      <li><code className="text-xs bg-background px-1 py-0.5 rounded">{window.location.origin}/api/oauth/callback/instagram</code></li>
-                      <li><code className="text-xs bg-background px-1 py-0.5 rounded">{window.location.origin}/api/oauth/callback/whatsapp</code></li>
-                    </ul>
-                  </li>
-                  <li>Add environment variables in the <strong>API Keys</strong> tab:
-                    <ul className="list-disc list-inside ml-6 mt-1">
-                      <li><strong>Frontend:</strong> <code className="text-xs bg-background px-1 py-0.5 rounded">VITE_META_APP_ID</code> (your Meta App ID)</li>
-                      <li><strong>Backend:</strong> <code className="text-xs bg-background px-1 py-0.5 rounded">META_APP_ID</code>, <code className="text-xs bg-background px-1 py-0.5 rounded">META_APP_SECRET</code>, <code className="text-xs bg-background px-1 py-0.5 rounded">SITE_URL</code></li>
-                    </ul>
-                  </li>
+                  <li>Click the "Connect" button above for Instagram or WhatsApp</li>
+                  <li>Log in to your Facebook account (if not already logged in)</li>
+                  <li>Select the Instagram Business Account or WhatsApp Business Account you want to connect</li>
+                  <li>Grant the required permissions</li>
+                  <li>You'll be redirected back and your account will be connected!</li>
                 </ol>
               </div>
               <div>
-                <h4 className="font-semibold text-foreground mb-2">Required permissions:</h4>
+                <h4 className="font-semibold text-foreground mb-2">Requirements:</h4>
                 <ul className="list-disc list-inside space-y-1">
-                  <li><strong>Instagram:</strong> instagram_basic, instagram_manage_messages, instagram_manage_comments</li>
-                  <li><strong>WhatsApp:</strong> whatsapp_business_management, whatsapp_business_messaging</li>
+                  <li><strong>Instagram:</strong> Must be an Instagram Business or Creator account</li>
+                  <li><strong>WhatsApp:</strong> Must have WhatsApp Business API access</li>
+                  <li>Your account must be linked to a Facebook Page</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Having trouble?</h4>
+                <p>If you're unable to connect, please ensure:</p>
+                <ul className="list-disc list-inside space-y-1 mt-2">
+                  <li>You have admin access to the Facebook Page</li>
+                  <li>Your Instagram account is converted to a Business account</li>
+                  <li>Popups are enabled in your browser</li>
+                  <li>You're logged into the correct Facebook account</li>
                 </ul>
               </div>
             </CardContent>
