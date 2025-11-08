@@ -166,52 +166,94 @@ export default function Landing() {
               <div className="h-full flex flex-col gap-4">
                 {/* Header Stats */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 text-white">
+                  <motion.div 
+                    className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 text-white cursor-pointer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-xs opacity-80">Messages Today</div>
                     <div className="text-2xl font-bold">1,247</div>
-                  </div>
-                  <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg p-3 text-white">
+                  </motion.div>
+                  <motion.div 
+                    className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg p-3 text-white cursor-pointer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-xs opacity-80">Active Flows</div>
                     <div className="text-2xl font-bold">12</div>
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white">
+                  </motion.div>
+                  <motion.div 
+                    className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white cursor-pointer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-xs opacity-80">Integrations</div>
                     <div className="text-2xl font-bold">2</div>
-                  </div>
+                  </motion.div>
                 </div>
                 
                 {/* Chart Area */}
                 <div className="flex-1 bg-white/50 rounded-lg p-4 flex items-end gap-2">
                   {/* Bar Chart Visualization */}
                   <div className="flex-1 flex items-end justify-around gap-1 h-full">
-                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '45%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-pink-500 to-pink-400 rounded-t" style={{ height: '70%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t" style={{ height: '55%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '85%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-pink-500 to-pink-400 rounded-t" style={{ height: '65%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t" style={{ height: '90%' }}></div>
-                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '75%' }}></div>
+                    {[45, 70, 55, 85, 65, 90, 75].map((height, index) => (
+                      <motion.div
+                        key={index}
+                        className={`w-full rounded-t cursor-pointer ${
+                          index % 3 === 0 
+                            ? 'bg-gradient-to-t from-purple-500 to-purple-400' 
+                            : index % 3 === 1 
+                            ? 'bg-gradient-to-t from-pink-500 to-pink-400' 
+                            : 'bg-gradient-to-t from-blue-500 to-blue-400'
+                        }`}
+                        style={{ height: `${height}%` }}
+                        initial={{ height: 0 }}
+                        animate={{ height: `${height}%` }}
+                        transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
+                        whileHover={{ 
+                          scale: 1.1,
+                          filter: "brightness(1.2)",
+                          transition: { duration: 0.2 }
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
                 
                 {/* Bottom Activity Cards */}
                 <div className="grid grid-cols-4 gap-2">
-                  <div className="bg-green-100 rounded p-2 text-center">
+                  <motion.div 
+                    className="bg-green-100 rounded p-2 text-center cursor-pointer"
+                    whileHover={{ scale: 1.05, backgroundColor: "rgb(187, 247, 208)" }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-lg font-bold text-green-700">847</div>
                     <div className="text-xs text-green-600">Sent</div>
-                  </div>
-                  <div className="bg-blue-100 rounded p-2 text-center">
+                  </motion.div>
+                  <motion.div 
+                    className="bg-blue-100 rounded p-2 text-center cursor-pointer"
+                    whileHover={{ scale: 1.05, backgroundColor: "rgb(191, 219, 254)" }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-lg font-bold text-blue-700">823</div>
                     <div className="text-xs text-blue-600">Delivered</div>
-                  </div>
-                  <div className="bg-red-100 rounded p-2 text-center">
+                  </motion.div>
+                  <motion.div 
+                    className="bg-red-100 rounded p-2 text-center cursor-pointer"
+                    whileHover={{ scale: 1.05, backgroundColor: "rgb(254, 202, 202)" }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-lg font-bold text-red-700">24</div>
                     <div className="text-xs text-red-600">Failed</div>
-                  </div>
-                  <div className="bg-purple-100 rounded p-2 text-center">
+                  </motion.div>
+                  <motion.div 
+                    className="bg-purple-100 rounded p-2 text-center cursor-pointer"
+                    whileHover={{ scale: 1.05, backgroundColor: "rgb(221, 214, 254)" }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="text-lg font-bold text-purple-700">156</div>
                     <div className="text-xs text-purple-600">Executions</div>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             </div>
