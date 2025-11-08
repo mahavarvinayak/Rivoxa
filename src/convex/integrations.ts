@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 import { getCurrentUser } from "./users";
 import { integrationTypeValidator } from "./schema";
 
@@ -33,7 +33,7 @@ export const getByType = query({
   },
 });
 
-export const create = mutation({
+export const create = internalMutation({
   args: {
     type: integrationTypeValidator,
     accessToken: v.string(),
@@ -43,16 +43,14 @@ export const create = mutation({
     platformUsername: v.optional(v.string()),
     phoneNumberId: v.optional(v.string()),
     businessAccountId: v.optional(v.string()),
+    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    const user = await getCurrentUser(ctx);
-    if (!user) throw new Error("Not authenticated");
-    
     // Check if integration already exists
     const existing = await ctx.db
       .query("integrations")
       .withIndex("by_user_and_type", (q) => 
-        q.eq("userId", user._id).eq("type", args.type)
+        q.eq("userId", args.userId).eq("type", args.type)
       )
       .first();
     
@@ -72,7 +70,7 @@ export const create = mutation({
     }
     
     return await ctx.db.insert("integrations", {
-      userId: user._id,
+      userId: args.userId,
       type: args.type,
       accessToken: args.accessToken,
       refreshToken: args.refreshToken,

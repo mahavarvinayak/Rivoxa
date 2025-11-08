@@ -19,6 +19,7 @@ import type * as auth from "../auth.js";
 import type * as flows from "../flows.js";
 import type * as http from "../http.js";
 import type * as integrations from "../integrations.js";
+import type * as oauth from "../oauth.js";
 import type * as products from "../products.js";
 import type * as users from "../users.js";
 
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   flows: typeof flows;
   http: typeof http;
   integrations: typeof integrations;
+  oauth: typeof oauth;
   products: typeof products;
   users: typeof users;
 }>;
