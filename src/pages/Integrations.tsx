@@ -52,23 +52,60 @@ export default function Integrations() {
   const whatsappIntegration = integrations?.find(i => i.type === "whatsapp");
 
   const handleConnect = (platform: "instagram" | "whatsapp") => {
-    // Redirect to OAuth flow
+    // Check if META_APP_ID is configured
+    const clientId = import.meta.env.VITE_META_APP_ID;
+    
+    if (!clientId) {
+      toast.error("Meta App ID not configured. Please add VITE_META_APP_ID to your environment variables.");
+      return;
+    }
+    
+    // Use popup window for OAuth
     const baseUrl = window.location.origin;
     const redirectUri = `${baseUrl}/api/oauth/callback/${platform}`;
     
-    if (platform === "instagram") {
-      // Meta/Facebook OAuth for Instagram
-      const clientId = import.meta.env.VITE_META_APP_ID;
-      const scope = "instagram_basic,instagram_manage_messages,instagram_manage_comments";
-      const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-      window.location.href = authUrl;
-    } else {
-      // WhatsApp Business OAuth
-      const clientId = import.meta.env.VITE_META_APP_ID;
-      const scope = "whatsapp_business_management,whatsapp_business_messaging";
-      const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-      window.location.href = authUrl;
+    const scope = platform === "instagram" 
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
+      : "whatsapp_business_management,whatsapp_business_messaging";
+    
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+    
+    // Open OAuth in popup window
+    const width = 600;
+    const height = 700;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    const popup = window.open(
+      authUrl,
+      `${platform}_oauth`,
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
+    );
+    
+    if (!popup) {
+      toast.error("Popup blocked. Please allow popups for this site.");
+      return;
     }
+    
+    // Listen for OAuth callback
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "oauth-success" && event.data?.platform === platform) {
+        toast.success(`${platform === "instagram" ? "Instagram" : "WhatsApp"} connected successfully!`);
+        window.removeEventListener("message", handleMessage);
+        // Refresh integrations list
+        window.location.reload();
+      } else if (event.data?.type === "oauth-error" && event.data?.platform === platform) {
+        toast.error(`Failed to connect ${platform}: ${event.data.error}`);
+        window.removeEventListener("message", handleMessage);
+      }
+    };
+    
+    window.addEventListener("message", handleMessage);
+    
+    // Clean up listener after 5 minutes
+    setTimeout(() => {
+      window.removeEventListener("message", handleMessage);
+    }, 5 * 60 * 1000);
   };
 
   const handleDisconnect = async (integrationId: string, platform: string) => {
@@ -258,11 +295,21 @@ export default function Integrations() {
             <CardContent className="space-y-4 text-sm text-muted-foreground">
               <div>
                 <h4 className="font-semibold text-foreground mb-2">Before connecting:</h4>
-                <ol className="list-decimal list-inside space-y-1">
-                  <li>Create a Meta Developer account at developers.facebook.com</li>
+                <ol className="list-decimal list-inside space-y-2">
+                  <li>Create a Meta Developer account at <a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">developers.facebook.com</a></li>
                   <li>Create a new app and add Instagram/WhatsApp products</li>
-                  <li>Configure OAuth redirect URIs in your app settings</li>
-                  <li>Add your Meta App ID to the API Keys section</li>
+                  <li>Configure OAuth redirect URIs in your app settings:
+                    <ul className="list-disc list-inside ml-6 mt-1">
+                      <li><code className="text-xs bg-background px-1 py-0.5 rounded">{window.location.origin}/api/oauth/callback/instagram</code></li>
+                      <li><code className="text-xs bg-background px-1 py-0.5 rounded">{window.location.origin}/api/oauth/callback/whatsapp</code></li>
+                    </ul>
+                  </li>
+                  <li>Add environment variables in the <strong>API Keys</strong> tab:
+                    <ul className="list-disc list-inside ml-6 mt-1">
+                      <li><strong>Frontend:</strong> <code className="text-xs bg-background px-1 py-0.5 rounded">VITE_META_APP_ID</code> (your Meta App ID)</li>
+                      <li><strong>Backend:</strong> <code className="text-xs bg-background px-1 py-0.5 rounded">META_APP_ID</code>, <code className="text-xs bg-background px-1 py-0.5 rounded">META_APP_SECRET</code>, <code className="text-xs bg-background px-1 py-0.5 rounded">SITE_URL</code></li>
+                    </ul>
+                  </li>
                 </ol>
               </div>
               <div>
