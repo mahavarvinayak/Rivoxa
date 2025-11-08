@@ -125,7 +125,7 @@ export default function Integrations() {
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <img src="/logo.png" alt="AutoFlow.AI" className="h-8 w-8" />
+            <img src="/assets/ChatFlow_Logo_new.png" alt="AutoFlow.AI" className="h-8 w-8" />
             <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
           </div>
           <div className="flex items-center gap-2">

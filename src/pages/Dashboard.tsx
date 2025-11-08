@@ -68,7 +68,7 @@ export default function Dashboard() {
       <header className="border-b bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <img src="/logo.png" alt="AutoFlow.AI" className="h-8 w-8" />
+            <img src="/assets/ChatFlow_Logo_new.png" alt="AutoFlow.AI" className="h-8 w-8" />
             <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">AutoFlow.AI</h1>
           </div>
           <div className="flex items-center gap-2">

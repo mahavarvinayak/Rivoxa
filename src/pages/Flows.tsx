@@ -155,7 +155,7 @@ export default function Flows() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <img src="/logo.png" alt="AutoFlow.AI" className="h-8 w-8" />
+              <img src="/assets/ChatFlow_Logo_new.png" alt="AutoFlow.AI" className="h-8 w-8" />
               <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
             </div>
           </div>

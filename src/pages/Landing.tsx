@@ -96,7 +96,7 @@ export default function Landing() {
       <nav className="border-b bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="ChatFlow AI" className="h-8 w-8" />
+            <img src="/assets/ChatFlow_Logo_new.png" alt="ChatFlow AI" className="h-8 w-8" />
             <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">ChatFlow AI</span>
           </div>
           <div className="flex items-center gap-4">
@@ -394,7 +394,7 @@ export default function Landing() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="ChatFlow AI" className="h-6 w-6" />
+              <img src="/assets/ChatFlow_Logo_new.png" alt="ChatFlow AI" className="h-6 w-6" />
               <span className="font-semibold">ChatFlow AI</span>
             </div>
             <p className="text-sm text-muted-foreground">
