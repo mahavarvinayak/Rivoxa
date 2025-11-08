@@ -161,10 +161,58 @@ export default function Landing() {
           className="mt-16 max-w-5xl mx-auto"
         >
           <div className="rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 p-8 shadow-2xl border">
-            <div className="aspect-video bg-card rounded-lg flex items-center justify-center shadow-inner">
-              <div className="text-center">
-                <Bot className="h-16 w-16 text-primary mx-auto mb-4" />
-                <p className="text-muted-foreground">Dashboard Preview</p>
+            <div className="aspect-video bg-card rounded-lg shadow-inner overflow-hidden p-6">
+              {/* Mock Dashboard Interface */}
+              <div className="h-full flex flex-col gap-4">
+                {/* Header Stats */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 text-white">
+                    <div className="text-xs opacity-80">Messages Today</div>
+                    <div className="text-2xl font-bold">1,247</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg p-3 text-white">
+                    <div className="text-xs opacity-80">Active Flows</div>
+                    <div className="text-2xl font-bold">12</div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white">
+                    <div className="text-xs opacity-80">Integrations</div>
+                    <div className="text-2xl font-bold">2</div>
+                  </div>
+                </div>
+                
+                {/* Chart Area */}
+                <div className="flex-1 bg-white/50 rounded-lg p-4 flex items-end gap-2">
+                  {/* Bar Chart Visualization */}
+                  <div className="flex-1 flex items-end justify-around gap-1 h-full">
+                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '45%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-pink-500 to-pink-400 rounded-t" style={{ height: '70%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t" style={{ height: '55%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '85%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-pink-500 to-pink-400 rounded-t" style={{ height: '65%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t" style={{ height: '90%' }}></div>
+                    <div className="w-full bg-gradient-to-t from-purple-500 to-purple-400 rounded-t" style={{ height: '75%' }}></div>
+                  </div>
+                </div>
+                
+                {/* Bottom Activity Cards */}
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-green-100 rounded p-2 text-center">
+                    <div className="text-lg font-bold text-green-700">847</div>
+                    <div className="text-xs text-green-600">Sent</div>
+                  </div>
+                  <div className="bg-blue-100 rounded p-2 text-center">
+                    <div className="text-lg font-bold text-blue-700">823</div>
+                    <div className="text-xs text-blue-600">Delivered</div>
+                  </div>
+                  <div className="bg-red-100 rounded p-2 text-center">
+                    <div className="text-lg font-bold text-red-700">24</div>
+                    <div className="text-xs text-red-600">Failed</div>
+                  </div>
+                  <div className="bg-purple-100 rounded p-2 text-center">
+                    <div className="text-lg font-bold text-purple-700">156</div>
+                    <div className="text-xs text-purple-600">Executions</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
