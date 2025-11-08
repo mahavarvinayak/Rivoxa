@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { Logo } from "@/components/Logo";
 
 export default function Integrations() {
   const { isLoading, isAuthenticated, user } = useAuth();
@@ -125,7 +126,7 @@ export default function Integrations() {
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <img src="/logo_new.png" alt="AutoFlow.AI" className="h-8 w-8" />
+            <Logo size="md" />
             <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
           </div>
           <div className="flex items-center gap-2">

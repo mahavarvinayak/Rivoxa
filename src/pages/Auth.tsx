@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { ArrowLeft, ArrowRight, Loader2, Mail } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { Logo } from "@/components/Logo";
 
 interface AuthProps {
   redirectAfterAuth?: string;
@@ -94,7 +95,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             Back to Home
           </Button>
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="ChatFlow AI" className="h-8 w-8" />
+            <Logo size="md" />
             <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               ChatFlow AI
             </span>

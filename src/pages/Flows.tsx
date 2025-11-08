@@ -35,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Logo } from "@/components/Logo";
 
 export default function Flows() {
   const { isLoading, isAuthenticated, user } = useAuth();
@@ -155,7 +156,7 @@ export default function Flows() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-              <img src="/logo_new.png" alt="AutoFlow.AI" className="h-8 w-8" />
+              <Logo size="md" />
               <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
             </div>
           </div>
