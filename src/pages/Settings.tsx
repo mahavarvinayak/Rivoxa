@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft,
@@ -24,6 +24,8 @@ export default function Settings() {
   const { isLoading, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState(user?.name || "");
+  const createPaymentOrder = useAction(api.payments.createPaymentOrder);
+  const verifyPayment = useAction(api.payments.verifyPayment);
 
   if (isLoading) {
     return (
@@ -37,6 +39,54 @@ export default function Settings() {
     navigate("/auth");
     return null;
   }
+
+  const handleUpgradePlan = async (planType: "starter" | "pro") => {
+    try {
+      const order = await createPaymentOrder({ planType });
+      
+      // Load Razorpay checkout script
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        const options = {
+          key: order.keyId,
+          order_id: order.orderId,
+          amount: order.amount,
+          currency: order.currency,
+          name: "ChatFlow AI",
+          description: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan Subscription`,
+          handler: async (response: any) => {
+            const verified = await verifyPayment({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+              planType,
+            });
+            
+            if (verified.verified) {
+              toast.success("Payment successful! Plan upgraded.");
+              window.location.reload();
+            } else {
+              toast.error("Payment verification failed");
+            }
+          },
+          prefill: {
+            email: user?.email || "",
+          },
+          theme: {
+            color: "#8b5cf6",
+          },
+        };
+        
+        const checkout = new (window as any).Razorpay(options);
+        checkout.open();
+      };
+      document.body.appendChild(script);
+    } catch (error) {
+      toast.error("Failed to initiate payment");
+      console.error(error);
+    }
+  };
 
   const handleSaveProfile = () => {
     toast.success("Profile updated successfully");
@@ -153,13 +203,41 @@ export default function Settings() {
                       <span className="text-lg font-bold capitalize">{user?.planType || "Free"}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {user?.planType === "free" && "100 messages per reel/day"}
-                      {user?.planType === "starter" && "600 messages per reel/day"}
-                      {user?.planType === "pro" && "1,500 messages per reel/day"}
+                      {user?.planType === "free" && "50 messages per reel/day"}
+                      {user?.planType === "starter" && "400 messages per reel/day"}
+                      {user?.planType === "pro" && "1,000 messages per reel/day"}
                       {user?.planType === "enterprise" && "Unlimited messages"}
                     </p>
                   </div>
-                  <Button variant="outline" className="w-full">Upgrade Plan</Button>
+                  
+                  {(!user?.planType || user?.planType === "free") && (
+                    <div className="space-y-3">
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => handleUpgradePlan("starter")}
+                      >
+                        Upgrade to Starter - $4/month
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        className="w-full"
+                        onClick={() => handleUpgradePlan("pro")}
+                      >
+                        Upgrade to Pro - $8/month
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {user?.planType === "starter" && (
+                    <Button 
+                      variant="default" 
+                      className="w-full"
+                      onClick={() => handleUpgradePlan("pro")}
+                    >
+                      Upgrade to Pro - $8/month
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>

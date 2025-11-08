@@ -93,6 +93,11 @@ const schema = defineSchema(
       // Usage tracking
       messagesUsedToday: v.optional(v.number()),
       lastResetDate: v.optional(v.string()),
+      
+      // Payment info
+      razorpayOrderId: v.optional(v.string()),
+      razorpayPaymentId: v.optional(v.string()),
+      lastPaymentDate: v.optional(v.number()),
     }).index("email", ["email"]),
 
     // Social media integrations

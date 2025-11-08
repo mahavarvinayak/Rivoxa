@@ -72,6 +72,34 @@ export const processInstagramComment = internalMutation({
     
     // Process for each integration (in case multiple accounts)
     for (const integration of integrations) {
+      // Check user's message limit
+      const user = await ctx.db.get(integration.userId);
+      if (!user) continue;
+      
+      const planLimits = {
+        free: 50,
+        starter: 400,
+        pro: 1000,
+        enterprise: Infinity,
+      };
+      
+      const limit = planLimits[user.planType || "free"];
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Reset counter if new day
+      if (user.lastResetDate !== today) {
+        await ctx.db.patch(integration.userId, {
+          messagesUsedToday: 0,
+          lastResetDate: today,
+        });
+      }
+      
+      // Check if limit exceeded
+      if ((user.messagesUsedToday || 0) >= limit) {
+        console.log(`User ${user._id} exceeded message limit`);
+        continue;
+      }
+      
       await ctx.db.insert("webhookEvents", {
         userId: integration.userId,
         platform: "instagram",
@@ -89,6 +117,11 @@ export const processInstagramComment = internalMutation({
           text: args.text,
           from: args.from,
         },
+      });
+      
+      // Increment message counter
+      await ctx.db.patch(integration.userId, {
+        messagesUsedToday: (user.messagesUsedToday || 0) + 1,
       });
     }
   },
@@ -117,6 +150,34 @@ export const processWhatsAppMessage = internalMutation({
     if (integrations.length === 0) return;
     
     for (const integration of integrations) {
+      // Check user's message limit
+      const user = await ctx.db.get(integration.userId);
+      if (!user) continue;
+      
+      const planLimits = {
+        free: 50,
+        starter: 400,
+        pro: 1000,
+        enterprise: Infinity,
+      };
+      
+      const limit = planLimits[user.planType || "free"];
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Reset counter if new day
+      if (user.lastResetDate !== today) {
+        await ctx.db.patch(integration.userId, {
+          messagesUsedToday: 0,
+          lastResetDate: today,
+        });
+      }
+      
+      // Check if limit exceeded
+      if ((user.messagesUsedToday || 0) >= limit) {
+        console.log(`User ${user._id} exceeded message limit`);
+        continue;
+      }
+      
       await ctx.db.insert("webhookEvents", {
         userId: integration.userId,
         platform: "whatsapp",
@@ -133,6 +194,11 @@ export const processWhatsAppMessage = internalMutation({
           from: args.from,
           text: args.text,
         },
+      });
+      
+      // Increment message counter
+      await ctx.db.patch(integration.userId, {
+        messagesUsedToday: (user.messagesUsedToday || 0) + 1,
       });
     }
   },

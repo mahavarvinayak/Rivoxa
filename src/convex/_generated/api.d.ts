@@ -26,6 +26,8 @@ import type * as instagram from "../instagram.js";
 import type * as integrations from "../integrations.js";
 import type * as media from "../media.js";
 import type * as oauth from "../oauth.js";
+import type * as payments from "../payments.js";
+import type * as payments_mutations from "../payments_mutations.js";
 import type * as products from "../products.js";
 import type * as sequences from "../sequences.js";
 import type * as users from "../users.js";
@@ -54,6 +56,8 @@ declare const fullApi: ApiFromModules<{
   integrations: typeof integrations;
   media: typeof media;
   oauth: typeof oauth;
+  payments: typeof payments;
+  payments_mutations: typeof payments_mutations;
   products: typeof products;
   sequences: typeof sequences;
   users: typeof users;
