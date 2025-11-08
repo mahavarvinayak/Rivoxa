@@ -30,14 +30,45 @@ export function Logo({ className = "", size = "md" }: LogoProps) {
             <stop offset="50%" stopColor="#2563eb" />
             <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
+          <linearGradient id="lightBlueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#3b82f6" />
+          </linearGradient>
         </defs>
-        <circle cx="50" cy="50" r="45" fill="url(#blueGradient)" opacity="0.1" />
+        
+        {/* Container/Box */}
+        <rect x="25" y="20" width="50" height="8" rx="2" fill="url(#lightBlueGradient)" />
+        <rect x="25" y="28" width="50" height="52" rx="4" fill="url(#lightBlueGradient)" opacity="0.9" />
+        
+        {/* Character Body */}
         <path
-          d="M 70 30 C 70 20, 60 15, 50 15 C 35 15, 25 25, 25 40 C 25 50, 30 58, 38 63 M 70 70 C 70 80, 60 85, 50 85 C 35 85, 25 75, 25 60"
-          stroke="url(#blueGradient)"
-          strokeWidth="8"
+          d="M 35 45 L 50 35 L 65 45 L 65 65 L 50 75 L 35 65 Z"
+          fill="url(#blueGradient)"
+        />
+        
+        {/* Eyes */}
+        <circle cx="45" cy="50" r="2.5" fill="white" />
+        <circle cx="55" cy="50" r="2.5" fill="white" />
+        
+        {/* Smile */}
+        <path
+          d="M 43 57 Q 50 60 57 57"
+          stroke="white"
+          strokeWidth="2"
           strokeLinecap="round"
           fill="none"
+        />
+        
+        {/* Left Arm/Drop */}
+        <path
+          d="M 35 55 Q 28 60 30 70 Q 32 75 35 73 L 35 60 Z"
+          fill="url(#lightBlueGradient)"
+        />
+        
+        {/* Right Arm/Drop */}
+        <path
+          d="M 65 55 Q 72 60 70 70 Q 68 75 65 73 L 65 60 Z"
+          fill="url(#lightBlueGradient)"
         />
       </svg>
     </motion.div>
