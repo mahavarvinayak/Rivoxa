@@ -93,7 +93,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
+      <nav className="border-b bg-white/90 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-purple-200">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="ChatFlow AI" className="h-8 w-8" />
@@ -130,11 +130,11 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-4xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-primary text-sm font-medium mb-6 shadow-md border border-purple-200">
             <Sparkles className="h-4 w-4" />
             Automate Your Social Commerce
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
             Turn Instagram & WhatsApp
             <br />
             Into Sales Machines
@@ -143,11 +143,11 @@ export default function Landing() {
             Automate customer responses, manage product inquiries, and scale your social commerce with intelligent automation flows.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate("/auth")} className="shadow-lg">
+            <Button size="lg" onClick={() => navigate("/auth")} className="shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0">
               Start Free Trial
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="shadow-md">
+            <Button size="lg" variant="outline" className="shadow-lg border-2 border-purple-300 hover:bg-purple-50 hover:border-purple-400">
               Watch Demo
             </Button>
           </div>
@@ -160,7 +160,7 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-16 max-w-5xl mx-auto"
         >
-          <div className="rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 p-8 shadow-2xl border">
+          <div className="rounded-xl bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 p-8 shadow-2xl border-2 border-purple-200">
             <div className="aspect-video bg-card rounded-lg shadow-inner overflow-hidden p-6">
               {/* Mock Dashboard Interface */}
               <div className="h-full flex flex-col gap-4">
@@ -262,7 +262,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20 bg-secondary/30">
+      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-purple-50/50 to-pink-50/50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -287,10 +287,10 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full shadow-md hover:shadow-lg transition-shadow">
+              <Card className="h-full shadow-lg hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm border-2 border-purple-100 hover:border-purple-300">
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                  <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 shadow-md">
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
                   <CardDescription className="text-base">
@@ -327,9 +327,9 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="shadow-lg">
+            <Card className="shadow-xl hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-400">
               <CardHeader>
-                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 shadow-md">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-pink-500 flex items-center justify-center mb-4 shadow-lg">
                   <Instagram className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl">Instagram</CardTitle>
@@ -346,9 +346,9 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="shadow-lg">
+            <Card className="shadow-xl hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm border-2 border-green-200 hover:border-green-400">
               <CardHeader>
-                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4 shadow-md">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-green-500 via-green-600 to-emerald-500 flex items-center justify-center mb-4 shadow-lg">
                   <MessageSquare className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl">WhatsApp Business</CardTitle>
@@ -362,7 +362,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-20 bg-secondary/30">
+      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-pink-50/50 to-blue-50/50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -387,9 +387,9 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className={`h-full shadow-lg ${plan.popular ? "border-primary border-2" : ""}`}>
+              <Card className={`h-full shadow-xl hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm ${plan.popular ? "border-2 border-purple-500 ring-4 ring-purple-200" : "border-2 border-purple-100"}`}>
                 {plan.popular && (
-                  <div className="bg-primary text-primary-foreground text-center py-2 text-sm font-medium rounded-t-lg">
+                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-2 text-sm font-medium rounded-t-lg">
                     Most Popular
                   </div>
                 )}
@@ -410,7 +410,7 @@ export default function Landing() {
                     ))}
                   </ul>
                   <Button 
-                    className="w-full shadow-md" 
+                    className={`w-full shadow-lg ${plan.popular ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0" : "border-2 border-purple-300 hover:bg-purple-50"}`}
                     variant={plan.popular ? "default" : "outline"}
                     onClick={() => navigate("/auth")}
                   >
@@ -429,7 +429,7 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Card className="max-w-2xl mx-auto shadow-lg">
+          <Card className="max-w-2xl mx-auto shadow-xl bg-white/80 backdrop-blur-sm border-2 border-purple-200">
             <CardHeader>
               <CardTitle className="text-2xl">Enterprise</CardTitle>
               <CardDescription className="text-base">
@@ -440,7 +440,7 @@ export default function Landing() {
               <p className="text-muted-foreground mb-4">
                 Unlimited messages, dedicated support, custom integrations, and white-label options.
               </p>
-              <Button variant="outline" size="lg" className="shadow-md">
+              <Button variant="outline" size="lg" className="shadow-lg border-2 border-purple-300 hover:bg-purple-50">
                 Contact Sales
               </Button>
             </CardContent>
@@ -457,7 +457,7 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto"
         >
-          <Card className="shadow-2xl bg-gradient-to-br from-primary/10 to-primary/5">
+          <Card className="shadow-2xl bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 border-2 border-purple-200">
             <CardHeader className="pb-8 pt-12">
               <CardTitle className="text-3xl md:text-4xl mb-4">
                 Ready to Automate Your Business?
@@ -467,7 +467,7 @@ export default function Landing() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-12">
-              <Button size="lg" onClick={() => navigate("/auth")} className="shadow-lg">
+              <Button size="lg" onClick={() => navigate("/auth")} className="shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -480,7 +480,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-card py-12">
+      <footer className="border-t border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
