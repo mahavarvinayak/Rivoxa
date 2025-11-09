@@ -3,13 +3,39 @@
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import crypto from "crypto";
+
+// Verify Meta webhook signature
+function verifyWebhookSignature(payload: string, signature: string, appSecret: string): boolean {
+  const expectedSignature = crypto
+    .createHmac("sha256", appSecret)
+    .update(payload)
+    .digest("hex");
+  
+  return signature === `sha256=${expectedSignature}`;
+}
 
 export const handleInstagramWebhook = internalAction({
   args: {
     payload: v.any(),
+    signature: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { payload } = args;
+    const { payload, signature } = args;
+    
+    // Verify webhook signature if provided
+    if (signature && process.env.META_APP_SECRET) {
+      const isValid = verifyWebhookSignature(
+        JSON.stringify(payload),
+        signature,
+        process.env.META_APP_SECRET
+      );
+      
+      if (!isValid) {
+        console.error("Invalid webhook signature");
+        return { success: false, error: "Invalid signature" };
+      }
+    }
     
     // Handle Instagram webhook events
     if (payload.object === "instagram") {
@@ -50,9 +76,24 @@ export const handleInstagramWebhook = internalAction({
 export const handleWhatsAppWebhook = internalAction({
   args: {
     payload: v.any(),
+    signature: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { payload } = args;
+    const { payload, signature } = args;
+    
+    // Verify webhook signature if provided
+    if (signature && process.env.META_APP_SECRET) {
+      const isValid = verifyWebhookSignature(
+        JSON.stringify(payload),
+        signature,
+        process.env.META_APP_SECRET
+      );
+      
+      if (!isValid) {
+        console.error("Invalid webhook signature");
+        return { success: false, error: "Invalid signature" };
+      }
+    }
     
     // Handle WhatsApp webhook events
     if (payload.object === "whatsapp_business_account") {

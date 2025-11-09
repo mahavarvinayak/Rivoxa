@@ -115,9 +115,11 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, req) => {
     const payload = await req.json();
+    const signature = req.headers.get("x-hub-signature-256") || undefined;
     
     await ctx.runAction(internal.webhooks.handleInstagramWebhook, {
       payload,
+      signature,
     });
     
     return new Response(JSON.stringify({ success: true }), {
@@ -152,9 +154,11 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, req) => {
     const payload = await req.json();
+    const signature = req.headers.get("x-hub-signature-256") || undefined;
     
     await ctx.runAction(internal.webhooks.handleWhatsAppWebhook, {
       payload,
+      signature,
     });
     
     return new Response(JSON.stringify({ success: true }), {

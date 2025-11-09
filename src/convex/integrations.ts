@@ -82,6 +82,7 @@ export const create = internalMutation({
         phoneNumberId: args.phoneNumberId,
         businessAccountId: args.businessAccountId,
         isActive: true,
+        lastTokenRefresh: Date.now(),
       });
       return existing._id;
     }
@@ -97,6 +98,7 @@ export const create = internalMutation({
       phoneNumberId: args.phoneNumberId,
       businessAccountId: args.businessAccountId,
       isActive: true,
+      lastTokenRefresh: Date.now(),
     });
   },
 });
@@ -113,5 +115,52 @@ export const disconnect = mutation({
     }
     
     await ctx.db.patch(args.id, { isActive: false });
+  },
+});
+
+export const updateToken = internalMutation({
+  args: {
+    integrationId: v.id("integrations"),
+    accessToken: v.string(),
+    expiresAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.integrationId, {
+      accessToken: args.accessToken,
+      expiresAt: args.expiresAt,
+      lastTokenRefresh: Date.now(),
+    });
+  },
+});
+
+export const markForReauth = internalMutation({
+  args: {
+    integrationId: v.id("integrations"),
+    error: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.integrationId, {
+      isActive: false,
+      lastError: args.error,
+      needsReauth: true,
+    });
+  },
+});
+
+export const getExpiringSoon = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const sevenDaysFromNow = Date.now() + (7 * 24 * 60 * 60 * 1000);
+    
+    const allIntegrations = await ctx.db
+      .query("integrations")
+      .collect();
+    
+    return allIntegrations.filter(integration => 
+      integration.isActive && 
+      integration.expiresAt && 
+      integration.expiresAt < sevenDaysFromNow &&
+      integration.expiresAt > Date.now()
+    );
   },
 });

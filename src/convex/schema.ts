@@ -119,6 +119,11 @@ const schema = defineSchema(
       businessAccountId: v.optional(v.string()),
       
       isActive: v.boolean(),
+      
+      // Token management
+      lastTokenRefresh: v.optional(v.number()),
+      needsReauth: v.optional(v.boolean()),
+      lastError: v.optional(v.string()),
     })
       .index("by_user", ["userId"])
       .index("by_user_and_type", ["userId", "type"]),
