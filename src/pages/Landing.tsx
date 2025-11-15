@@ -92,13 +92,13 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50">
       {/* Navigation */}
-      <nav className="border-b bg-white/90 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-purple-200">
+      <nav className="border-b bg-white/95 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-slate-200">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo size="md" />
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">ChatFlow AI</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">ChatFlow AI</span>
           </div>
           <div className="flex items-center gap-4">
             {isLoading ? (
@@ -131,11 +131,11 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-4xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-primary text-sm font-medium mb-6 shadow-md border border-purple-200">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-sm font-medium mb-6 shadow-sm border border-slate-200">
             <Sparkles className="h-4 w-4" />
             Automate Your Social Commerce
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-slate-900">
             Turn Instagram & WhatsApp
             <br />
             Into Sales Machines
@@ -144,11 +144,11 @@ export default function Landing() {
             Automate customer responses, manage product inquiries, and scale your social commerce with intelligent automation flows.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate("/auth")} className="shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0">
+            <Button size="lg" onClick={() => navigate("/auth")} className="shadow-lg bg-slate-900 hover:bg-slate-800 text-white border-0">
               Start Free Trial
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" className="shadow-lg border-2 border-purple-300 hover:bg-purple-50 hover:border-purple-400">
+            <Button size="lg" variant="outline" className="shadow-md border-2 border-slate-300 hover:bg-slate-50 hover:border-slate-400">
               Watch Demo
             </Button>
           </div>
@@ -161,14 +161,14 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-16 max-w-5xl mx-auto"
         >
-          <div className="rounded-xl bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 p-8 shadow-2xl border-2 border-purple-200">
+          <div className="rounded-xl bg-gradient-to-br from-slate-100 via-gray-50 to-blue-50 p-8 shadow-xl border border-slate-200">
             <div className="aspect-video bg-card rounded-lg shadow-inner overflow-hidden p-6">
               {/* Mock Dashboard Interface */}
               <div className="h-full flex flex-col gap-4">
                 {/* Header Stats */}
                 <div className="grid grid-cols-3 gap-3">
                   <motion.div 
-                    className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-3 text-white cursor-pointer"
+                    className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-3 text-white cursor-pointer"
                     whileHover={{ scale: 1.05, y: -2 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
@@ -176,7 +176,7 @@ export default function Landing() {
                     <div className="text-2xl font-bold">1,247</div>
                   </motion.div>
                   <motion.div 
-                    className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg p-3 text-white cursor-pointer"
+                    className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg p-3 text-white cursor-pointer"
                     whileHover={{ scale: 1.05, y: -2 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
@@ -184,7 +184,7 @@ export default function Landing() {
                     <div className="text-2xl font-bold">12</div>
                   </motion.div>
                   <motion.div 
-                    className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white cursor-pointer"
+                    className="bg-gradient-to-br from-amber-600 to-amber-700 rounded-lg p-3 text-white cursor-pointer"
                     whileHover={{ scale: 1.05, y: -2 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
@@ -202,10 +202,10 @@ export default function Landing() {
                         key={index}
                         className={`w-full rounded-t cursor-pointer ${
                           index % 3 === 0 
-                            ? 'bg-gradient-to-t from-purple-500 to-purple-400' 
+                            ? 'bg-gradient-to-t from-slate-600 to-slate-500' 
                             : index % 3 === 1 
-                            ? 'bg-gradient-to-t from-pink-500 to-pink-400' 
-                            : 'bg-gradient-to-t from-blue-500 to-blue-400'
+                            ? 'bg-gradient-to-t from-blue-600 to-blue-500' 
+                            : 'bg-gradient-to-t from-slate-700 to-slate-600'
                         }`}
                         style={{ height: `${height}%` }}
                         initial={{ height: 0 }}
@@ -263,7 +263,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-purple-50/50 to-pink-50/50">
+      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-slate-50/50 to-gray-50/50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -288,9 +288,9 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full shadow-lg hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm border-2 border-purple-100 hover:border-purple-300">
+              <Card className="h-full shadow-md hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300">
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 shadow-md">
+                  <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center mb-4 shadow-md">
                     <feature.icon className="h-6 w-6 text-white" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -328,9 +328,9 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="shadow-xl hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-400">
+            <Card className="shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300">
               <CardHeader>
-                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-pink-500 flex items-center justify-center mb-4 shadow-lg">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center mb-4 shadow-lg">
                   <Instagram className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl">Instagram</CardTitle>
@@ -363,7 +363,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-pink-50/50 to-blue-50/50">
+      <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-gray-50/50 to-slate-50/50">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -388,9 +388,9 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className={`h-full shadow-xl hover:shadow-2xl transition-all bg-white/80 backdrop-blur-sm ${plan.popular ? "border-2 border-purple-500 ring-4 ring-purple-200" : "border-2 border-purple-100"}`}>
+              <Card className={`h-full shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ${plan.popular ? "border-2 border-slate-800 ring-2 ring-slate-300" : "border border-slate-200"}`}>
                 {plan.popular && (
-                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-2 text-sm font-medium rounded-t-lg">
+                  <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white text-center py-2 text-sm font-medium rounded-t-lg">
                     Most Popular
                   </div>
                 )}
@@ -411,7 +411,7 @@ export default function Landing() {
                     ))}
                   </ul>
                   <Button 
-                    className={`w-full shadow-lg ${plan.popular ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0" : "border-2 border-purple-300 hover:bg-purple-50"}`}
+                    className={`w-full shadow-md ${plan.popular ? "bg-slate-900 hover:bg-slate-800 text-white border-0" : "border-2 border-slate-300 hover:bg-slate-50"}`}
                     variant={plan.popular ? "default" : "outline"}
                     onClick={() => navigate("/auth")}
                   >
@@ -430,7 +430,7 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Card className="max-w-2xl mx-auto shadow-xl bg-white/80 backdrop-blur-sm border-2 border-purple-200">
+          <Card className="max-w-2xl mx-auto shadow-lg bg-white/90 backdrop-blur-sm border border-slate-200">
             <CardHeader>
               <CardTitle className="text-2xl">Enterprise</CardTitle>
               <CardDescription className="text-base">
@@ -441,7 +441,7 @@ export default function Landing() {
               <p className="text-muted-foreground mb-4">
                 Unlimited messages, dedicated support, custom integrations, and white-label options.
               </p>
-              <Button variant="outline" size="lg" className="shadow-lg border-2 border-purple-300 hover:bg-purple-50">
+              <Button variant="outline" size="lg" className="shadow-md border-2 border-slate-300 hover:bg-slate-50">
                 Contact Sales
               </Button>
             </CardContent>
@@ -458,7 +458,7 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto"
         >
-          <Card className="shadow-2xl bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 border-2 border-purple-200">
+          <Card className="shadow-xl bg-gradient-to-br from-slate-100 via-gray-100 to-blue-50 border border-slate-200">
             <CardHeader className="pb-8 pt-12">
               <CardTitle className="text-3xl md:text-4xl mb-4">
                 Ready to Automate Your Business?
@@ -468,7 +468,7 @@ export default function Landing() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-12">
-              <Button size="lg" onClick={() => navigate("/auth")} className="shadow-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0">
+              <Button size="lg" onClick={() => navigate("/auth")} className="shadow-lg bg-slate-900 hover:bg-slate-800 text-white border-0">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -481,7 +481,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 py-12">
+      <footer className="border-t border-slate-200 bg-gradient-to-r from-slate-50 to-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Brand Section */}
@@ -532,7 +532,7 @@ export default function Landing() {
           </div>
 
           {/* Copyright */}
-          <div className="pt-8 border-t border-purple-200 text-center">
+          <div className="pt-8 border-t border-slate-200 text-center">
             <p className="text-sm text-muted-foreground">
               © 2024 ChatFlow AI by THE Π LAB. All rights reserved.
             </p>
