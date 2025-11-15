@@ -92,10 +92,53 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 relative overflow-hidden">
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/30 to-blue-600/20 rounded-full blur-3xl"
+          animate={{
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute top-1/4 right-0 w-96 h-96 bg-gradient-to-br from-slate-400/20 to-slate-600/15 rounded-full blur-3xl"
+          animate={{
+            x: [0, -100, 0],
+            y: [0, 100, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-1/3 w-96 h-96 bg-gradient-to-br from-blue-500/25 to-slate-500/15 rounded-full blur-3xl"
+          animate={{
+            x: [0, -50, 0],
+            y: [0, -50, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
       {/* Navigation */}
-      <nav className="border-b bg-white/95 backdrop-blur-lg shadow-sm sticky top-0 z-50 border-slate-200">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="border-b bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-slate-200/50 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-blue-50/40 to-white/60 backdrop-blur-xl" />
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3">
             <Logo size="md" />
             <span className="text-xl font-bold tracking-tight text-slate-900">ChatFlow AI</span>
@@ -161,8 +204,11 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-16 max-w-5xl mx-auto"
         >
-          <div className="rounded-xl bg-gradient-to-br from-slate-100 via-gray-50 to-blue-50 p-8 shadow-xl border border-slate-200">
-            <div className="aspect-video bg-card rounded-lg shadow-inner overflow-hidden p-6">
+          <div className="rounded-xl bg-gradient-to-br from-white/90 via-blue-50/80 to-slate-100/90 p-8 shadow-2xl border border-slate-200/50 backdrop-blur-sm relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-transparent to-slate-400/5" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-300/20 to-transparent rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-slate-300/20 to-transparent rounded-full blur-3xl" />
+            <div className="aspect-video bg-gradient-to-br from-white/95 to-slate-50/95 rounded-lg shadow-inner overflow-hidden p-6 relative backdrop-blur-sm border border-slate-200/30">
               {/* Mock Dashboard Interface */}
               <div className="h-full flex flex-col gap-4">
                 {/* Header Stats */}
@@ -288,7 +334,8 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full shadow-md hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300">
+              <Card className="h-full shadow-lg hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white/95 to-slate-50/90 backdrop-blur-md border border-slate-200/50 hover:border-blue-300/50 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <CardHeader>
                   <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center mb-4 shadow-md">
                     <feature.icon className="h-6 w-6 text-white" />
@@ -328,7 +375,8 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <Card className="shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200 hover:border-slate-300">
+            <Card className="shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white/95 to-slate-50/90 backdrop-blur-md border border-slate-200/50 hover:border-blue-300/50 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-slate-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <CardHeader>
                 <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center mb-4 shadow-lg">
                   <Instagram className="h-8 w-8 text-white" />
@@ -388,7 +436,11 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className={`h-full shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm ${plan.popular ? "border-2 border-slate-800 ring-2 ring-slate-300" : "border border-slate-200"}`}>
+              <Card className={`h-full shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white/95 to-slate-50/90 backdrop-blur-md relative overflow-hidden group ${plan.popular ? "border-2 border-slate-800 ring-2 ring-blue-300/50" : "border border-slate-200/50"}`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {plan.popular && (
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-transparent rounded-full blur-2xl" />
+              )}
                 {plan.popular && (
                   <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white text-center py-2 text-sm font-medium rounded-t-lg">
                     Most Popular
@@ -430,7 +482,8 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Card className="max-w-2xl mx-auto shadow-lg bg-white/90 backdrop-blur-sm border border-slate-200">
+          <Card className="max-w-2xl mx-auto shadow-xl bg-gradient-to-br from-white/95 to-slate-50/90 backdrop-blur-md border border-slate-200/50 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-slate-400/5" />
             <CardHeader>
               <CardTitle className="text-2xl">Enterprise</CardTitle>
               <CardDescription className="text-base">
@@ -458,7 +511,10 @@ export default function Landing() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto"
         >
-          <Card className="shadow-xl bg-gradient-to-br from-slate-100 via-gray-100 to-blue-50 border border-slate-200">
+          <Card className="shadow-2xl bg-gradient-to-br from-white/95 via-blue-50/80 to-slate-100/90 border border-slate-200/50 backdrop-blur-md relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-transparent to-slate-400/10" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-300/20 to-transparent rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-slate-300/20 to-transparent rounded-full blur-3xl" />
             <CardHeader className="pb-8 pt-12">
               <CardTitle className="text-3xl md:text-4xl mb-4">
                 Ready to Automate Your Business?
@@ -481,8 +537,9 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-gradient-to-r from-slate-50 to-gray-50 py-12">
-        <div className="container mx-auto px-4">
+      <footer className="border-t border-slate-200/50 bg-gradient-to-br from-white/90 via-slate-50/80 to-blue-50/70 backdrop-blur-md py-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-slate-400/5" />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Brand Section */}
             <div className="flex flex-col items-center md:items-start gap-3">
