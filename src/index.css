@@ -139,7 +139,27 @@
     will-change: transform;
   }
   
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
+
   button:not([disabled]),
+=======
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
+=======
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
 =======
   body > * {
     position: relative;
