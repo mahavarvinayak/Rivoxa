@@ -40,6 +40,8 @@ export const create = mutation({
       postId: v.optional(v.string()),
       scheduleTime: v.optional(v.string()),
     }),
+    requireFollow: v.optional(v.boolean()),
+    followReminder: v.optional(v.string()),
     actions: v.array(v.object({
       type: v.string(),
       config: v.any(),
@@ -55,6 +57,8 @@ export const create = mutation({
       description: args.description,
       status: "draft",
       trigger: args.trigger,
+      requireFollow: args.requireFollow,
+      followReminder: args.followReminder,
       actions: args.actions,
       totalExecutions: 0,
       successfulExecutions: 0,
@@ -76,6 +80,8 @@ export const update = mutation({
       postId: v.optional(v.string()),
       scheduleTime: v.optional(v.string()),
     })),
+    requireFollow: v.optional(v.boolean()),
+    followReminder: v.optional(v.string()),
     actions: v.optional(v.array(v.object({
       type: v.string(),
       config: v.any(),

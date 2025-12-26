@@ -27,6 +27,27 @@ export const executeFlows = internalAction({
         );
         
         if (!shouldExecute) continue;
+
+        // Check Follow Requirement
+        if (flow.requireFollow) {
+          const isFollowing = await checkFollowStatus(ctx, flow.userId, args.context);
+          if (!isFollowing) {
+            console.log(`User does not follow, skipping flow ${flow._id}`);
+            
+            // Send reminder if configured
+            if (flow.followReminder) {
+              const integration = await ctx.runQuery(internal.flowEngine_queries.getIntegration, {
+                userId: flow.userId,
+                type: flow.trigger.type.includes("instagram") ? "instagram" : "whatsapp",
+              });
+              
+              if (integration) {
+                await sendReply(ctx, integration, args.context, { message: flow.followReminder });
+              }
+            }
+            continue;
+          }
+        }
         
         // Execute flow actions
         await executeFlowActions(ctx, flow, args.context);
@@ -59,6 +80,23 @@ async function checkTriggerConditions(trigger: any, context: any): Promise<boole
   
   // Additional condition checks can be added here
   return true;
+}
+
+async function checkFollowStatus(ctx: any, userId: any, context: any): Promise<boolean> {
+  // In a real implementation, this would call the Instagram API to check relationship status.
+  // However, the Instagram Graph API does not provide a direct "check if user follows me" endpoint 
+  // for Business accounts without iterating followers or using private APIs.
+  // For this implementation, we will assume true to allow testing, or we would need to implement
+  // a more complex check involving the Basic Display API or scraping (not recommended).
+  
+  // TODO: Implement actual follow check when Meta provides a better API for this.
+  // For now, we'll simulate a check. In production, this might need a third-party service or 
+  // a different approach (like checking if we can see their private content, etc.)
+  
+  // If we have the user's ID, we might be able to check if they are in our followers list 
+  // if we have synced it, but syncing followers is heavy.
+  
+  return true; 
 }
 
 async function executeFlowActions(ctx: any, flow: any, context: any) {

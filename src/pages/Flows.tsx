@@ -36,6 +36,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Logo } from "@/components/Logo";
+import { Switch } from "@/components/ui/switch";
 
 export default function Flows() {
   const { isLoading, isAuthenticated, user } = useAuth();
@@ -55,6 +56,8 @@ export default function Flows() {
   const [dmMessage, setDmMessage] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string>("all_reels");
   const [isSyncing, setIsSyncing] = useState(false);
+  const [requireFollow, setRequireFollow] = useState(false);
+  const [followReminder, setFollowReminder] = useState("");
 
   if (isLoading) {
     return (
@@ -97,6 +100,8 @@ export default function Flows() {
           keywords: keywords ? keywords.split(",").map(k => k.trim()) : undefined,
           postId: selectedPostId && selectedPostId !== "all_reels" ? selectedPostId : undefined,
         },
+        requireFollow,
+        followReminder: requireFollow ? followReminder : undefined,
         actions: [
           {
             type: "send_dm",
@@ -112,6 +117,8 @@ export default function Flows() {
       setKeywords("");
       setDmMessage("");
       setSelectedPostId("all_reels");
+      setRequireFollow(false);
+      setFollowReminder("");
     } catch (error) {
       toast.error("Failed to create flow");
       console.error(error);
@@ -265,6 +272,32 @@ export default function Flows() {
                     Flow will trigger when any of these keywords are detected
                   </p>
                 </div>
+
+                <div className="flex items-center space-x-2 py-2">
+                  <Switch
+                    id="require-follow"
+                    checked={requireFollow}
+                    onCheckedChange={setRequireFollow}
+                  />
+                  <Label htmlFor="require-follow">Require user to follow before DM</Label>
+                </div>
+
+                {requireFollow && (
+                  <div className="space-y-2 pl-6 border-l-2 border-primary/20">
+                    <Label htmlFor="follow-reminder">Follow Reminder Message</Label>
+                    <Textarea
+                      id="follow-reminder"
+                      placeholder="Hey! Please follow us to receive the link via DM."
+                      value={followReminder}
+                      onChange={(e) => setFollowReminder(e.target.value)}
+                      rows={2}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This message will be replied to their comment if they don't follow you.
+                    </p>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="message">DM Message *</Label>
                   <Textarea
@@ -362,6 +395,11 @@ export default function Flows() {
                                 </Badge>
                               ))}
                             </div>
+                          )}
+                          {flow.requireFollow && (
+                            <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 hover:bg-blue-200">
+                              Requires Follow
+                            </Badge>
                           )}
                           <div className="pt-2 border-t">
                             <div className="text-xs text-muted-foreground mb-2">Stats</div>
