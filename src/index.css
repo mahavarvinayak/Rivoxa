@@ -139,10 +139,14 @@
     will-change: transform;
   }
   
+  button:not([disabled]),
+=======
   body > * {
     position: relative;
     z-index: 1;
   }
+
+  button:not([disabled]),
 =======
   button:not([disabled]),
   [role="button"]:not([disabled]) {
