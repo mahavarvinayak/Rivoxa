@@ -30,7 +30,7 @@ export const executeFlows = internalAction({
 
         // Check Follow Requirement
         if (flow.requireFollow) {
-          const isFollowing = await checkFollowStatus(ctx, flow.userId, args.context);
+          const isFollowing = await checkFollowStatus(ctx, flow.userId, args.context, args.triggerType);
           if (!isFollowing) {
             console.log(`User does not follow, skipping flow ${flow._id}`);
             
@@ -82,19 +82,31 @@ async function checkTriggerConditions(trigger: any, context: any): Promise<boole
   return true;
 }
 
-async function checkFollowStatus(ctx: any, userId: any, context: any): Promise<boolean> {
-  // In a real implementation, this would call the Instagram API to check relationship status.
-  // However, the Instagram Graph API does not provide a direct "check if user follows me" endpoint 
-  // for Business accounts without iterating followers or using private APIs.
-  // For this implementation, we will assume true to allow testing, or we would need to implement
-  // a more complex check involving the Basic Display API or scraping (not recommended).
-  
-  // TODO: Implement actual follow check when Meta provides a better API for this.
-  // For now, we'll simulate a check. In production, this might need a third-party service or 
-  // a different approach (like checking if we can see their private content, etc.)
-  
-  // If we have the user's ID, we might be able to check if they are in our followers list 
-  // if we have synced it, but syncing followers is heavy.
+async function checkFollowStatus(ctx: any, userId: any, context: any, triggerType: string): Promise<boolean> {
+  // Only Instagram supports follow checks relevant to this flow
+  if (!triggerType.includes("instagram")) return true;
+
+  const integration = await ctx.runQuery(internal.flowEngine_queries.getIntegration, {
+    userId,
+    type: "instagram",
+  });
+
+  if (!integration) return true; // Fail open if no integration found
+
+  // SIMULATION FOR TESTING:
+  // Since Instagram Graph API doesn't provide a direct "check if follows" endpoint for Business accounts
+  // without iterating all followers (which is rate-limited and slow), we provide a simulation mode.
+  // If the user's message/comment contains "simulate_not_following", we treat it as not following.
+  const text = context.text || context.message?.text || "";
+  if (text.toLowerCase().includes("simulate_not_following")) {
+    console.log("Simulating user not following");
+    return false;
+  }
+
+  // Note: To implement a real check, you would typically need to:
+  // 1. Maintain a local database of followers (synced via webhooks or periodic polling)
+  // 2. Check against that database
+  // 3. Or use the GET /{business-id}/followers endpoint (limited to recent/top followers)
   
   return true; 
 }
