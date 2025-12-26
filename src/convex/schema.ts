@@ -160,9 +160,6 @@ const schema = defineSchema(
         scheduleTime: v.optional(v.string()),
       }),
       
-      requireFollow: v.optional(v.boolean()),
-      followReminder: v.optional(v.string()),
-      
       actions: v.array(v.object({
         type: v.string(),
         config: v.any(),

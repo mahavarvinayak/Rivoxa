@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation, useAction } from "convex/react";
@@ -10,32 +10,51 @@ import {
   Loader2, 
   Plus,
   Settings,
+  Trash2,
+  Zap,
+  Play,
+  Pause,
   RefreshCw,
   Video
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Logo } from "@/components/Logo";
-import { FlowCard } from "@/components/flows/FlowCard";
-import { ReelCard } from "@/components/flows/ReelCard";
-import { CreateFlowDialog } from "@/components/flows/CreateFlowDialog";
-import { Doc } from "@/convex/_generated/dataModel";
 
 export default function Flows() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const flows = useQuery(api.flows.list);
   const reels = useQuery(api.media.listReels);
+  const createFlow = useMutation(api.flows.create);
   const updateFlow = useMutation(api.flows.update);
   const deleteFlow = useMutation(api.flows.remove);
   const syncMedia = useAction(api.media.syncInstagramMedia);
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [flowName, setFlowName] = useState("");
+  const [flowDescription, setFlowDescription] = useState("");
+  const [triggerType, setTriggerType] = useState<string>("instagram_comment");
+  const [keywords, setKeywords] = useState("");
+  const [dmMessage, setDmMessage] = useState("");
   const [selectedPostId, setSelectedPostId] = useState<string>("all_reels");
   const [isSyncing, setIsSyncing] = useState(false);
-  const [editingFlow, setEditingFlow] = useState<Doc<"flows"> | null>(null);
 
   if (isLoading) {
     return (
@@ -63,6 +82,42 @@ export default function Flows() {
     }
   };
 
+  const handleCreateFlow = async () => {
+    if (!flowName || !dmMessage) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      await createFlow({
+        name: flowName,
+        description: flowDescription,
+        trigger: {
+          type: triggerType as any,
+          keywords: keywords ? keywords.split(",").map(k => k.trim()) : undefined,
+          postId: selectedPostId && selectedPostId !== "all_reels" ? selectedPostId : undefined,
+        },
+        actions: [
+          {
+            type: "send_dm",
+            config: { message: dmMessage },
+          },
+        ],
+      });
+
+      toast.success("Flow created successfully!");
+      setIsCreateDialogOpen(false);
+      setFlowName("");
+      setFlowDescription("");
+      setKeywords("");
+      setDmMessage("");
+      setSelectedPostId("all_reels");
+    } catch (error) {
+      toast.error("Failed to create flow");
+      console.error(error);
+    }
+  };
+
   const handleToggleFlow = async (flowId: string, currentStatus: string) => {
     try {
       const newStatus = currentStatus === "active" ? "paused" : "active";
@@ -85,17 +140,6 @@ export default function Flows() {
       toast.error("Failed to delete flow");
       console.error(error);
     }
-  };
-
-  const handleEditFlow = (flow: Doc<"flows">) => {
-    setEditingFlow(flow);
-    setIsCreateDialogOpen(true);
-  };
-
-  const handleCreateNew = (postId: string = "all_reels") => {
-    setEditingFlow(null);
-    setSelectedPostId(postId);
-    setIsCreateDialogOpen(true);
   };
 
   const getFlowsForReel = (postId: string) => {
@@ -141,22 +185,106 @@ export default function Flows() {
               Create automated responses for Instagram and WhatsApp
             </p>
           </div>
-          <Button className="shadow-md" onClick={() => handleCreateNew("all_reels")}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Flow
-          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="shadow-md">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Flow
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create New Flow</DialogTitle>
+                <DialogDescription>
+                  Set up an automated response flow for your social media
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Flow Name *</Label>
+                  <Input
+                    id="name"
+                    placeholder="e.g., Comment to DM - Product Link"
+                    value={flowName}
+                    onChange={(e) => setFlowName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="What does this flow do?"
+                    value={flowDescription}
+                    onChange={(e) => setFlowDescription(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="trigger">Trigger Type</Label>
+                  <Select value={triggerType} onValueChange={setTriggerType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="instagram_comment">Instagram Comment</SelectItem>
+                      <SelectItem value="instagram_dm">Instagram DM</SelectItem>
+                      <SelectItem value="instagram_story_mention">Instagram Story Mention</SelectItem>
+                      <SelectItem value="instagram_story_reply">Instagram Story Reply</SelectItem>
+                      <SelectItem value="whatsapp_message">WhatsApp Message</SelectItem>
+                      <SelectItem value="keyword">Keyword</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="post">Specific Reel (Optional)</Label>
+                  <Select value={selectedPostId} onValueChange={setSelectedPostId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All reels" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all_reels">All reels</SelectItem>
+                      {reels?.map((reel) => (
+                        <SelectItem key={reel.mediaId} value={reel.mediaId}>
+                          {reel.caption.substring(0, 50)}...
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to apply to all reels
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="keywords">Keywords (comma-separated)</Label>
+                  <Input
+                    id="keywords"
+                    placeholder="e.g., link, info, price"
+                    value={keywords}
+                    onChange={(e) => setKeywords(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Flow will trigger when any of these keywords are detected
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message">DM Message *</Label>
+                  <Textarea
+                    id="message"
+                    placeholder="Hi! Thanks for your interest. Here's the link: https://..."
+                    value={dmMessage}
+                    onChange={(e) => setDmMessage(e.target.value)}
+                    rows={4}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreateFlow}>Create Flow</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </motion.div>
-
-        <CreateFlowDialog 
-          open={isCreateDialogOpen} 
-          onOpenChange={(open) => {
-            setIsCreateDialogOpen(open);
-            if (!open) setEditingFlow(null);
-          }}
-          reels={reels}
-          defaultPostId={selectedPostId}
-          flowToEdit={editingFlow}
-        />
 
         {/* Tabs for All Flows vs Per-Reel */}
         <Tabs defaultValue="all" className="space-y-4">
@@ -183,7 +311,7 @@ export default function Flows() {
                     <p className="text-muted-foreground text-center mb-6">
                       Create your first automation flow to start engaging with your audience
                     </p>
-                    <Button onClick={() => handleCreateNew("all_reels")}>
+                    <Button onClick={() => setIsCreateDialogOpen(true)}>
                       <Plus className="h-4 w-4 mr-2" />
                       Create Your First Flow
                     </Button>
@@ -199,12 +327,93 @@ export default function Flows() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.05 }}
                   >
-                    <FlowCard 
-                      flow={flow} 
-                      onToggle={handleToggleFlow} 
-                      onDelete={handleDeleteFlow}
-                      onEdit={handleEditFlow}
-                    />
+                    <Card className="shadow-md hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg mb-1">{flow.name}</CardTitle>
+                            <CardDescription className="text-sm">
+                              {flow.description || "No description"}
+                            </CardDescription>
+                          </div>
+                          <Badge variant={flow.status === "active" ? "default" : "secondary"}>
+                            {flow.status}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Zap className="h-4 w-4 text-primary" />
+                            <span className="text-muted-foreground">
+                              Trigger: {flow.trigger.type.replace(/_/g, " ")}
+                            </span>
+                          </div>
+                          {flow.trigger.postId && (
+                            <Badge variant="outline" className="text-xs">
+                              Specific Reel
+                            </Badge>
+                          )}
+                          {flow.trigger.keywords && flow.trigger.keywords.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {flow.trigger.keywords.map((keyword, i) => (
+                                <Badge key={i} variant="outline" className="text-xs">
+                                  {keyword}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                          <div className="pt-2 border-t">
+                            <div className="text-xs text-muted-foreground mb-2">Stats</div>
+                            <div className="grid grid-cols-3 gap-2 text-center">
+                              <div>
+                                <div className="text-lg font-bold">{flow.totalExecutions || 0}</div>
+                                <div className="text-xs text-muted-foreground">Total</div>
+                              </div>
+                              <div>
+                                <div className="text-lg font-bold text-green-600">
+                                  {flow.successfulExecutions || 0}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Success</div>
+                              </div>
+                              <div>
+                                <div className="text-lg font-bold text-red-600">
+                                  {flow.failedExecutions || 0}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Failed</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => handleToggleFlow(flow._id, flow.status)}
+                            >
+                              {flow.status === "active" ? (
+                                <>
+                                  <Pause className="h-3 w-3 mr-1" />
+                                  Pause
+                                </>
+                              ) : (
+                                <>
+                                  <Play className="h-3 w-3 mr-1" />
+                                  Activate
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteFlow(flow._id)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   </motion.div>
                 ))}
               </div>
@@ -245,11 +454,68 @@ export default function Flows() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.05 }}
                     >
-                      <ReelCard 
-                        reel={reel} 
-                        flows={reelFlows} 
-                        onAddFlow={(mediaId) => handleCreateNew(mediaId)} 
-                      />
+                      <Card className="shadow-md hover:shadow-lg transition-shadow">
+                        <CardHeader className="p-0">
+                          <div className="aspect-video bg-secondary rounded-t-lg overflow-hidden">
+                            {reel.thumbnailUrl ? (
+                              <img 
+                                src={reel.thumbnailUrl} 
+                                alt={reel.caption}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Video className="h-12 w-12 text-muted-foreground" />
+                              </div>
+                            )}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-4">
+                          <CardTitle className="text-sm mb-2 line-clamp-2">
+                            {reel.caption || "No caption"}
+                          </CardTitle>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
+                            <span>❤️ {reel.likeCount}</span>
+                            <span>💬 {reel.commentsCount}</span>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">
+                                {reelFlows.length} Flow{reelFlows.length !== 1 ? "s" : ""}
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedPostId(reel.mediaId);
+                                  setIsCreateDialogOpen(true);
+                                }}
+                              >
+                                <Plus className="h-3 w-3 mr-1" />
+                                Add Flow
+                              </Button>
+                            </div>
+                            {reelFlows.length > 0 && (
+                              <div className="space-y-1">
+                                {reelFlows.map((flow) => (
+                                  <div
+                                    key={flow._id}
+                                    className="flex items-center justify-between p-2 rounded bg-secondary/50 text-xs"
+                                  >
+                                    <span className="truncate flex-1">{flow.name}</span>
+                                    <Badge
+                                      variant={flow.status === "active" ? "default" : "secondary"}
+                                      className="text-xs"
+                                    >
+                                      {flow.status}
+                                    </Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
                     </motion.div>
                   );
                 })}

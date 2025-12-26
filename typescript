@@ -1,10 +1,6 @@
-async function checkFollowStatus(ctx: any, userId: any, context: any, triggerType: string): Promise<boolean> {
-  // ...
-  // SIMULATION FOR TESTING:
-  const text = context.text || context.message?.text || "";
-  if (text.toLowerCase().includes("simulate_not_following")) {
-    console.log("Simulating user not following");
-    return false;
-  }
-  return true; 
+const clientId = import.meta.env.VITE_META_APP_ID;
+
+if (!clientId) {
+  toast.error("Integration not configured. Please contact support to enable social media connections.");
+  return;
 }

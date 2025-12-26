@@ -27,27 +27,6 @@ export const executeFlows = internalAction({
         );
         
         if (!shouldExecute) continue;
-
-        // Check Follow Requirement
-        if (flow.requireFollow) {
-          const isFollowing = await checkFollowStatus(ctx, flow.userId, args.context, args.triggerType);
-          if (!isFollowing) {
-            console.log(`User does not follow, skipping flow ${flow._id}`);
-            
-            // Send reminder if configured
-            if (flow.followReminder) {
-              const integration = await ctx.runQuery(internal.flowEngine_queries.getIntegration, {
-                userId: flow.userId,
-                type: flow.trigger.type.includes("instagram") ? "instagram" : "whatsapp",
-              });
-              
-              if (integration) {
-                await sendReply(ctx, integration, args.context, { message: flow.followReminder });
-              }
-            }
-            continue;
-          }
-        }
         
         // Execute flow actions
         await executeFlowActions(ctx, flow, args.context);
@@ -80,35 +59,6 @@ async function checkTriggerConditions(trigger: any, context: any): Promise<boole
   
   // Additional condition checks can be added here
   return true;
-}
-
-async function checkFollowStatus(ctx: any, userId: any, context: any, triggerType: string): Promise<boolean> {
-  // Only Instagram supports follow checks relevant to this flow
-  if (!triggerType.includes("instagram")) return true;
-
-  const integration = await ctx.runQuery(internal.flowEngine_queries.getIntegration, {
-    userId,
-    type: "instagram",
-  });
-
-  if (!integration) return true; // Fail open if no integration found
-
-  // SIMULATION FOR TESTING:
-  // Since Instagram Graph API doesn't provide a direct "check if follows" endpoint for Business accounts
-  // without iterating all followers (which is rate-limited and slow), we provide a simulation mode.
-  // If the user's message/comment contains "simulate_not_following", we treat it as not following.
-  const text = context.text || context.message?.text || "";
-  if (text.toLowerCase().includes("simulate_not_following")) {
-    console.log("Simulating user not following");
-    return false;
-  }
-
-  // Note: To implement a real check, you would typically need to:
-  // 1. Maintain a local database of followers (synced via webhooks or periodic polling)
-  // 2. Check against that database
-  // 3. Or use the GET /{business-id}/followers endpoint (limited to recent/top followers)
-  
-  return true; 
 }
 
 async function executeFlowActions(ctx: any, flow: any, context: any) {

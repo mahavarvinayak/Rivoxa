@@ -1,1 +1,4 @@
-npx convex dev --once && npx tsc -b --noEmit
+META_APP_ID=your_app_id_here
+META_APP_SECRET=your_app_secret_here
+WEBHOOK_VERIFY_TOKEN=your_random_verify_token
+SITE_URL=https://your-convex-deployment.convex.site
