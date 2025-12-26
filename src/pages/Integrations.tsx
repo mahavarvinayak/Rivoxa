@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
 import { 
   AlertCircle,
@@ -34,6 +34,7 @@ export default function Integrations() {
   const navigate = useNavigate();
   const integrations = useQuery(api.integrations.list);
   const disconnect = useMutation(api.integrations.disconnect);
+  const getAuthUrl = useAction(api.oauth.getAuthUrl);
   const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
   if (isLoading) {
@@ -52,61 +53,58 @@ export default function Integrations() {
   const instagramIntegration = integrations?.find(i => i.type === "instagram");
   const whatsappIntegration = integrations?.find(i => i.type === "whatsapp");
 
-  const handleConnect = (platform: "instagram" | "whatsapp") => {
-    // Check if META_APP_ID is configured
-    const clientId = import.meta.env.VITE_META_APP_ID;
-    
-    if (!clientId) {
-      toast.error("Integration not configured. Please contact support to enable social media connections.");
-      return;
-    }
-    
-    // Use popup window for OAuth
-    const baseUrl = window.location.origin;
-    const redirectUri = `${baseUrl}/api/oauth/callback/${platform}`;
-    
-    const scope = platform === "instagram" 
-      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
-      : "whatsapp_business_management,whatsapp_business_messaging";
-    
-    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-    
-    // Open OAuth in popup window
-    const width = 600;
-    const height = 700;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
-    
-    const popup = window.open(
-      authUrl,
-      `${platform}_oauth`,
-      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
-    );
-    
-    if (!popup) {
-      toast.error("Popup blocked. Please allow popups for this site.");
-      return;
-    }
-    
-    // Listen for OAuth callback
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "oauth-success" && event.data?.platform === platform) {
-        toast.success(`${platform === "instagram" ? "Instagram" : "WhatsApp"} connected successfully!`);
-        window.removeEventListener("message", handleMessage);
-        // Refresh integrations list
-        window.location.reload();
-      } else if (event.data?.type === "oauth-error" && event.data?.platform === platform) {
-        toast.error(`Failed to connect ${platform}: ${event.data.error}`);
-        window.removeEventListener("message", handleMessage);
+  const handleConnect = async (platform: "instagram" | "whatsapp") => {
+    try {
+      // Open popup immediately to avoid blocker
+      const width = 600;
+      const height = 700;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+      
+      const popup = window.open(
+        "",
+        `${platform}_oauth`,
+        `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
+      );
+
+      if (!popup) {
+        toast.error("Popup blocked. Please allow popups for this site.");
+        return;
       }
-    };
-    
-    window.addEventListener("message", handleMessage);
-    
-    // Clean up listener after 5 minutes
-    setTimeout(() => {
-      window.removeEventListener("message", handleMessage);
-    }, 5 * 60 * 1000);
+
+      popup.document.write("<html><body style='font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh;'>Loading secure login...</body></html>");
+
+      // Get URL from backend
+      const authUrl = await getAuthUrl({ platform });
+      
+      // Redirect popup
+      popup.location.href = authUrl;
+      
+      // Listen for OAuth callback
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === "oauth-success" && event.data?.platform === platform) {
+          toast.success(`${platform === "instagram" ? "Instagram" : "WhatsApp"} connected successfully!`);
+          window.removeEventListener("message", handleMessage);
+          // Refresh integrations list
+          window.location.reload();
+        } else if (event.data?.type === "oauth-error" && event.data?.platform === platform) {
+          toast.error(`Failed to connect ${platform}: ${event.data.error}`);
+          popup.close();
+          window.removeEventListener("message", handleMessage);
+        }
+      };
+      
+      window.addEventListener("message", handleMessage);
+      
+      // Clean up listener after 5 minutes
+      setTimeout(() => {
+        window.removeEventListener("message", handleMessage);
+      }, 5 * 60 * 1000);
+
+    } catch (error) {
+      toast.error("Failed to initialize login: " + (error as Error).message);
+      console.error(error);
+    }
   };
 
   const handleDisconnect = async (integrationId: string, platform: string) => {

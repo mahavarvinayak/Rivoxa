@@ -1,8 +1,29 @@
 "use node";
 
 import { v } from "convex/values";
-import { internalAction } from "./_generated/server";
+import { internalAction, action } from "./_generated/server";
 import { internal } from "./_generated/api";
+
+export const getAuthUrl = action({
+  args: { platform: v.string() },
+  handler: async (ctx, args) => {
+    const appId = process.env.META_APP_ID;
+    const siteUrl = process.env.SITE_URL;
+
+    if (!appId || !siteUrl) {
+      throw new Error("Configuration missing. Please set META_APP_ID and SITE_URL in the dashboard.");
+    }
+
+    const cleanSiteUrl = siteUrl.replace(/\/$/, "");
+    const redirectUri = `${cleanSiteUrl}/api/oauth/callback/${args.platform}`;
+    
+    const scope = args.platform === "instagram" 
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
+      : "whatsapp_business_management,whatsapp_business_messaging";
+
+    return `https://www.facebook.com/v18.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+  },
+});
 
 export const handleInstagramCallback = internalAction({
   args: {
