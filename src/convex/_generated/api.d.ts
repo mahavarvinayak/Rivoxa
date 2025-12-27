@@ -9,8 +9,8 @@
  */
 
 import type * as analytics from "../analytics.js";
-import type * as auth_emailOtp from "../auth/emailOtp.js";
 import type * as auth from "../auth.js";
+import type * as auth_emailOtp from "../auth/emailOtp.js";
 import type * as broadcasts from "../broadcasts.js";
 import type * as contacts from "../contacts.js";
 import type * as crons from "../crons.js";
@@ -37,18 +37,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 
-/**
- * A utility for referencing Convex functions in your app's API.
- *
- * Usage:
- * ```js
- * const myFunctionReference = api.myModule.myFunction;
- * ```
- */
 declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
-  "auth/emailOtp": typeof auth_emailOtp;
   auth: typeof auth;
+  "auth/emailOtp": typeof auth_emailOtp;
   broadcasts: typeof broadcasts;
   contacts: typeof contacts;
   crons: typeof crons;
@@ -69,14 +61,30 @@ declare const fullApi: ApiFromModules<{
   webhooks: typeof webhooks;
   webhooks_mutations: typeof webhooks_mutations;
 }>;
-declare const fullApiWithMounts: typeof fullApi;
 
+/**
+ * A utility for referencing Convex functions in your app's public API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
 export declare const api: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "public">
 >;
+
+/**
+ * A utility for referencing Convex functions in your app's internal API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = internal.myModule.myFunction;
+ * ```
+ */
 export declare const internal: FilterApi<
-  typeof fullApiWithMounts,
+  typeof fullApi,
   FunctionReference<any, "internal">
 >;
 
