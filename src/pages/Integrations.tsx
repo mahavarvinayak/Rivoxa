@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
 import { 
   AlertCircle,
@@ -34,6 +34,7 @@ export default function Integrations() {
   const navigate = useNavigate();
   const integrations = useQuery(api.integrations.list);
   const disconnect = useMutation(api.integrations.disconnect);
+  const getAuthUrl = useAction(api.oauth.getAuthUrl);
   const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
   if (isLoading) {
@@ -52,39 +53,45 @@ export default function Integrations() {
   const instagramIntegration = integrations?.find(i => i.type === "instagram");
   const whatsappIntegration = integrations?.find(i => i.type === "whatsapp");
 
-  const handleConnect = (platform: "instagram" | "whatsapp") => {
-    // Check if META_APP_ID is configured
-    const clientId = import.meta.env.VITE_META_APP_ID;
-    
-    if (!clientId) {
-      toast.error("Integration not configured. Please contact support to enable social media connections.");
-      return;
-    }
-    
-    // Use popup window for OAuth
-    const baseUrl = window.location.origin;
-    const redirectUri = `${baseUrl}/api/oauth/callback/${platform}`;
-    
-    const scope = platform === "instagram" 
-      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
-      : "whatsapp_business_management,whatsapp_business_messaging";
-    
-    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-    
-    // Open OAuth in popup window
+  const handleConnect = async (platform: "instagram" | "whatsapp") => {
+    // Open popup window immediately to prevent browser blocking
     const width = 600;
     const height = 700;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     
     const popup = window.open(
-      authUrl,
+      "",
       `${platform}_oauth`,
       `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
     );
     
     if (!popup) {
       toast.error("Popup blocked. Please allow popups for this site.");
+      return;
+    }
+
+    popup.document.write(`
+      <html>
+        <head><title>Redirecting...</title></head>
+        <body style="font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5;">
+          <div style="text-align: center;">
+            <div style="margin-bottom: 16px; width: 24px; height: 24px; border: 3px solid #ccc; border-top-color: #000; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            <div>Initializing secure connection...</div>
+          </div>
+          <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+        </body>
+      </html>
+    `);
+    
+    try {
+      // Get the correct auth URL from backend (uses SITE_URL)
+      const authUrl = await getAuthUrl({ platform });
+      popup.location.href = authUrl;
+    } catch (error: any) {
+      popup.close();
+      console.error("Failed to get auth URL:", error);
+      toast.error(error.message || "Failed to initialize connection. Check your environment variables.");
       return;
     }
     

@@ -1,0 +1,3 @@
+{
+  "plan": "1. Verify the OAuth flow works correctly with the new backend URL generation.\n2. Check if the 'Failed to fetch' error persists (it should be resolved if it was due to env var issues).\n3. If the user still faces issues, guide them to check their Meta App settings (Valid OAuth Redirect URIs)."
+}

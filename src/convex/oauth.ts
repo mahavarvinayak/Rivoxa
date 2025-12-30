@@ -1,8 +1,37 @@
 "use node";
 
 import { v } from "convex/values";
-import { internalAction } from "./_generated/server";
+import { internalAction, action } from "./_generated/server";
 import { internal } from "./_generated/api";
+
+export const getAuthUrl = action({
+  args: {
+    platform: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const appId = process.env.META_APP_ID;
+    const siteUrl = process.env.SITE_URL;
+
+    if (!appId) {
+      throw new Error("META_APP_ID is not configured in environment variables");
+    }
+
+    if (!siteUrl) {
+      throw new Error("SITE_URL is not configured in environment variables");
+    }
+
+    const redirectUri = `${siteUrl}/api/oauth/callback/${args.platform}`;
+    
+    const scope = args.platform === "instagram" 
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
+      : "whatsapp_business_management,whatsapp_business_messaging";
+    
+    // Force re-authentication to ensure we get a fresh code
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
+    
+    return authUrl;
+  },
+});
 
 export const handleInstagramCallback = internalAction({
   args: {
