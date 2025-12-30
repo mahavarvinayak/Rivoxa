@@ -16,16 +16,16 @@ export default function Pricing() {
     {
       name: "Free Trial",
       price: "₹0",
-      period: "1 month trial",
-      description: "Perfect for testing the waters",
+      period: "7-day trial",
+      description: "Test the product safely",
       icon: Zap,
       features: [
-        "Unlimited messages",
-        "3 Automation flows",
-        "AI FAQs",
-        "Instagram integration",
-        "WhatsApp integration",
-        "Community support",
+        "Instagram integration only",
+        "Up to 300 automated replies total",
+        "1 basic automation flow",
+        "AI-powered FAQ replies (limited)",
+        "Comment-to-DM basic automation",
+        "Community support only",
       ],
       cta: "Start Free Trial",
       popular: false,
@@ -35,15 +35,17 @@ export default function Pricing() {
       name: "Pro",
       price: "₹499",
       period: "per month",
-      description: "For growing businesses",
+      description: "For solo creators & small businesses",
       icon: Star,
       features: [
-        "Unlimited messages",
-        "8-10 Automation flows",
-        "Advanced automation",
-        "Analytics dashboard",
-        "Custom templates",
-        "Priority support",
+        "Instagram automation",
+        "Up to 5 active automation flows",
+        "AI-powered smart replies",
+        "Comment → DM automation",
+        "Basic lead qualification",
+        "Fair usage policy applies",
+        "Basic analytics dashboard",
+        "Email support",
       ],
       cta: "Get Pro",
       popular: true,
@@ -53,16 +55,17 @@ export default function Pricing() {
       name: "Ultimate",
       price: "₹999",
       period: "per month",
-      description: "For scaling operations",
+      description: "For growing businesses",
       icon: Rocket,
       features: [
-        "Unlimited messages",
-        "10-20 Automation flows",
-        "Advanced analytics",
-        "API access",
-        "Follow before DM",
-        "Follow Up sequences",
-        "Dedicated support",
+        "Instagram + WhatsApp automation",
+        "Up to 15 active automation flows",
+        "Advanced workflows & delays",
+        "Follow-up message sequences",
+        "Lead scoring & tagging",
+        "Advanced analytics dashboard",
+        "API access (read-only)",
+        "Priority support",
       ],
       cta: "Get Ultimate",
       popular: false,
@@ -75,12 +78,13 @@ export default function Pricing() {
       description: "Maximum power & control",
       icon: Shield,
       features: [
-        "Unlimited messages",
-        "Unlimited flows",
+        "Instagram + WhatsApp automation",
+        "Unlimited active flows (Fair Usage)",
         "White-label option",
-        "Custom integrations",
+        "Custom integrations (Zapier/API)",
         "Dedicated account manager",
-        "24/7 Priority support",
+        "SLA-based priority support",
+        "Advanced security controls",
       ],
       cta: "Get Business",
       popular: false,
@@ -105,9 +109,13 @@ export default function Pricing() {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-slate-900">
               Simple, Transparent <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Pricing</span>
             </h1>
-            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+            <p className="text-xl text-slate-600 mb-6 leading-relaxed">
               Choose the perfect plan for your business. No hidden fees. Cancel anytime.
             </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 border border-green-100 text-green-700 text-sm font-medium shadow-sm">
+              <Shield className="h-4 w-4" />
+              <span>100% Meta-Compliant & Safe Inbound-Only Automation</span>
+            </div>
           </motion.div>
         </section>
 
