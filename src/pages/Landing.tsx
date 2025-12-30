@@ -61,48 +61,64 @@ export default function Landing() {
 
   const plans = [
     {
-      name: "Free",
+      name: "Free Trial",
       price: "₹0",
-      period: "forever",
+      period: "1 month trial",
       features: [
-        "50 messages per reel/day",
-        "Basic automation flows",
+        "Unlimited messages",
+        "3 Automation flows",
+        "AI FAQs",
         "Instagram integration",
         "WhatsApp integration",
         "Community support",
       ],
-      cta: "Get Started",
+      cta: "Start Free Trial",
       popular: false,
     },
     {
-      name: "Starter",
-      price: "$4",
+      name: "Pro",
+      price: "₹499",
       period: "per month",
       features: [
-        "400 messages per reel/day",
-        "Advanced automation flows",
-        "Priority support",
+        "Unlimited messages",
+        "8-10 Automation flows",
+        "Advanced automation",
         "Analytics dashboard",
         "Custom templates",
-        "Email support",
+        "Priority support",
       ],
-      cta: "Start Free Trial",
+      cta: "Get Pro",
       popular: true,
     },
     {
-      name: "Pro",
-      price: "$8",
+      name: "Ultimate",
+      price: "₹999",
       period: "per month",
       features: [
-        "1,000 messages per reel/day",
-        "Unlimited flows",
-        "Advanced automation",
+        "Unlimited messages",
+        "10-20 Automation flows",
         "Advanced analytics",
         "API access",
-        "White-label option",
+        "Follow before DM",
+        "Follow Up sequences",
         "Dedicated support",
       ],
-      cta: "Start Free Trial",
+      cta: "Get Ultimate",
+      popular: false,
+    },
+    {
+      name: "Business",
+      price: "₹1999",
+      period: "per month",
+      features: [
+        "Unlimited messages",
+        "Unlimited flows",
+        "White-label option",
+        "Custom integrations",
+        "Dedicated account manager",
+        "24/7 Priority support",
+      ],
+      cta: "Get Business",
       popular: false,
     },
   ];
@@ -528,7 +544,7 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
               key={index}
@@ -550,8 +566,8 @@ export default function Landing() {
                 <CardHeader>
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-muted-foreground ml-2">/ {plan.period}</span>
+                    <span className="text-3xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground ml-2 text-sm">/ {plan.period}</span>
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -575,32 +591,6 @@ export default function Landing() {
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <Card className="max-w-2xl mx-auto shadow-xl bg-gradient-to-br from-white/95 to-slate-50/90 backdrop-blur-md border border-slate-200/50 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 to-slate-400/5" />
-            <CardHeader>
-              <CardTitle className="text-2xl">Enterprise</CardTitle>
-              <CardDescription className="text-base">
-                For businesses with over 1M followers
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Unlimited messages, dedicated support, custom integrations, and white-label options.
-              </p>
-              <Button variant="outline" size="lg" className="shadow-md border-2 border-slate-300 hover:bg-slate-50">
-                Contact Sales
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
       </section>
 
       {/* CTA Section */}
