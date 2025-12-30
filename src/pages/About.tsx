@@ -34,7 +34,7 @@ export default function About() {
                 ChatFlow AI was founded by a team of engineers and designers passionate about solving the communication gap between businesses and customers. We believe that automation shouldn't feel robotic—it should feel personal, timely, and helpful.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                Based in San Francisco, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art automation technology.
+                Proudly developed in India by THE Π LAB, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art automation technology.
               </p>
             </div>
             <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl p-8 aspect-video flex items-center justify-center">
