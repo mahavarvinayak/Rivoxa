@@ -164,3 +164,22 @@ export const getExpiringSoon = internalQuery({
     );
   },
 });
+
+export const getCallbackUrls = query({
+  args: {},
+  handler: async () => {
+    const siteUrl = process.env.SITE_URL;
+    let domain = "SITE_URL not set";
+    try {
+      if (siteUrl) domain = new URL(siteUrl).hostname;
+    } catch (e) {
+      console.error("Invalid SITE_URL", e);
+    }
+
+    return {
+      instagram: siteUrl ? `${siteUrl}/api/oauth/callback/instagram` : "SITE_URL not set",
+      whatsapp: siteUrl ? `${siteUrl}/api/oauth/callback/whatsapp` : "SITE_URL not set",
+      domain,
+    };
+  },
+});

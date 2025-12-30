@@ -12,7 +12,8 @@ import {
   Loader2, 
   MessageSquare, 
   Settings,
-  Unplug
+  Unplug,
+  Copy
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
+import { Label } from "@/components/ui/label";
 
 export default function Integrations() {
   const { isLoading, isAuthenticated, user } = useAuth();
@@ -35,6 +37,7 @@ export default function Integrations() {
   const integrations = useQuery(api.integrations.list);
   const disconnect = useMutation(api.integrations.disconnect);
   const getAuthUrl = useAction(api.oauth.getAuthUrl);
+  const callbackUrls = useQuery(api.integrations.getCallbackUrls);
   const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
   if (isLoading) {
@@ -52,6 +55,11 @@ export default function Integrations() {
 
   const instagramIntegration = integrations?.find(i => i.type === "instagram");
   const whatsappIntegration = integrations?.find(i => i.type === "whatsapp");
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
+  };
 
   const handleConnect = async (platform: "instagram" | "whatsapp") => {
     // Open popup window immediately to prevent browser blocking
@@ -290,13 +298,56 @@ export default function Integrations() {
         </div>
 
         {/* Setup Instructions */}
-        {/* Help Section - Only show if user is having issues */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-8"
+          className="mt-8 space-y-6"
         >
+          {/* Configuration Helper Card */}
+          <Card className="shadow-md border-blue-200 bg-blue-50/50">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Settings className="h-5 w-5 text-blue-600" />
+                Meta App Configuration
+              </CardTitle>
+              <CardDescription>
+                You must add these details to your Meta App settings to fix the "Can't load URL" error.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">1. App Domains (Basic Settings)</Label>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 p-2 bg-white rounded border text-sm font-mono">
+                    {callbackUrls?.domain || "Loading..."}
+                  </code>
+                  <Button variant="outline" size="icon" onClick={() => copyToClipboard(callbackUrls?.domain || "")}>
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Go to App Settings {'>'} Basic {'>'} App Domains and paste this domain.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">2. Valid OAuth Redirect URIs (Instagram/Facebook Login Settings)</Label>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 p-2 bg-white rounded border text-sm font-mono overflow-x-auto whitespace-nowrap">
+                    {callbackUrls?.instagram || "Loading..."}
+                  </code>
+                  <Button variant="outline" size="icon" onClick={() => copyToClipboard(callbackUrls?.instagram || "")}>
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Go to Products {'>'} Instagram Basic Display {'>'} Valid OAuth Redirect URIs and paste this URL.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="shadow-md bg-muted/50">
             <CardHeader>
               <CardTitle className="text-lg">How to Connect</CardTitle>
@@ -324,10 +375,10 @@ export default function Integrations() {
                 <h4 className="font-semibold text-foreground mb-2">Having trouble?</h4>
                 <p>If you're unable to connect, please ensure:</p>
                 <ul className="list-disc list-inside space-y-1 mt-2">
+                  <li>You have added the <strong>App Domain</strong> and <strong>Redirect URIs</strong> (see above)</li>
                   <li>You have admin access to the Facebook Page</li>
                   <li>Your Instagram account is converted to a Business account</li>
                   <li>Popups are enabled in your browser</li>
-                  <li>You're logged into the correct Facebook account</li>
                 </ul>
               </div>
             </CardContent>
