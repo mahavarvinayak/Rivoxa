@@ -11,18 +11,20 @@ export const emailOtp = Email({
   },
   async sendVerificationRequest({ identifier: email, provider, token }) {
     try {
-      await axios.post(
+      const response = await fetch(
         "https://email.vly.ai/send_otp",
         {
-          to: email,
-          otp: token,
-          appName: process.env.VLY_APP_NAME || "a vly.ai application",
-        },
-        {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "x-api-key": "vlytothemoon2025",
           },
-        },
+          body: JSON.stringify({
+            to: email,
+            otp: token,
+            appName: process.env.VLY_APP_NAME || "ChatFlow AI",
+          }),
+        }
       );
     } catch (error) {
       throw new Error(JSON.stringify(error));
