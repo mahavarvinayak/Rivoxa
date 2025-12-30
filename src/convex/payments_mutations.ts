@@ -4,7 +4,7 @@ import { internalMutation } from "./_generated/server";
 export const updateUserPlanMutation = internalMutation({
   args: {
     userId: v.id("users"),
-    planType: v.union(v.literal("starter"), v.literal("pro")),
+    planType: v.union(v.literal("pro"), v.literal("ultimate"), v.literal("business")),
     planStartDate: v.number(),
     planEndDate: v.number(),
     razorpayOrderId: v.string(),

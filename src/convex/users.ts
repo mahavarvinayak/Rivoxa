@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { query, QueryCtx, internalQuery } from "./_generated/server";
+import { query, QueryCtx, internalQuery, internalMutation } from "./_generated/server";
+import { v } from "convex/values";
 
 /**
  * Get the current signed in user. Returns null if the user is not signed in.
@@ -36,5 +37,31 @@ export const getCurrentUserInternal = internalQuery({
   args: {},
   handler: async (ctx) => {
     return await getCurrentUser(ctx);
+  },
+});
+
+export const getUserPlanInfo = internalQuery({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) return null;
+    return {
+      planType: user.planType,
+      planEndDate: user.planEndDate,
+      lifetimeMessagesSent: user.lifetimeMessagesSent,
+    };
+  },
+});
+
+export const incrementMessageCount = internalMutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) return;
+    
+    await ctx.db.patch(args.userId, {
+      messagesUsedToday: (user.messagesUsedToday || 0) + 1,
+      lifetimeMessagesSent: (user.lifetimeMessagesSent || 0) + 1,
+    });
   },
 });

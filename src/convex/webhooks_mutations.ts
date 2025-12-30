@@ -78,9 +78,9 @@ export const processInstagramComment = internalMutation({
       
       const planLimits = {
         free: 50,
-        starter: 400,
         pro: 1000,
-        enterprise: Infinity,
+        ultimate: 5000,
+        business: 10000,
       };
       
       const limit = planLimits[user.planType || "free"];
@@ -156,9 +156,9 @@ export const processWhatsAppMessage = internalMutation({
       
       const planLimits = {
         free: 50,
-        starter: 400,
         pro: 1000,
-        enterprise: Infinity,
+        ultimate: 5000,
+        business: 10000,
       };
       
       const limit = planLimits[user.planType || "free"];

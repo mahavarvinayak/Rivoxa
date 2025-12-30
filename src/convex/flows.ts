@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getCurrentUser } from "./users";
-import { triggerTypeValidator, flowStatusValidator } from "./schema";
+import { triggerTypeValidator, flowStatusValidator, PLAN_TYPES } from "./schema";
 
 export const list = query({
   args: {},
@@ -48,6 +48,11 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
+
+    // Check plan limits if creating an active flow (default is draft, but good to check if we allow setting status)
+    // Since this creates as "draft", we don't strictly need to check active limit here, 
+    // but we should check if they are allowed to create flows at all if there was a total limit.
+    // The prompt says "Up to X active automation flows". So draft creation is fine.
     
     return await ctx.db.insert("flows", {
       userId: user._id,
@@ -88,6 +93,38 @@ export const update = mutation({
     const flow = await ctx.db.get(args.id);
     if (!flow || flow.userId !== user._id) {
       throw new Error("Flow not found");
+    }
+
+    // Check limits if activating a flow
+    if (args.status === "active" && flow.status !== "active") {
+      const activeFlows = await ctx.db
+        .query("flows")
+        .withIndex("by_user_and_status", (q) => 
+          q.eq("userId", user._id).eq("status", "active")
+        )
+        .collect();
+
+      const plan = user.planType || PLAN_TYPES.FREE;
+      let limit = 1; // Default Free limit
+
+      switch (plan) {
+        case PLAN_TYPES.FREE:
+          limit = 1;
+          break;
+        case PLAN_TYPES.PRO:
+          limit = 5;
+          break;
+        case PLAN_TYPES.ULTIMATE:
+          limit = 15;
+          break;
+        case PLAN_TYPES.BUSINESS:
+          limit = 999999; // Unlimited
+          break;
+      }
+
+      if (activeFlows.length >= limit) {
+        throw new Error(`Plan limit reached. You can only have ${limit} active flows on the ${plan} plan.`);
+      }
     }
     
     const { id, ...updates } = args;

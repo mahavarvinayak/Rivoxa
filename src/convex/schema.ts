@@ -17,16 +17,16 @@ export type Role = Infer<typeof roleValidator>;
 
 export const PLAN_TYPES = {
   FREE: "free",
-  STARTER: "starter",
   PRO: "pro",
-  ENTERPRISE: "enterprise",
+  ULTIMATE: "ultimate",
+  BUSINESS: "business",
 } as const;
 
 export const planTypeValidator = v.union(
   v.literal(PLAN_TYPES.FREE),
-  v.literal(PLAN_TYPES.STARTER),
   v.literal(PLAN_TYPES.PRO),
-  v.literal(PLAN_TYPES.ENTERPRISE),
+  v.literal(PLAN_TYPES.ULTIMATE),
+  v.literal(PLAN_TYPES.BUSINESS),
 );
 
 export const INTEGRATION_TYPES = {
@@ -92,6 +92,7 @@ const schema = defineSchema(
       
       // Usage tracking
       messagesUsedToday: v.optional(v.number()),
+      lifetimeMessagesSent: v.optional(v.number()),
       lastResetDate: v.optional(v.string()),
       
       // Payment info

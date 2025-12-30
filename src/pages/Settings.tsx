@@ -41,7 +41,7 @@ export default function Settings() {
     return null;
   }
 
-  const handleUpgradePlan = async (planType: "starter" | "pro") => {
+  const handleUpgradePlan = async (planType: "pro" | "ultimate" | "business") => {
     try {
       const order = await createPaymentOrder({ planType });
       
@@ -205,9 +205,9 @@ export default function Settings() {
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {user?.planType === "free" && "50 messages per reel/day"}
-                      {user?.planType === "starter" && "400 messages per reel/day"}
                       {user?.planType === "pro" && "1,000 messages per reel/day"}
-                      {user?.planType === "enterprise" && "Unlimited messages"}
+                      {user?.planType === "ultimate" && "5,000 messages per reel/day"}
+                      {user?.planType === "business" && "Unlimited messages"}
                     </p>
                   </div>
                   
@@ -216,28 +216,56 @@ export default function Settings() {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => handleUpgradePlan("starter")}
+                        onClick={() => handleUpgradePlan("pro")}
                       >
-                        Upgrade to Starter - $4/month
+                        Upgrade to Pro - ₹499/month
                       </Button>
                       <Button 
                         variant="default" 
                         className="w-full"
-                        onClick={() => handleUpgradePlan("pro")}
+                        onClick={() => handleUpgradePlan("ultimate")}
                       >
-                        Upgrade to Pro - $8/month
+                        Upgrade to Ultimate - ₹999/month
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        className="w-full bg-slate-900 hover:bg-slate-800"
+                        onClick={() => handleUpgradePlan("business")}
+                      >
+                        Upgrade to Business - ₹1999/month
                       </Button>
                     </div>
                   )}
                   
-                  {user?.planType === "starter" && (
-                    <Button 
-                      variant="default" 
-                      className="w-full"
-                      onClick={() => handleUpgradePlan("pro")}
-                    >
-                      Upgrade to Pro - $8/month
-                    </Button>
+                  {user?.planType === "pro" && (
+                    <div className="space-y-3">
+                      <Button 
+                        variant="default" 
+                        className="w-full"
+                        onClick={() => handleUpgradePlan("ultimate")}
+                      >
+                        Upgrade to Ultimate - ₹999/month
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        className="w-full bg-slate-900 hover:bg-slate-800"
+                        onClick={() => handleUpgradePlan("business")}
+                      >
+                        Upgrade to Business - ₹1999/month
+                      </Button>
+                    </div>
+                  )}
+
+                  {user?.planType === "ultimate" && (
+                    <div className="space-y-3">
+                      <Button 
+                        variant="default" 
+                        className="w-full bg-slate-900 hover:bg-slate-800"
+                        onClick={() => handleUpgradePlan("business")}
+                      >
+                        Upgrade to Business - ₹1999/month
+                      </Button>
+                    </div>
                   )}
                 </CardContent>
               </Card>

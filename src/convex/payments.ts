@@ -5,6 +5,7 @@ import { internalAction, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { PLAN_TYPES } from "./schema";
 
 function getRazorpayInstance() {
   return new Razorpay({
@@ -15,7 +16,11 @@ function getRazorpayInstance() {
 
 export const createPaymentOrder = action({
   args: {
-    planType: v.union(v.literal("starter"), v.literal("pro")),
+    planType: v.union(
+      v.literal(PLAN_TYPES.PRO),
+      v.literal(PLAN_TYPES.ULTIMATE),
+      v.literal(PLAN_TYPES.BUSINESS)
+    ),
   },
   handler: async (ctx, args): Promise<{
     orderId: string;
@@ -30,15 +35,17 @@ export const createPaymentOrder = action({
     if (!user) throw new Error("User not found");
 
     const amounts: Record<string, number> = {
-      starter: 4,
-      pro: 8,
+      [PLAN_TYPES.PRO]: 499,
+      [PLAN_TYPES.ULTIMATE]: 999,
+      [PLAN_TYPES.BUSINESS]: 1999,
     };
 
     const amount = amounts[args.planType];
+    if (!amount) throw new Error("Invalid plan type");
 
     const options: any = {
-      amount: amount * 100, // Convert to paise
-      currency: "USD",
+      amount: amount * 100, // Convert to paise (INR)
+      currency: "INR",
       receipt: `plan_${args.planType}_${user._id}`,
       payment_capture: 1,
       notes: {
@@ -64,7 +71,11 @@ export const verifyPayment = action({
     orderId: v.string(),
     paymentId: v.string(),
     signature: v.string(),
-    planType: v.union(v.literal("starter"), v.literal("pro")),
+    planType: v.union(
+      v.literal(PLAN_TYPES.PRO),
+      v.literal(PLAN_TYPES.ULTIMATE),
+      v.literal(PLAN_TYPES.BUSINESS)
+    ),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -87,7 +98,7 @@ export const verifyPayment = action({
       userId: user._id,
       planType: args.planType,
       planStartDate: Date.now(),
-      planEndDate: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      planEndDate: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days
       razorpayOrderId: args.orderId,
       razorpayPaymentId: args.paymentId,
       lastPaymentDate: Date.now(),

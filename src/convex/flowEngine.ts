@@ -3,7 +3,7 @@
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { triggerTypeValidator } from "./schema";
+import { triggerTypeValidator, PLAN_TYPES } from "./schema";
 
 export const executeFlows = internalAction({
   args: {
@@ -12,6 +12,42 @@ export const executeFlows = internalAction({
     context: v.any(),
   },
   handler: async (ctx, args) => {
+    // Get user to check plan
+    const userPlanInfo = await ctx.runQuery(internal.users.getUserPlanInfo, { userId: args.userId });
+    
+    if (!userPlanInfo) {
+      console.error("User not found for flow execution");
+      return;
+    }
+
+    const { planType, planEndDate, lifetimeMessagesSent } = userPlanInfo;
+    const currentPlan = planType || PLAN_TYPES.FREE;
+
+    // 1. Check Plan Expiration (especially for Free Trial)
+    if (currentPlan === PLAN_TYPES.FREE) {
+       // If planEndDate is set and passed, stop. 
+       // Note: Free trial usually has an end date. If not set, we assume it's active or just started.
+       if (planEndDate && Date.now() > planEndDate) {
+         console.log("Free trial expired for user", args.userId);
+         return;
+       }
+       
+       // 2. Check Message Limits for Free Trial (300 total)
+       if ((lifetimeMessagesSent || 0) >= 300) {
+         console.log("Free trial message limit reached for user", args.userId);
+         return;
+       }
+    }
+
+    // 3. Check WhatsApp Restriction
+    // If trigger is WhatsApp and plan is Free or Pro, stop.
+    if (args.triggerType === "whatsapp_message") {
+      if (currentPlan === PLAN_TYPES.FREE || currentPlan === PLAN_TYPES.PRO) {
+        console.log("WhatsApp automation not allowed on this plan", args.userId);
+        return;
+      }
+    }
+
     // Get all active flows for this user with matching trigger
     const flows = await ctx.runQuery(internal.flowEngine_queries.getActiveFlows, {
       userId: args.userId,
@@ -29,13 +65,19 @@ export const executeFlows = internalAction({
         if (!shouldExecute) continue;
         
         // Execute flow actions
-        await executeFlowActions(ctx, flow, args.context);
+        await executeFlowActions(ctx, flow, args.context, currentPlan);
         
         // Update flow statistics
         await ctx.runMutation(internal.flowEngine_queries.updateFlowStats, {
           flowId: flow._id,
           success: true,
         });
+        
+        // Increment message count for the user
+        await ctx.runMutation(internal.users.incrementMessageCount, {
+          userId: args.userId,
+        });
+
       } catch (error) {
         console.error(`Flow execution error for ${flow._id}:`, error);
         await ctx.runMutation(internal.flowEngine_queries.updateFlowStats, {
@@ -61,7 +103,7 @@ async function checkTriggerConditions(trigger: any, context: any): Promise<boole
   return true;
 }
 
-async function executeFlowActions(ctx: any, flow: any, context: any) {
+async function executeFlowActions(ctx: any, flow: any, context: any, planType: string) {
   const integration = await ctx.runQuery(internal.flowEngine_queries.getIntegration, {
     userId: flow.userId,
     type: flow.trigger.type.includes("instagram") ? "instagram" : "whatsapp",
@@ -71,6 +113,11 @@ async function executeFlowActions(ctx: any, flow: any, context: any) {
     throw new Error("Integration not found");
   }
   
+  // Double check WhatsApp restriction for actions (e.g. sending WA message from Insta trigger)
+  if (integration.type === "whatsapp" && (planType === PLAN_TYPES.FREE || planType === PLAN_TYPES.PRO)) {
+     throw new Error("WhatsApp actions not allowed on this plan");
+  }
+
   for (const action of flow.actions) {
     switch (action.type) {
       case "send_dm":
