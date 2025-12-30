@@ -58,6 +58,70 @@ export default function Landing() {
     },
   ];
 
+  const plans = [
+    {
+      name: "Free Trial",
+      price: "₹0",
+      period: "1 month trial",
+      features: [
+        "Unlimited messages",
+        "3 Automation flows",
+        "AI FAQs",
+        "Instagram integration",
+        "WhatsApp integration",
+        "Community support",
+      ],
+      cta: "Start Free Trial",
+      popular: false,
+    },
+    {
+      name: "Pro",
+      price: "₹499",
+      period: "per month",
+      features: [
+        "Unlimited messages",
+        "8-10 Automation flows",
+        "Advanced automation",
+        "Analytics dashboard",
+        "Custom templates",
+        "Priority support",
+      ],
+      cta: "Get Pro",
+      popular: true,
+    },
+    {
+      name: "Ultimate",
+      price: "₹999",
+      period: "per month",
+      features: [
+        "Unlimited messages",
+        "10-20 Automation flows",
+        "Advanced analytics",
+        "API access",
+        "Follow before DM",
+        "Follow Up sequences",
+        "Dedicated support",
+      ],
+      cta: "Get Ultimate",
+      popular: false,
+    },
+    {
+      name: "Business",
+      price: "₹1999",
+      period: "per month",
+      features: [
+        "Unlimited messages",
+        "Unlimited flows",
+        "White-label option",
+        "Custom integrations",
+        "Dedicated account manager",
+        "24/7 Priority support",
+      ],
+      cta: "Get Business",
+      popular: false,
+    },
+  ];
+
   return (
     <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 relative overflow-hidden">
       {/* Optimized 3D Animated gradient orbs with depth and parallax */}
