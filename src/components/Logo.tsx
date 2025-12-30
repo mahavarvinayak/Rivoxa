@@ -1,0 +1,36 @@
+import { motion } from "framer-motion";
+
+interface LogoProps {
+  className?: string;
+  size?: "sm" | "md" | "lg";
+  showText?: boolean;
+}
+
+export function Logo({ className = "", size = "md", showText = false }: LogoProps) {
+  const sizeClasses = {
+    sm: "h-10 w-10",
+    md: "h-14 w-14",
+    lg: "h-20 w-20",
+  };
+
+  return (
+    <motion.div
+      className={`flex items-center gap-3 ${className}`}
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      <div className={sizeClasses[size]}>
+        <img 
+          src="/logo_thepilab.png" 
+          alt="THE π LAB" 
+          className="w-full h-full object-contain"
+        />
+      </div>
+      {showText && (
+        <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+          THE π LAB
+        </span>
+      )}
+    </motion.div>
+  );
+}

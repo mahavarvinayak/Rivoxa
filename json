@@ -1,0 +1,8 @@
+{
+  "file_paths": [
+    "src/convex/payments_mutations.ts",
+    "src/convex/webhooks_mutations.ts",
+    "src/pages/Settings.tsx"
+  ],
+  "replace_files_in_context": true
+}

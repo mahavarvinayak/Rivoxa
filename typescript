@@ -1,0 +1,6 @@
+const clientId = import.meta.env.VITE_META_APP_ID;
+
+if (!clientId) {
+  toast.error("Integration not configured. Please contact support to enable social media connections.");
+  return;
+}
