@@ -34,13 +34,13 @@ export default function About() {
                 ChatFlow AI was founded by a team of engineers and designers passionate about solving the communication gap between businesses and customers. We believe that automation shouldn't feel robotic—it should feel personal, timely, and helpful.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                Based in San Francisco, we work with thousands of businesses worldwide, helping them process millions of conversations every day with our state-of-the-art AI technology.
+                Based in San Francisco, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art AI technology.
               </p>
             </div>
             <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl p-8 aspect-video flex items-center justify-center">
               <div className="text-center">
-                <div className="text-4xl font-bold text-slate-900 mb-2">10M+</div>
-                <div className="text-slate-600">Messages Processed</div>
+                <div className="text-2xl font-bold text-slate-900 mb-2">Advanced AI</div>
+                <div className="text-slate-600">Powered by LLMs</div>
               </div>
             </div>
           </motion.section>
@@ -53,8 +53,8 @@ export default function About() {
           >
             <div className="order-2 md:order-1 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl p-8 aspect-video flex items-center justify-center">
               <div className="text-center">
-                <div className="text-4xl font-bold text-slate-900 mb-2">5000+</div>
-                <div className="text-slate-600">Happy Customers</div>
+                <div className="text-2xl font-bold text-slate-900 mb-2">24/7</div>
+                <div className="text-slate-600">Always Available</div>
               </div>
             </div>
             <div className="order-1 md:order-2">

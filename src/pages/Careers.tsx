@@ -12,7 +12,7 @@ export default function Careers() {
     {
       title: "Senior Full Stack Engineer",
       department: "Engineering",
-      location: "Remote / San Francisco",
+      location: "Remote",
       type: "Full-time"
     },
     {
@@ -24,13 +24,13 @@ export default function Careers() {
     {
       title: "Product Designer",
       department: "Design",
-      location: "New York",
+      location: "Remote",
       type: "Full-time"
     },
     {
       title: "Customer Success Manager",
       department: "Sales",
-      location: "London",
+      location: "Remote",
       type: "Full-time"
     }
   ];
@@ -79,8 +79,14 @@ export default function Careers() {
                         </span>
                       </div>
                     </div>
-                    <Button variant="ghost" className="gap-2 group-hover:translate-x-1 transition-transform">
-                      Apply Now <ArrowRight className="h-4 w-4" />
+                    <Button 
+                      variant="ghost" 
+                      className="gap-2 group-hover:translate-x-1 transition-transform"
+                      asChild
+                    >
+                      <a href="https://www.linkedin.com/company/the-%CF%80-lab/" target="_blank" rel="noreferrer">
+                        Apply Now <ArrowRight className="h-4 w-4" />
+                      </a>
                     </Button>
                   </CardContent>
                 </Card>
@@ -93,7 +99,11 @@ export default function Careers() {
             <p className="text-slate-600 mb-6">
               We're always looking for talented people. Send us your resume and we'll keep you in mind for future openings.
             </p>
-            <Button variant="outline">Email Us</Button>
+            <Button variant="outline" asChild>
+              <a href="https://www.linkedin.com/company/the-%CF%80-lab/" target="_blank" rel="noreferrer">
+                Contact Us
+              </a>
+            </Button>
           </div>
         </div>
       </main>
