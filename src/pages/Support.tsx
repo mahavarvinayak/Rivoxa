@@ -13,11 +13,13 @@ import {
   Search,
   HelpCircle,
   FileText,
-  Zap,
-  Loader2
+  BookOpen,
+  Users
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { Logo } from "@/components/Logo";
+import { Background } from "@/components/landing/Background";
+import { Navbar } from "@/components/landing/Navbar";
+import { Footer } from "@/components/landing/Footer";
 
 export default function Support() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -47,243 +49,198 @@ export default function Support() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
-          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)' }}
-          animate={{
-            y: [0, 50, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
-          style={{ background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)' }}
-          animate={{
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
+    <div className="min-h-screen relative font-sans">
+      <Background />
+      <Navbar />
 
-      {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-slate-200/50 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-blue-50/40 to-white/60 backdrop-blur-xl" />
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between relative z-10">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="md" />
-            <span className="text-xl font-bold tracking-tight text-slate-900">ChatFlow AI</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/pricing")}>Pricing</Button>
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : isAuthenticated ? (
-              <Button onClick={() => navigate("/dashboard")} className="shadow-md">
-                Dashboard
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <Button onClick={() => navigate("/auth")} className="shadow-md">
-                Sign In
-              </Button>
-            )}
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6 shadow-sm">
-            <HelpCircle className="h-4 w-4" />
-            Help Center
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-slate-900">
-            How can we help you?
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Find answers, read documentation, or get in touch with our support team.
-          </p>
-          
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-muted-foreground" />
+      <main className="pt-32 pb-20">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 text-center relative z-10 mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl mx-auto"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-sm font-medium mb-8 shadow-sm">
+              <HelpCircle className="h-4 w-4" />
+              <span>24/7 Support Center</span>
             </div>
-            <Input 
-              type="text" 
-              placeholder="Search for answers..." 
-              className="pl-10 h-12 text-lg shadow-lg border-slate-200 focus:ring-2 focus:ring-blue-500 bg-white/80 backdrop-blur-sm"
-            />
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-slate-900">
+              How can we <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">help you?</span>
+            </h1>
+            <p className="text-xl text-slate-600 mb-10 leading-relaxed">
+              Search our knowledge base, join the community, or contact our support team directly.
+            </p>
+            
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto relative group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              </div>
+              <Input 
+                type="text" 
+                placeholder="Search for answers, guides, and troubleshooting..." 
+                className="pl-12 h-14 text-lg shadow-xl border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/80 backdrop-blur-xl rounded-2xl transition-all"
+              />
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Support Options */}
+        <section className="container mx-auto px-4 relative z-10 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200 hover:border-blue-300 group cursor-pointer hover:-translate-y-1">
+                <CardHeader>
+                  <div className="h-14 w-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="h-7 w-7" />
+                  </div>
+                  <CardTitle className="text-xl">Documentation</CardTitle>
+                  <CardDescription>Detailed guides and API references</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-600 mb-6">
+                    Learn how to set up integrations, create flows, and use advanced features step-by-step.
+                  </p>
+                  <Button variant="ghost" className="p-0 h-auto text-blue-600 hover:text-blue-700 hover:bg-transparent font-medium group-hover:translate-x-1 transition-transform">
+                    Browse Docs <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200 hover:border-purple-300 group cursor-pointer hover:-translate-y-1">
+                <CardHeader>
+                  <div className="h-14 w-14 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Users className="h-7 w-7" />
+                  </div>
+                  <CardTitle className="text-xl">Community</CardTitle>
+                  <CardDescription>Join the conversation</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-600 mb-6">
+                    Connect with other users, share tips, and get help from the community on Discord.
+                  </p>
+                  <Button variant="ghost" className="p-0 h-auto text-purple-600 hover:text-purple-700 hover:bg-transparent font-medium group-hover:translate-x-1 transition-transform">
+                    Join Discord <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="h-full shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200 hover:border-green-300 group cursor-pointer hover:-translate-y-1">
+                <CardHeader>
+                  <div className="h-14 w-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Mail className="h-7 w-7" />
+                  </div>
+                  <CardTitle className="text-xl">Email Support</CardTitle>
+                  <CardDescription>Get direct assistance</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-slate-600 mb-6">
+                    Our team typically responds within 24 hours for all technical inquiries.
+                  </p>
+                  <a href="mailto:thepilab77@gmail.com" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform">
+                    thepilab77@gmail.com <ArrowRight className="ml-1 h-4 w-4" />
+                  </a>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* Support Options */}
-      <section className="container mx-auto px-4 pb-20 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <Card className="h-full shadow-xl hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200/50 hover:border-blue-300/50 group cursor-pointer">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-                  <FileText className="h-6 w-6" />
-                </div>
-                <CardTitle>Documentation</CardTitle>
-                <CardDescription>Detailed guides and API references</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Learn how to set up integrations, create flows, and use advanced features.
-                </p>
-                <Button variant="link" className="p-0 h-auto text-blue-600">
-                  Browse Docs <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="h-full shadow-xl hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200/50 hover:border-purple-300/50 group cursor-pointer">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform">
-                  <MessageSquare className="h-6 w-6" />
-                </div>
-                <CardTitle>Community</CardTitle>
-                <CardDescription>Join the conversation</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Connect with other users, share tips, and get help from the community.
-                </p>
-                <Button variant="link" className="p-0 h-auto text-purple-600">
-                  Join Discord <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Card className="h-full shadow-xl hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-md border-slate-200/50 hover:border-green-300/50 group cursor-pointer">
-              <CardHeader>
-                <div className="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600 mb-4 group-hover:scale-110 transition-transform">
-                  <Mail className="h-6 w-6" />
-                </div>
-                <CardTitle>Email Support</CardTitle>
-                <CardDescription>Get direct assistance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Our team typically responds within 24 hours for all inquiries.
-                </p>
-                <a href="mailto:thepilab77@gmail.com" className="text-sm font-medium text-green-600 hover:underline flex items-center">
-                  thepilab77@gmail.com <ArrowRight className="ml-1 h-4 w-4" />
-                </a>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+        </section>
 
         {/* FAQ Section */}
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-            <Card className="shadow-lg border-slate-200/50 bg-white/90 backdrop-blur-sm">
-              <CardContent className="pt-6">
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.map((faq, index) => (
-                    <AccordionItem key={index} value={`item-${index}`}>
-                      <AccordionTrigger className="text-left text-lg font-medium hover:text-blue-600 transition-colors">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground text-base leading-relaxed">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+        <section className="container mx-auto px-4 mb-24">
+          <div className="max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold text-center mb-10 text-slate-900">Frequently Asked Questions</h2>
+              <Card className="shadow-xl border-slate-200/60 bg-white/90 backdrop-blur-xl">
+                <CardContent className="pt-6">
+                  <Accordion type="single" collapsible className="w-full">
+                    {faqs.map((faq, index) => (
+                      <AccordionItem key={index} value={`item-${index}`} className="border-slate-100">
+                        <AccordionTrigger className="text-left text-lg font-medium text-slate-800 hover:text-blue-600 hover:no-underline py-4">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-slate-600 text-base leading-relaxed pb-4">
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Contact Form */}
-        <div className="max-w-2xl mx-auto mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <Card className="shadow-2xl border-slate-200/50 bg-gradient-to-br from-white/95 to-blue-50/90 backdrop-blur-md overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Still need help?</CardTitle>
-                <CardDescription>Send us a message and we'll get back to you shortly.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" placeholder="Your name" />
+        <section className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <Card className="shadow-2xl border-0 bg-white overflow-hidden relative">
+                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+                <CardHeader className="text-center pt-10 pb-2">
+                  <CardTitle className="text-2xl font-bold text-slate-900">Still need help?</CardTitle>
+                  <CardDescription className="text-lg">Send us a message and we'll get back to you shortly.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-slate-700">Name</Label>
+                        <Input id="name" placeholder="Your name" className="h-11 bg-slate-50 border-slate-200 focus:bg-white transition-colors" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-slate-700">Email</Label>
+                        <Input id="email" type="email" placeholder="your@email.com" className="h-11 bg-slate-50 border-slate-200 focus:bg-white transition-colors" />
+                      </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="your@email.com" />
+                      <Label htmlFor="subject" className="text-slate-700">Subject</Label>
+                      <Input id="subject" placeholder="How can we help?" className="h-11 bg-slate-50 border-slate-200 focus:bg-white transition-colors" />
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="subject">Subject</Label>
-                    <Input id="subject" placeholder="How can we help?" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="Describe your issue..." rows={4} />
-                  </div>
-                  <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white">
-                    Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-      </section>
+                    <div className="space-y-2">
+                      <Label htmlFor="message" className="text-slate-700">Message</Label>
+                      <Textarea id="message" placeholder="Describe your issue..." rows={5} className="bg-slate-50 border-slate-200 focus:bg-white transition-colors resize-none" />
+                    </div>
+                    <Button className="w-full h-12 text-lg font-medium bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                      Send Message
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </section>
+      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200/50 bg-white/80 backdrop-blur-md py-12">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2024 ChatFlow AI by THE Π LAB. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

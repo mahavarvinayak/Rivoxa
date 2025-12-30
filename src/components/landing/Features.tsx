@@ -7,49 +7,57 @@ const features = [
     icon: Bot,
     title: "Smart Automation",
     description: "Trigger flows from comments, DMs, and story mentions automatically.",
-    color: "from-blue-500 to-cyan-500"
+    color: "from-blue-500 to-cyan-500",
+    bg: "bg-blue-50"
   },
   {
     icon: MessageSquare,
     title: "Unified Inbox",
     description: "Manage Instagram and WhatsApp conversations in one seamless interface.",
-    color: "from-purple-500 to-pink-500"
+    color: "from-purple-500 to-pink-500",
+    bg: "bg-purple-50"
   },
   {
     icon: Package,
     title: "Product Catalogs",
     description: "Showcase and sell products directly within the chat interface.",
-    color: "from-amber-500 to-orange-500"
+    color: "from-amber-500 to-orange-500",
+    bg: "bg-amber-50"
   },
   {
     icon: Zap,
     title: "Instant Broadcasts",
     description: "Send targeted campaigns to your audience with high open rates.",
-    color: "from-green-500 to-emerald-500"
+    color: "from-green-500 to-emerald-500",
+    bg: "bg-green-50"
   },
   {
     icon: BarChart3,
     title: "Deep Analytics",
     description: "Track engagement, conversion rates, and team performance.",
-    color: "from-indigo-500 to-blue-500"
+    color: "from-indigo-500 to-blue-500",
+    bg: "bg-indigo-50"
   },
   {
     icon: Globe,
     title: "Multi-Language",
     description: "Auto-translate conversations to support customers globally.",
-    color: "from-rose-500 to-red-500"
+    color: "from-rose-500 to-red-500",
+    bg: "bg-rose-50"
   },
   {
     icon: Shield,
     title: "Enterprise Security",
     description: "Bank-grade encryption and role-based access control.",
-    color: "from-slate-500 to-gray-500"
+    color: "from-slate-500 to-gray-500",
+    bg: "bg-slate-50"
   },
   {
     icon: Users,
     title: "Team Collaboration",
     description: "Assign conversations and manage support tickets efficiently.",
-    color: "from-teal-500 to-green-500"
+    color: "from-teal-500 to-green-500",
+    bg: "bg-teal-50"
   }
 ];
 
@@ -83,8 +91,10 @@ export function Features() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group overflow-hidden">
+              <Card className="h-full border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group overflow-hidden relative">
                 <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full ${feature.bg} opacity-0 group-hover:opacity-50 transition-opacity blur-2xl`} />
+                
                 <CardHeader>
                   <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform duration-300`}>
                     <feature.icon className="h-6 w-6 text-white" />
