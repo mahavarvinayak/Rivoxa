@@ -117,6 +117,9 @@ export default function Pricing() {
             <span className="text-xl font-bold tracking-tight text-slate-900">ChatFlow AI</span>
           </div>
           <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={() => navigate("/support")}>
+              Support
+            </Button>
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : isAuthenticated ? (

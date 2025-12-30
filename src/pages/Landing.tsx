@@ -219,6 +219,9 @@ export default function Landing() {
             <Button variant="ghost" onClick={() => navigate("/pricing")}>
               Pricing
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/support")}>
+              Support
+            </Button>
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : isAuthenticated ? (

@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Settings from "./pages/Settings.tsx";
 import Flows from "./pages/Flows.tsx";
 import Pricing from "./pages/Pricing.tsx";
+import Support from "./pages/Support.tsx";
 import "./types/global.d.ts";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
@@ -60,6 +61,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/settings" element={<Settings />} />
             <Route path="/flows" element={<Flows />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/support" element={<Support />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
