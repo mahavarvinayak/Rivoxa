@@ -19,11 +19,12 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
-      <div className={sizeClasses[size]}>
+      <div className={`${sizeClasses[size]} flex items-center justify-center`}>
         <img 
           src="https://i.postimg.cc/cLL5mhWH/Screenshot-2025-12-30-234754.png" 
           alt="Logo" 
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover rounded"
+          loading="eager"
         />
       </div>
       {showText && (
