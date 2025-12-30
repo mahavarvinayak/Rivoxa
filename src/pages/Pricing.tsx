@@ -5,15 +5,10 @@ import { motion } from "framer-motion";
 import { 
   ArrowRight, 
   Check, 
-  HelpCircle, 
-  Loader2, 
-  Mail, 
-  MessageSquare, 
-  Shield 
+  Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Logo } from "@/components/Logo";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function Pricing() {
   const { isLoading, isAuthenticated } = useAuth();
@@ -87,27 +82,30 @@ export default function Pricing() {
     },
   ];
 
-  const faqs = [
-    {
-      question: "How does the free trial work?",
-      answer: "You get full access to the Free Trial plan features for 30 days. No credit card is required to start. After 30 days, you can choose to upgrade to a paid plan to keep using the service."
-    },
-    {
-      question: "Can I change plans later?",
-      answer: "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle."
-    },
-    {
-      question: "What happens if I exceed my flow limit?",
-      answer: "If you need more automation flows than your current plan allows, you'll need to upgrade to a higher tier. We'll notify you when you're close to your limit."
-    },
-    {
-      question: "Is there a setup fee?",
-      answer: "No, there are no hidden setup fees. You only pay the advertised monthly subscription price."
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
+          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)' }}
+          animate={{
+            y: [0, 50, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-3xl opacity-30"
+          style={{ background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)' }}
+          animate={{
+            y: [0, -50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
       {/* Navigation */}
       <nav className="border-b bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-slate-200/50 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-blue-50/40 to-white/60 backdrop-blur-xl" />
@@ -143,7 +141,7 @@ export default function Pricing() {
       </nav>
 
       {/* Header */}
-      <section className="container mx-auto px-4 py-20 text-center">
+      <section className="container mx-auto px-4 py-20 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,7 +157,7 @@ export default function Pricing() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="container mx-auto px-4 pb-20">
+      <section className="container mx-auto px-4 pb-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
@@ -206,84 +204,6 @@ export default function Pricing() {
               </Card>
             </motion.div>
           ))}
-        </div>
-      </section>
-
-      {/* Support & FAQ Section */}
-      <section className="container mx-auto px-4 py-20 bg-white/50 backdrop-blur-sm">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Support Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold mb-6">Support & Resources</h2>
-            <p className="text-muted-foreground mb-8">
-              We're here to help you succeed. Choose the support channel that works best for you.
-            </p>
-            
-            <div className="grid gap-6">
-              <Card className="shadow-md hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-                    <Mail className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Email Support</CardTitle>
-                    <CardDescription>Get help via email</CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Our team typically responds within 24 hours.
-                  </p>
-                  <a href="mailto:thepilab77@gmail.com" className="text-primary font-medium hover:underline">
-                    thepilab77@gmail.com
-                  </a>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-md hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center gap-4">
-                  <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
-                    <MessageSquare className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Community</CardTitle>
-                    <CardDescription>Join our community</CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Connect with other users and share tips.
-                  </p>
-                  <Button variant="outline" size="sm">Join Discord</Button>
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
-
-          {/* FAQ Accordion */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </motion.div>
         </div>
       </section>
 

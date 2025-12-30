@@ -5,7 +5,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   ArrowRight, 
   Bot, 
-  Check, 
   Instagram, 
   Loader2, 
   MessageSquare, 
