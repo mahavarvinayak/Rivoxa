@@ -159,6 +159,7 @@ const schema = defineSchema(
         conditions: v.optional(v.any()),
         postId: v.optional(v.string()),
         scheduleTime: v.optional(v.string()),
+        requireFollow: v.optional(v.boolean()),
       }),
       
       actions: v.array(v.object({

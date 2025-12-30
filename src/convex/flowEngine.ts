@@ -63,6 +63,22 @@ export const executeFlows = internalAction({
         );
         
         if (!shouldExecute) continue;
+
+        // Check "Follow before DM" requirement
+        if (flow.trigger.requireFollow) {
+          const platformUserId = args.context.senderId || args.context.from;
+          if (platformUserId) {
+            const isFollowing = await ctx.runAction(internal.instagram.checkUserFollowsBusiness, {
+              userId: args.userId,
+              platformUserId: platformUserId,
+            });
+            
+            if (!isFollowing) {
+              console.log(`Flow ${flow._id} skipped: User ${platformUserId} does not follow business.`);
+              continue;
+            }
+          }
+        }
         
         // Execute flow actions
         await executeFlowActions(ctx, flow, args.context, currentPlan);

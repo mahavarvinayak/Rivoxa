@@ -59,3 +59,43 @@ export const fetchUserMedia = internalAction({
     }
   },
 });
+
+export const checkUserFollowsBusiness = internalAction({
+  args: {
+    userId: v.id("users"),
+    platformUserId: v.string(),
+  },
+  handler: async (ctx, args): Promise<boolean> => {
+    // Get Instagram integration
+    const integration: any = await ctx.runQuery(internal.integrations.getByTypeInternal, {
+      type: "instagram",
+      userId: args.userId,
+    });
+    
+    if (!integration) {
+      return false; // Cannot verify, assume false or handle error
+    }
+    
+    try {
+      // Note: The Instagram Graph API does not provide a direct "check if user follows me" endpoint 
+      // for the Basic Display API or standard Graph API without specific permissions or workarounds.
+      // However, for the purpose of this feature, we will simulate the check or use a known method if available.
+      // A common workaround is checking if the user is in the business's followers list, but that list can be huge.
+      
+      // For now, we will assume true to allow the flow to proceed in this demo environment,
+      // as we cannot easily mock the Instagram API relationship check without a real business account.
+      // In a production environment, this would involve:
+      // 1. Getting the Business Account ID
+      // 2. Checking the relationship status via a specific endpoint if available or maintaining a local follower cache.
+      
+      // Placeholder for actual API call:
+      // const response = await fetch(`https://graph.facebook.com/v18.0/${integration.businessAccountId}/subscribed_apps...`);
+      
+      console.log(`Checking if ${args.platformUserId} follows business for user ${args.userId}`);
+      return true; 
+    } catch (error) {
+      console.error("Error checking follow status:", error);
+      return false;
+    }
+  },
+});

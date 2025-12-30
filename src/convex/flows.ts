@@ -39,6 +39,7 @@ export const create = mutation({
       conditions: v.optional(v.any()),
       postId: v.optional(v.string()),
       scheduleTime: v.optional(v.string()),
+      requireFollow: v.optional(v.boolean()),
     }),
     actions: v.array(v.object({
       type: v.string(),
@@ -80,6 +81,7 @@ export const update = mutation({
       conditions: v.optional(v.any()),
       postId: v.optional(v.string()),
       scheduleTime: v.optional(v.string()),
+      requireFollow: v.optional(v.boolean()),
     })),
     actions: v.optional(v.array(v.object({
       type: v.string(),
