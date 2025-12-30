@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Sparkles, PlayCircle, CheckCircle2, TrendingUp, Users, MessageSquare } from "lucide-react";
+import { ArrowRight, Sparkles, PlayCircle, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useRef } from "react";
 
@@ -106,26 +106,26 @@ export function Hero() {
           initial={{ opacity: 0, y: 100, rotateX: 20 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
           transition={{ duration: 1, delay: 0.5, type: "spring", stiffness: 50 }}
-          className="mx-auto max-w-5xl perspective-1000 relative z-20"
+          className="mx-auto max-w-6xl perspective-1000 relative"
         >
           {/* Floating Elements */}
           <motion.div 
             animate={{ y: [-10, 10, -10] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-4 lg:-left-12 top-1/4 z-30 hidden md:block"
+            className="absolute -left-12 top-1/4 z-20 hidden lg:block"
           >
             <div className="bg-white p-4 rounded-2xl shadow-2xl border border-slate-100 max-w-[200px]">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                  <TrendingUp className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Revenue Up</div>
-                  <div className="text-[10px] text-slate-500">+24% this week</div>
+                  <div className="text-xs font-bold text-slate-900">New Order</div>
+                  <div className="text-[10px] text-slate-500">Just now</div>
                 </div>
               </div>
-              <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full w-[70%] bg-green-500 rounded-full" />
+              <div className="text-xs text-slate-600">
+                Order #2491 received from Instagram DM
               </div>
             </div>
           </motion.div>
@@ -133,98 +133,65 @@ export function Hero() {
           <motion.div 
             animate={{ y: [10, -10, 10] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute -right-4 lg:-right-12 top-1/3 z-30 hidden md:block"
+            className="absolute -right-12 top-1/3 z-20 hidden lg:block"
           >
             <div className="bg-white p-4 rounded-2xl shadow-2xl border border-slate-100 max-w-[200px]">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                  <MessageSquare className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-slate-900">AI Reply Sent</div>
-                  <div className="text-[10px] text-slate-500">Just now</div>
+                  <div className="text-[10px] text-slate-500">2 mins ago</div>
                 </div>
               </div>
               <div className="text-xs text-slate-600">
-                "Here is the link to the product you asked about! 🛍️"
+                Automatically answered pricing query
               </div>
             </div>
           </motion.div>
 
           <div className="relative rounded-2xl border border-white/40 bg-white/40 backdrop-blur-xl p-2 shadow-2xl ring-1 ring-black/5">
-            <div className="rounded-xl overflow-hidden bg-white shadow-inner border border-slate-100 flex flex-col">
-              <div className="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2">
+            <div className="rounded-xl overflow-hidden bg-white shadow-inner border border-slate-100">
+              <div className="h-12 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-400/80" />
                   <div className="w-3 h-3 rounded-full bg-amber-400/80" />
                   <div className="w-3 h-3 rounded-full bg-green-400/80" />
                 </div>
-                <div className="flex-1 text-center text-xs font-medium text-slate-400">ChatFlow Analytics Dashboard</div>
+                <div className="flex-1 text-center text-xs font-medium text-slate-400">ChatFlow Dashboard</div>
               </div>
-              
-              <div className="aspect-[16/9] bg-slate-50/50 p-6 grid grid-cols-12 gap-6">
+              <div className="aspect-[16/9] bg-slate-50/50 p-8 grid grid-cols-12 gap-6">
                 {/* Sidebar */}
-                <div className="col-span-2 hidden md:flex flex-col gap-2">
-                  <div className="h-8 w-full bg-blue-50 text-blue-600 rounded-lg flex items-center px-3 text-xs font-bold">Dashboard</div>
-                  <div className="h-8 w-full hover:bg-slate-100 text-slate-500 rounded-lg flex items-center px-3 text-xs font-medium transition-colors">Conversations</div>
-                  <div className="h-8 w-full hover:bg-slate-100 text-slate-500 rounded-lg flex items-center px-3 text-xs font-medium transition-colors">Automations</div>
-                  <div className="h-8 w-full hover:bg-slate-100 text-slate-500 rounded-lg flex items-center px-3 text-xs font-medium transition-colors">Contacts</div>
-                  <div className="mt-auto h-8 w-full hover:bg-slate-100 text-slate-500 rounded-lg flex items-center px-3 text-xs font-medium transition-colors">Settings</div>
+                <div className="col-span-2 bg-white rounded-lg shadow-sm border border-slate-100 p-4 space-y-3 hidden md:block">
+                  <div className="h-8 w-full bg-slate-100 rounded animate-pulse" />
+                  <div className="h-4 w-3/4 bg-slate-50 rounded animate-pulse" />
+                  <div className="h-4 w-1/2 bg-slate-50 rounded animate-pulse" />
+                  <div className="h-4 w-5/6 bg-slate-50 rounded animate-pulse" />
+                  <div className="mt-8 h-4 w-full bg-slate-50 rounded animate-pulse" />
+                  <div className="h-4 w-2/3 bg-slate-50 rounded animate-pulse" />
                 </div>
-                
                 {/* Main Content */}
-                <div className="col-span-12 md:col-span-10 flex flex-col gap-6">
-                  {/* Stats Cards */}
+                <div className="col-span-12 md:col-span-10 space-y-6">
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                      <div className="text-xs text-slate-500 mb-1">Total Revenue</div>
-                      <div className="text-xl font-bold text-slate-900">$12,450</div>
-                      <div className="text-[10px] text-green-500 font-medium mt-1">+15% vs last month</div>
-                    </div>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                      <div className="text-xs text-slate-500 mb-1">Active Conversations</div>
-                      <div className="text-xl font-bold text-slate-900">1,204</div>
-                      <div className="text-[10px] text-green-500 font-medium mt-1">+8% vs last month</div>
-                    </div>
-                    <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                      <div className="text-xs text-slate-500 mb-1">Automation Rate</div>
-                      <div className="text-xl font-bold text-slate-900">94.2%</div>
-                      <div className="text-[10px] text-blue-500 font-medium mt-1">All time high</div>
-                    </div>
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="bg-white p-4 rounded-lg shadow-sm border border-slate-100 space-y-2">
+                        <div className="h-4 w-1/3 bg-slate-100 rounded" />
+                        <div className="h-8 w-1/2 bg-slate-200 rounded" />
+                      </div>
+                    ))}
                   </div>
-
-                  {/* Chart Area */}
-                  <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col">
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <div className="text-sm font-bold text-slate-900">Message Volume</div>
-                        <div className="text-xs text-slate-500">Last 7 days</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500">
-                          <div className="w-2 h-2 rounded-full bg-blue-500" /> Instagram
-                        </div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500">
-                          <div className="w-2 h-2 rounded-full bg-indigo-400" /> WhatsApp
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 flex items-end justify-between gap-2 sm:gap-3 px-2">
-                      {[40, 70, 45, 90, 65, 85, 55, 95, 75, 60, 80, 50, 65, 85, 95].map((h, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${h}%` }}
-                          transition={{ duration: 0.8, delay: 1 + (i * 0.05), ease: "easeOut" }}
-                          className="w-full bg-gradient-to-t from-blue-600 to-indigo-400 rounded-t-sm opacity-80 hover:opacity-100 transition-opacity relative group"
-                        >
-                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                            {h * 12} msgs
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
+                  <div className="bg-white rounded-lg shadow-sm border border-slate-100 h-64 p-4 flex items-end justify-between gap-2">
+                    {[40, 70, 45, 90, 65, 85, 55, 95, 75, 60, 80, 50].map((h, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ height: 0 }}
+                        whileInView={{ height: `${h}%` }}
+                        transition={{ duration: 1, delay: 0.5 + (i * 0.05) }}
+                        viewport={{ once: true }}
+                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-400 rounded-t-sm opacity-80 hover:opacity-100 transition-opacity"
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
