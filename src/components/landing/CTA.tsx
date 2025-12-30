@@ -30,16 +30,16 @@ export function CTA() {
               <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
                 Join thousands of businesses using ChatFlow AI to scale their social commerce and improve customer satisfaction.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col items-center gap-6">
                 <Button 
                   size="lg" 
                   onClick={() => navigate("/auth")} 
-                  className="h-14 px-8 text-lg rounded-full bg-white text-slate-900 hover:bg-slate-100 border-0 hover:scale-105 transition-all duration-300"
+                  className="h-14 px-8 text-lg rounded-full bg-white text-slate-900 hover:bg-slate-100 border-0 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-white/25"
                 >
                   Start Free Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-                <p className="text-sm text-slate-400 mt-4 sm:mt-0 sm:absolute sm:bottom-8 sm:left-0 sm:right-0">
+                <p className="text-sm text-slate-400 font-medium">
                   No credit card required • 14-day free trial
                 </p>
               </div>
