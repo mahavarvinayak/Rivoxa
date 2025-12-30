@@ -7,10 +7,13 @@ import { useNavigate } from "react-router";
 import { Background } from "@/components/landing/Background";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
 
 export default function Pricing() {
   const { isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
   const plans = [
     {
@@ -33,8 +36,9 @@ export default function Pricing() {
     },
     {
       name: "Pro",
-      price: "₹499",
-      period: "per month",
+      price: billingCycle === "monthly" ? "₹499" : "₹4,999",
+      originalPrice: billingCycle === "yearly" ? "₹5,988" : null,
+      period: billingCycle === "monthly" ? "per month" : "per year",
       description: "For solo creators & small businesses",
       icon: Star,
       features: [
@@ -50,11 +54,13 @@ export default function Pricing() {
       cta: "Get Pro",
       popular: true,
       color: "purple",
+      savings: billingCycle === "yearly" ? "Save ~17%" : null,
     },
     {
       name: "Ultimate",
-      price: "₹999",
-      period: "per month",
+      price: billingCycle === "monthly" ? "₹999" : "₹9,999",
+      originalPrice: billingCycle === "yearly" ? "₹11,988" : null,
+      period: billingCycle === "monthly" ? "per month" : "per year",
       description: "For growing businesses",
       icon: Rocket,
       features: [
@@ -70,11 +76,13 @@ export default function Pricing() {
       cta: "Get Ultimate",
       popular: false,
       color: "pink",
+      savings: billingCycle === "yearly" ? "Save ~17%" : null,
     },
     {
       name: "Business",
-      price: "₹1999",
-      period: "per month",
+      price: billingCycle === "monthly" ? "₹1,999" : "₹20,999",
+      originalPrice: billingCycle === "yearly" ? "₹23,988" : null,
+      period: billingCycle === "monthly" ? "per month" : "per year",
       description: "Maximum power & control",
       icon: Shield,
       features: [
@@ -89,6 +97,7 @@ export default function Pricing() {
       cta: "Get Business",
       popular: false,
       color: "orange",
+      savings: billingCycle === "yearly" ? "Save ~12%" : null,
     },
   ];
 
@@ -112,9 +121,25 @@ export default function Pricing() {
             <p className="text-xl text-slate-600 mb-6 leading-relaxed">
               Choose the perfect plan for your business. No hidden fees. Cancel anytime.
             </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 border border-green-100 text-green-700 text-sm font-medium shadow-sm">
-              <Shield className="h-4 w-4" />
-              <span>100% Meta-Compliant & Safe Inbound-Only Automation</span>
+            <div className="flex flex-col items-center gap-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 border border-green-100 text-green-700 text-sm font-medium shadow-sm">
+                <Shield className="h-4 w-4" />
+                <span>100% Meta-Compliant & Safe Inbound-Only Automation</span>
+              </div>
+
+              {/* Billing Toggle */}
+              <div className="flex items-center justify-center gap-4 p-1.5 bg-white/50 backdrop-blur-sm rounded-full border border-slate-200 shadow-sm">
+                <span className={`text-sm font-medium px-3 py-1 rounded-full transition-colors ${billingCycle === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}>
+                  Monthly
+                </span>
+                <Switch
+                  checked={billingCycle === "yearly"}
+                  onCheckedChange={(checked) => setBillingCycle(checked ? "yearly" : "monthly")}
+                />
+                <span className={`text-sm font-medium px-3 py-1 rounded-full transition-colors flex items-center gap-2 ${billingCycle === 'yearly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}>
+                  Yearly <span className="text-green-600 font-bold text-xs bg-green-50 px-2 py-0.5 rounded-full border border-green-100">Save up to 17%</span>
+                </span>
+              </div>
             </div>
           </motion.div>
         </section>
@@ -152,8 +177,19 @@ export default function Pricing() {
                   
                   <CardContent className="flex-1 flex flex-col pt-0">
                     <div className="mb-6">
-                      <span className="text-4xl font-bold text-slate-900">{plan.price}</span>
-                      <span className="text-slate-500 text-sm font-medium ml-2">/ {plan.period}</span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-slate-900">{plan.price}</span>
+                        <span className="text-slate-500 text-sm font-medium">/ {plan.period}</span>
+                      </div>
+                      {/* @ts-ignore */}
+                      {plan.originalPrice && (
+                        <div className="text-sm text-slate-400 mt-1 flex items-center gap-2">
+                          {/* @ts-ignore */}
+                          <span className="line-through">{plan.originalPrice}</span>
+                          {/* @ts-ignore */}
+                          <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-full text-xs">{plan.savings}</span>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="space-y-4 mb-8 flex-1">
