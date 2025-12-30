@@ -18,7 +18,7 @@ export default function About() {
             About ChatFlow AI
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            We're on a mission to revolutionize how businesses interact with their customers through intelligent automation.
+            We're on a mission to revolutionize how businesses interact with their customers through smart automation.
           </p>
         </div>
 
@@ -34,13 +34,13 @@ export default function About() {
                 ChatFlow AI was founded by a team of engineers and designers passionate about solving the communication gap between businesses and customers. We believe that automation shouldn't feel robotic—it should feel personal, timely, and helpful.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                Based in San Francisco, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art AI technology.
+                Based in San Francisco, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art automation technology.
               </p>
             </div>
             <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl p-8 aspect-video flex items-center justify-center">
               <div className="text-center">
-                <div className="text-2xl font-bold text-slate-900 mb-2">Advanced AI</div>
-                <div className="text-slate-600">Powered by LLMs</div>
+                <div className="text-2xl font-bold text-slate-900 mb-2">Smart Logic</div>
+                <div className="text-slate-600">Rule-Based Flows</div>
               </div>
             </div>
           </motion.section>
@@ -63,7 +63,7 @@ export default function About() {
                 We envision a world where businesses can be available 24/7 without burnout. Where customers get instant answers to their questions, regardless of time zones or language barriers.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                By leveraging the latest advancements in Large Language Models and real-time messaging APIs, we're building the infrastructure for the next generation of social commerce.
+                By leveraging powerful workflow engines and real-time messaging APIs, we're building the infrastructure for the next generation of social commerce.
               </p>
             </div>
           </motion.section>

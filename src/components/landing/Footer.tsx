@@ -12,7 +12,7 @@ export function Footer() {
               <span className="font-bold text-xl text-slate-900">ChatFlow AI</span>
             </div>
             <p className="text-slate-600 mb-6 max-w-sm">
-              The complete automation platform for Instagram and WhatsApp. Scale your business with intelligent conversational AI.
+              The complete automation platform for Instagram and WhatsApp. Scale your business with intelligent automation workflows.
             </p>
             <div className="flex gap-4">
               <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors">

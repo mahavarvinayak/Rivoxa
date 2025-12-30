@@ -10,8 +10,8 @@ export default function Features() {
   const features = [
     {
       icon: <Bot className="h-8 w-8 text-purple-600" />,
-      title: "AI Automation",
-      description: "Intelligent responses powered by advanced language models that understand context and intent."
+      title: "Smart Automation",
+      description: "Automated responses powered by custom rules that handle customer queries instantly."
     },
     {
       icon: <MessageSquare className="h-8 w-8 text-blue-600" />,
