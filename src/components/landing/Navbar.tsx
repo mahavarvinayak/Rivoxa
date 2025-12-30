@@ -26,6 +26,9 @@ export function Navbar() {
           </span>
         </div>
         <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => navigate("/about")} className="hidden md:flex hover:bg-white/20 text-slate-600 hover:text-slate-900">
+            About
+          </Button>
           <Button variant="ghost" onClick={() => navigate("/pricing")} className="hidden md:flex hover:bg-white/20 text-slate-600 hover:text-slate-900">
             Pricing
           </Button>
