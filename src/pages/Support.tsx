@@ -131,8 +131,10 @@ export default function Support() {
                   <p className="text-slate-600 mb-6">
                     Connect with other users, share tips, and get help from the community on Discord.
                   </p>
-                  <Button variant="ghost" className="p-0 h-auto text-purple-600 hover:text-purple-700 hover:bg-transparent font-medium group-hover:translate-x-1 transition-transform">
-                    Join Discord <ArrowRight className="ml-1 h-4 w-4" />
+                  <Button variant="ghost" className="p-0 h-auto text-purple-600 hover:text-purple-700 hover:bg-transparent font-medium group-hover:translate-x-1 transition-transform" asChild>
+                    <a href="https://discord.gg/uJzau2BW" target="_blank" rel="noreferrer">
+                      Join Discord <ArrowRight className="ml-1 h-4 w-4" />
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
