@@ -21,8 +21,8 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
     >
       <div className={sizeClasses[size]}>
         <img 
-          src="/logo_thepilab.png" 
-          alt="THE π LAB" 
+          src="https://i.postimg.cc/cLL5mhWH/Screenshot-2025-12-30-234754.png" 
+          alt="Logo" 
           className="w-full h-full object-contain"
         />
       </div>
@@ -31,6 +31,3 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
           THE π LAB
         </span>
       )}
-    </motion.div>
-  );
-}
