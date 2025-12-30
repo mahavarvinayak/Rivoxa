@@ -14,12 +14,11 @@ export function Hero() {
   });
   
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
     <section ref={containerRef} className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
       <motion.div 
-        style={{ y, opacity }}
+        style={{ y }}
         className="container mx-auto px-4 text-center relative z-10"
       >
         <motion.div
@@ -151,8 +150,8 @@ export function Hero() {
             </div>
           </motion.div>
 
-          <div className="relative rounded-2xl border border-white/40 bg-white/40 backdrop-blur-xl p-2 shadow-2xl ring-1 ring-black/5">
-            <div className="rounded-xl overflow-hidden bg-white shadow-inner border border-slate-100">
+          <div className="relative rounded-2xl border border-white/60 bg-white/60 backdrop-blur-xl p-2 shadow-2xl ring-1 ring-black/5">
+            <div className="rounded-xl overflow-hidden bg-white shadow-inner border border-slate-200">
               <div className="h-12 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-2">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-400/80" />
@@ -189,7 +188,7 @@ export function Hero() {
                         whileInView={{ height: `${h}%` }}
                         transition={{ duration: 1, delay: 0.5 + (i * 0.05) }}
                         viewport={{ once: true }}
-                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-400 rounded-t-sm opacity-80 hover:opacity-100 transition-opacity"
+                        className="w-full bg-gradient-to-t from-blue-600 to-indigo-400 rounded-t-sm opacity-90 hover:opacity-100 transition-opacity"
                       />
                     ))}
                   </div>
