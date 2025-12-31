@@ -10,11 +10,16 @@ export const emailOtp = Email({
   },
   async sendVerificationRequest({ identifier: email, provider, token }) {
     try {
+      console.log("🔐 Sending OTP to:", email);
       const resendApiKey = process.env.RESEND_API_KEY;
+      const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
       
       if (!resendApiKey) {
         throw new Error("RESEND_API_KEY environment variable is not set");
       }
+
+      console.log("📧 From:", fromEmail);
+      console.log("🔑 API Key exists:", !!resendApiKey);
 
       const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -23,7 +28,7 @@ export const emailOtp = Email({
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+          from: fromEmail,
           to: email,
           subject: "Your ChatFlow AI Verification Code",
           html: `
@@ -40,11 +45,17 @@ export const emailOtp = Email({
         }),
       });
 
+      console.log("📬 Resend response status:", response.status);
+
       if (!response.ok) {
         const error = await response.text();
+        console.error("❌ Resend error:", error);
         throw new Error(`Resend API error: ${error}`);
       }
+      
+      console.log("✅ OTP email sent successfully");
     } catch (error) {
+      console.error("🚨 Email sending failed:", error);
       throw new Error(
         `Failed to send verification email: ${error instanceof Error ? error.message : String(error)}`
       );
