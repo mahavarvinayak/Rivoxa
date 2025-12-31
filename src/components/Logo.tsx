@@ -32,3 +32,6 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
           THE π LAB
         </span>
       )}
+    </motion.div>
+  );
+}
