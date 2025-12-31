@@ -30,16 +30,17 @@ export const emailOtp = Email({
         body: JSON.stringify({
           from: fromEmail,
           to: email,
+          reply_to: email,
           subject: "Your ChatFlow AI Verification Code",
           html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
               <h2>Your Verification Code</h2>
               <p>Use this code to sign in to ChatFlow AI:</p>
               <div style="background-color: #f0f0f0; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-                <h1 style="font-size: 32px; letter-spacing: 5px; color: #333; margin: 0;">${token}</h1>
+                <h1 style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #333; margin: 0; font-family: monospace;">${token}</h1>
               </div>
               <p style="color: #666; font-size: 14px;">This code will expire in 15 minutes.</p>
-              <p style="color: #999; font-size: 12px;">If you didn't request this code, please ignore this email.</p>
+              <p style="color: #999; font-size: 12px;">If you didn't request this code, you can safely ignore this email.</p>
             </div>
           `,
         }),
