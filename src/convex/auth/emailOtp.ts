@@ -9,7 +9,7 @@ export const emailOtp = Email({
   },
   async sendVerificationRequest(params) {
     console.log("📧 sendVerificationRequest called with params:", Object.keys(params));
-    
+
     const { identifier: email, token } = params;
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
