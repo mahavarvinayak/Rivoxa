@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@convex-dev/auth": "^0.0.86",
+    "@xyflow/react": "^12.0.0",
+    "dagre": "^0.8.5",
     "@faker-js/faker": "^9.8.0",
     "@hookform/resolvers": "^5.0.1",
     "@jridgewell/trace-mapping": "^0.3.25",
@@ -51,7 +53,6 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "convex": "^1.28.2",
-    "crud": "link:convex-helpers/server/crud",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.15.0",

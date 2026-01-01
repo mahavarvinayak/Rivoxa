@@ -8,7 +8,7 @@ export const list = query({
   handler: async (ctx) => {
     const user = await getCurrentUser(ctx);
     if (!user) return [];
-    
+
     return await ctx.db
       .query("flows")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
@@ -21,10 +21,10 @@ export const get = query({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) return null;
-    
+
     const flow = await ctx.db.get(args.id);
     if (!flow || flow.userId !== user._id) return null;
-    
+
     return flow;
   },
 });
@@ -45,6 +45,8 @@ export const create = mutation({
       type: v.string(),
       config: v.any(),
     })),
+    nodes: v.optional(v.any()),
+    edges: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
@@ -54,7 +56,7 @@ export const create = mutation({
     // Since this creates as "draft", we don't strictly need to check active limit here, 
     // but we should check if they are allowed to create flows at all if there was a total limit.
     // The prompt says "Up to X active automation flows". So draft creation is fine.
-    
+
     return await ctx.db.insert("flows", {
       userId: user._id,
       name: args.name,
@@ -62,6 +64,8 @@ export const create = mutation({
       status: "draft",
       trigger: args.trigger,
       actions: args.actions,
+      nodes: args.nodes,
+      edges: args.edges,
       totalExecutions: 0,
       successfulExecutions: 0,
       failedExecutions: 0,
@@ -87,11 +91,13 @@ export const update = mutation({
       type: v.string(),
       config: v.any(),
     }))),
+    nodes: v.optional(v.any()),
+    edges: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
-    
+
     const flow = await ctx.db.get(args.id);
     if (!flow || flow.userId !== user._id) {
       throw new Error("Flow not found");
@@ -101,7 +107,7 @@ export const update = mutation({
     if (args.status === "active" && flow.status !== "active") {
       const activeFlows = await ctx.db
         .query("flows")
-        .withIndex("by_user_and_status", (q) => 
+        .withIndex("by_user_and_status", (q) =>
           q.eq("userId", user._id).eq("status", "active")
         )
         .collect();
@@ -128,7 +134,7 @@ export const update = mutation({
         throw new Error(`Plan limit reached. You can only have ${limit} active flows on the ${plan} plan.`);
       }
     }
-    
+
     const { id, ...updates } = args;
     await ctx.db.patch(id, updates);
   },
@@ -139,12 +145,12 @@ export const remove = mutation({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
-    
+
     const flow = await ctx.db.get(args.id);
     if (!flow || flow.userId !== user._id) {
       throw new Error("Flow not found");
     }
-    
+
     await ctx.db.delete(args.id);
   },
 });
@@ -154,15 +160,15 @@ export const getStats = query({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) return null;
-    
+
     const flow = await ctx.db.get(args.id);
     if (!flow || flow.userId !== user._id) return null;
-    
+
     return {
       totalExecutions: flow.totalExecutions || 0,
       successfulExecutions: flow.successfulExecutions || 0,
       failedExecutions: flow.failedExecutions || 0,
-      successRate: flow.totalExecutions 
+      successRate: flow.totalExecutions
         ? ((flow.successfulExecutions || 0) / flow.totalExecutions * 100).toFixed(1)
         : "0",
     };

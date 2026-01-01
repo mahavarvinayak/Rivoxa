@@ -82,19 +82,19 @@ const schema = defineSchema(
       emailVerificationTime: v.optional(v.number()),
       isAnonymous: v.optional(v.boolean()),
       role: v.optional(roleValidator),
-      
+
       // Subscription info
       planType: v.optional(planTypeValidator),
       planStartDate: v.optional(v.number()),
       planEndDate: v.optional(v.number()),
       stripeCustomerId: v.optional(v.string()),
       stripeSubscriptionId: v.optional(v.string()),
-      
+
       // Usage tracking
       messagesUsedToday: v.optional(v.number()),
       lifetimeMessagesSent: v.optional(v.number()),
       lastResetDate: v.optional(v.string()),
-      
+
       // Payment info
       razorpayOrderId: v.optional(v.string()),
       razorpayPaymentId: v.optional(v.string()),
@@ -105,22 +105,22 @@ const schema = defineSchema(
     integrations: defineTable({
       userId: v.id("users"),
       type: integrationTypeValidator,
-      
+
       // Meta OAuth tokens
       accessToken: v.string(),
       refreshToken: v.optional(v.string()),
       expiresAt: v.optional(v.number()),
-      
+
       // Platform-specific IDs
       platformUserId: v.string(),
       platformUsername: v.optional(v.string()),
-      
+
       // WhatsApp specific
       phoneNumberId: v.optional(v.string()),
       businessAccountId: v.optional(v.string()),
-      
+
       isActive: v.boolean(),
-      
+
       // Token management
       lastTokenRefresh: v.optional(v.number()),
       needsReauth: v.optional(v.boolean()),
@@ -152,7 +152,7 @@ const schema = defineSchema(
       name: v.string(),
       description: v.optional(v.string()),
       status: flowStatusValidator,
-      
+
       trigger: v.object({
         type: triggerTypeValidator,
         keywords: v.optional(v.array(v.string())),
@@ -161,12 +161,16 @@ const schema = defineSchema(
         scheduleTime: v.optional(v.string()),
         requireFollow: v.optional(v.boolean()),
       }),
-      
+
       actions: v.array(v.object({
         type: v.string(),
         config: v.any(),
       })),
-      
+
+      // Visual Builder Data
+      nodes: v.optional(v.any()), // JSON structure for React Flow nodes
+      edges: v.optional(v.any()), // JSON structure for React Flow edges
+
       totalExecutions: v.optional(v.number()),
       successfulExecutions: v.optional(v.number()),
       failedExecutions: v.optional(v.number()),
@@ -181,13 +185,13 @@ const schema = defineSchema(
       name: v.string(),
       message: v.string(),
       platform: integrationTypeValidator,
-      
+
       targetAudience: v.optional(v.object({
         tags: v.optional(v.array(v.string())),
         segments: v.optional(v.array(v.string())),
         excludeTags: v.optional(v.array(v.string())),
       })),
-      
+
       scheduledFor: v.optional(v.number()),
       status: v.union(
         v.literal("draft"),
@@ -196,7 +200,7 @@ const schema = defineSchema(
         v.literal("completed"),
         v.literal("failed")
       ),
-      
+
       totalRecipients: v.optional(v.number()),
       sentCount: v.optional(v.number()),
       deliveredCount: v.optional(v.number()),
@@ -213,14 +217,14 @@ const schema = defineSchema(
       platform: integrationTypeValidator,
       platformUserId: v.string(),
       username: v.optional(v.string()),
-      
+
       name: v.optional(v.string()),
       email: v.optional(v.string()),
       phone: v.optional(v.string()),
-      
+
       tags: v.array(v.string()),
       customFields: v.optional(v.any()),
-      
+
       lastInteractionAt: v.optional(v.number()),
       totalMessages: v.optional(v.number()),
       isSubscribed: v.optional(v.boolean()),
@@ -235,7 +239,7 @@ const schema = defineSchema(
       name: v.string(),
       description: v.optional(v.string()),
       status: flowStatusValidator,
-      
+
       steps: v.array(v.object({
         delay: v.number(),
         message: v.string(),
@@ -245,7 +249,7 @@ const schema = defineSchema(
           action: v.string(),
         }))),
       })),
-      
+
       totalSubscribers: v.optional(v.number()),
       activeSubscribers: v.optional(v.number()),
       completedSubscribers: v.optional(v.number()),
@@ -292,17 +296,17 @@ const schema = defineSchema(
     messages: defineTable({
       userId: v.id("users"),
       flowId: v.optional(v.id("flows")),
-      
+
       platform: integrationTypeValidator,
       direction: v.union(v.literal("inbound"), v.literal("outbound")),
-      
+
       recipientId: v.string(),
       recipientUsername: v.optional(v.string()),
-      
+
       messageType: v.string(),
       content: v.string(),
       mediaUrl: v.optional(v.string()),
-      
+
       status: v.union(
         v.literal("queued"),
         v.literal("sent"),
@@ -311,7 +315,7 @@ const schema = defineSchema(
         v.literal("read")
       ),
       errorMessage: v.optional(v.string()),
-      
+
       postId: v.optional(v.string()),
       commentId: v.optional(v.string()),
     })
@@ -323,15 +327,15 @@ const schema = defineSchema(
     analytics: defineTable({
       userId: v.id("users"),
       date: v.string(),
-      
+
       totalMessages: v.number(),
       sentMessages: v.number(),
       deliveredMessages: v.number(),
       failedMessages: v.number(),
-      
+
       instagramMessages: v.number(),
       whatsappMessages: v.number(),
-      
+
       flowExecutions: v.number(),
     })
       .index("by_user", ["userId"])
