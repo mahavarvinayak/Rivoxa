@@ -84,7 +84,7 @@ export default function Flows() {
       // Redirect to the new Visual Editor
       navigate(`/flows/${flowId}/editor`);
     } catch (error) {
-      toast.error("Failed to create flow");
+      toast.error(error instanceof Error ? error.message : "Failed to create flow");
       console.error(error);
     } finally {
       setIsCreating(false);
