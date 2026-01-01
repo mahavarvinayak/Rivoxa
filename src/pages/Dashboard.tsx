@@ -62,16 +62,16 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Header 
-              title={`Welcome back, ${user?.name?.split(' ')[0] || "User"}!`} 
+            <Header
+              title={`Welcome back, ${user?.name?.split(' ')[0] || "User"}!`}
               description="Here's what's happening with your automations today."
             />
           </motion.div>
 
           <StatsGrid stats={stats} planLimits={planLimits} />
-          
+
           <QuickActions />
-          
+
           <RecentActivity stats={stats} />
         </div>
       </main>

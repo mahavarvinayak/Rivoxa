@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "n": "oKzr8XN7yqmTdxt0l4OxVrhnSzcN4WRyO2uglVrkzBE3zM6GwYq3IlXVUFjE_DcLQfyxsegQ9w1mHEzH-7Qb_6IgVnSj_0Y_C1KcBwmpNXgnaxRr0_Obm6c4Vhdu3KXZ-zRrCfXx3omV_uyH4GF1itKq4E3M6ArTXM_4VBq7h6UPeESfaKKb2cwKaw0p7fqIQLez0RX2KuywF7tQ5dEcTQKnp0AG4JZXOnkt4Lt9Wr75xf4d2ogT4U9w9xqqrgSJ7E60KDAiXRNeXKy4KkFjzLhpHoZSDO-FhEVg0lRde7lNdFOTZY_b-s6u-ZDZhEEbakqFbdok3NQdHxxrvyciSw",
+      "e": "AQAB",
+      "use": "sig",
+      "alg": "RS256",
+      "kid": "convex-auth-key-1"
+    }
+  ]
+}

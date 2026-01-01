@@ -17,6 +17,7 @@ import type * as crons from "../crons.js";
 import type * as flowEngine from "../flowEngine.js";
 import type * as flowEngine_queries from "../flowEngine_queries.js";
 import type * as flows from "../flows.js";
+import type * as health from "../health.js";
 import type * as http from "../http.js";
 import type * as instagram from "../instagram.js";
 import type * as integrations from "../integrations.js";
@@ -55,6 +56,7 @@ declare const fullApi: ApiFromModules<{
   flowEngine: typeof flowEngine;
   flowEngine_queries: typeof flowEngine_queries;
   flows: typeof flows;
+  health: typeof health;
   http: typeof http;
   instagram: typeof instagram;
   integrations: typeof integrations;
