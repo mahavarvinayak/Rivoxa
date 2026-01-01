@@ -29,7 +29,7 @@ export function Footer() {
               <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="mailto:help@thepilab.in" className="text-slate-400 hover:text-slate-900 transition-colors">
+              <a href="mailto:hello@thepilab.in" className="text-slate-400 hover:text-slate-900 transition-colors">
                 <Mail className="h-5 w-5" />
               </a>
             </div>

@@ -157,8 +157,8 @@ export default function Support() {
                   <p className="text-slate-600 mb-6">
                     Our team typically responds within 24 hours for all technical inquiries.
                   </p>
-                  <a href="mailto:help@thepilab.in" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform">
-                    help@thepilab.in <ArrowRight className="ml-1 h-4 w-4" />
+                  <a href="mailto:hello@thepilab.in" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform">
+                    hello@thepilab.in <ArrowRight className="ml-1 h-4 w-4" />
                   </a>
                 </CardContent>
               </Card>

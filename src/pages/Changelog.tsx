@@ -21,7 +21,7 @@ export default function Changelog() {
     },
     {
       version: "v2.0.0",
-      date: "October 24, 2023",
+      date: "October 24, 2025",
       title: "Major Platform Overhaul",
       type: "Major",
       items: [
@@ -33,7 +33,7 @@ export default function Changelog() {
     },
     {
       version: "v1.5.0",
-      date: "September 15, 2023",
+      date: "September 15, 2025",
       title: "Performance Improvements",
       type: "Update",
       items: [
@@ -45,7 +45,7 @@ export default function Changelog() {
     },
     {
       version: "v1.0.0",
-      date: "August 1, 2023",
+      date: "August 1, 2025",
       title: "Initial Launch",
       type: "Release",
       items: [
