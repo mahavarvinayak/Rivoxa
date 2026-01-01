@@ -7,4 +7,18 @@ import { emailOtp } from "./auth/emailOtp";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [emailOtp, Anonymous],
+  callbacks: {
+    async afterUserCreatedOrUpdated(ctx, args) {
+      const user = await ctx.db.get(args.userId);
+      // If user exists and doesn't have a planEndDate, initialize trial
+      if (user && !user.planEndDate) {
+        const sevenDaysFromNow = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        await ctx.db.patch(args.userId, {
+          planType: "free",
+          planEndDate: sevenDaysFromNow,
+          lifetimeMessagesSent: 0,
+        });
+      }
+    },
+  },
 });

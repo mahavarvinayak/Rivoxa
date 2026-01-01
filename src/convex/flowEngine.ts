@@ -14,7 +14,7 @@ export const executeFlows = internalAction({
   handler: async (ctx, args) => {
     // Get user to check plan
     const userPlanInfo = await ctx.runQuery(internal.users.getUserPlanInfo, { userId: args.userId });
-    
+
     if (!userPlanInfo) {
       console.error("User not found for flow execution");
       return;
@@ -25,18 +25,18 @@ export const executeFlows = internalAction({
 
     // 1. Check Plan Expiration (especially for Free Trial)
     if (currentPlan === PLAN_TYPES.FREE) {
-       // If planEndDate is set and passed, stop. 
-       // Note: Free trial usually has an end date. If not set, we assume it's active or just started.
-       if (planEndDate && Date.now() > planEndDate) {
-         console.log("Free trial expired for user", args.userId);
-         return;
-       }
-       
-       // 2. Check Message Limits for Free Trial (300 total)
-       if ((lifetimeMessagesSent || 0) >= 300) {
-         console.log("Free trial message limit reached for user", args.userId);
-         return;
-       }
+      // If planEndDate is set and passed, stop. 
+      // Note: Free trial usually has an end date. If not set, we assume it's active or just started.
+      if (planEndDate && Date.now() > planEndDate) {
+        console.log("Free trial expired for user", args.userId);
+        return;
+      }
+
+      // 2. Check Message Limits for Free Trial (300 total)
+      if ((lifetimeMessagesSent || 0) >= 300) {
+        console.log("Free trial message limit reached for user", args.userId);
+        return;
+      }
     }
 
     // 3. Check WhatsApp Restriction
@@ -53,7 +53,7 @@ export const executeFlows = internalAction({
       userId: args.userId,
       triggerType: args.triggerType,
     });
-    
+
     for (const flow of flows) {
       try {
         // Check if trigger conditions match
@@ -61,34 +61,45 @@ export const executeFlows = internalAction({
           flow.trigger,
           args.context
         );
-        
+
         if (!shouldExecute) continue;
 
         // Check "Follow before DM" requirement
         if (flow.trigger.requireFollow) {
+          // Gate feature: Only PRO and ULTIMATE can use this
+          if (currentPlan === PLAN_TYPES.FREE) {
+            console.log(`Flow ${flow._id} skipped "requireFollow" logic: Feature requires PRO/ULTIMATE plan.`);
+            // We continue execution BUT we DO NOT enforce the check.
+            // OR should we skip the flow?
+            // Since the user might rely on this for safety (not sending DM to non-followers),
+            // skipping the flow is safer than sending DMs to strangers.
+            console.log(`Flow ${flow._id} EXECUTION HALTED: 'Require Follow' is enabled but plan is FREE.`);
+            continue;
+          }
+
           const platformUserId = args.context.senderId || args.context.from;
           if (platformUserId) {
             const isFollowing = await ctx.runAction(internal.instagram.checkUserFollowsBusiness, {
               userId: args.userId,
               platformUserId: platformUserId,
             });
-            
+
             if (!isFollowing) {
               console.log(`Flow ${flow._id} skipped: User ${platformUserId} does not follow business.`);
               continue;
             }
           }
         }
-        
+
         // Execute flow actions
         await executeFlowActions(ctx, flow, args.context, currentPlan);
-        
+
         // Update flow statistics
         await ctx.runMutation(internal.flowEngine_queries.updateFlowStats, {
           flowId: flow._id,
           success: true,
         });
-        
+
         // Increment message count for the user
         await ctx.runMutation(internal.users.incrementMessageCount, {
           userId: args.userId,
@@ -114,7 +125,7 @@ async function checkTriggerConditions(trigger: any, context: any): Promise<boole
     );
     if (!hasKeyword) return false;
   }
-  
+
   // Additional condition checks can be added here
   return true;
 }
@@ -124,14 +135,14 @@ async function executeFlowActions(ctx: any, flow: any, context: any, planType: s
     userId: flow.userId,
     type: flow.trigger.type.includes("instagram") ? "instagram" : "whatsapp",
   });
-  
+
   if (!integration) {
     throw new Error("Integration not found");
   }
-  
+
   // Double check WhatsApp restriction for actions (e.g. sending WA message from Insta trigger)
   if (integration.type === "whatsapp" && (planType === PLAN_TYPES.FREE || planType === PLAN_TYPES.PRO)) {
-     throw new Error("WhatsApp actions not allowed on this plan");
+    throw new Error("WhatsApp actions not allowed on this plan");
   }
 
   for (const action of flow.actions) {
@@ -172,7 +183,7 @@ async function executeFlowActions(ctx: any, flow: any, context: any, planType: s
 async function collectContactInfo(ctx: any, userId: any, context: any, config: any) {
   const platformUserId = context.senderId || context.from;
   const platform = context.platform || "instagram";
-  
+
   await ctx.runMutation(internal.flowEngine_queries.upsertContact, {
     userId,
     platform,
@@ -187,7 +198,7 @@ async function collectContactInfo(ctx: any, userId: any, context: any, config: a
 async function addContactTag(ctx: any, userId: any, context: any, config: any) {
   const platformUserId = context.senderId || context.from;
   const platform = context.platform || "instagram";
-  
+
   await ctx.runMutation(internal.flowEngine_queries.addTagToContact, {
     userId,
     platform,
@@ -199,7 +210,7 @@ async function addContactTag(ctx: any, userId: any, context: any, config: any) {
 async function addToSequence(ctx: any, userId: any, context: any, config: any) {
   const platformUserId = context.senderId || context.from;
   const platform = context.platform || "instagram";
-  
+
   await ctx.runMutation(internal.flowEngine_queries.subscribeToSequence, {
     userId,
     platform,
@@ -211,7 +222,7 @@ async function addToSequence(ctx: any, userId: any, context: any, config: any) {
 async function evaluateCondition(context: any, config: any): Promise<boolean> {
   const { field, operator, value } = config;
   const contextValue = context[field];
-  
+
   switch (operator) {
     case "equals":
       return contextValue === value;
@@ -236,7 +247,7 @@ async function makeHttpCall(config: any) {
       },
       body: config.body ? JSON.stringify(config.body) : undefined,
     });
-    
+
     if (!response.ok) {
       console.error(`HTTP call failed: ${response.statusText}`);
     }
@@ -248,13 +259,13 @@ async function makeHttpCall(config: any) {
 async function sendDirectMessage(ctx: any, integration: any, context: any, config: any) {
   const recipientId = context.senderId || context.from;
   const message = config.message || "Hello!";
-  
+
   if (integration.type === "instagram") {
     await sendInstagramDM(integration.accessToken, recipientId, message);
   } else if (integration.type === "whatsapp") {
     await sendWhatsAppMessage(integration.accessToken, integration.phoneNumberId, recipientId, message);
   }
-  
+
   // Log the message
   await ctx.runMutation(internal.flowEngine_queries.logMessage, {
     userId: integration.userId,
@@ -267,7 +278,7 @@ async function sendDirectMessage(ctx: any, integration: any, context: any, confi
 
 async function sendReply(ctx: any, integration: any, context: any, config: any) {
   const message = config.message || "Thank you!";
-  
+
   if (integration.type === "instagram" && context.commentId) {
     await replyToInstagramComment(
       integration.accessToken,
@@ -294,7 +305,7 @@ async function sendInstagramDM(accessToken: string, recipientId: string, message
       }),
     }
   );
-  
+
   if (!response.ok) {
     throw new Error(`Instagram API error: ${await response.text()}`);
   }
@@ -314,7 +325,7 @@ async function replyToInstagramComment(accessToken: string, commentId: string, m
       }),
     }
   );
-  
+
   if (!response.ok) {
     throw new Error(`Instagram API error: ${await response.text()}`);
   }
@@ -342,7 +353,7 @@ async function sendWhatsAppMessage(
       }),
     }
   );
-  
+
   if (!response.ok) {
     throw new Error(`WhatsApp API error: ${await response.text()}`);
   }

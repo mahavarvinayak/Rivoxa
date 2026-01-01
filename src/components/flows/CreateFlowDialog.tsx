@@ -16,6 +16,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useAuth } from "@/hooks/use-auth";
+import { PLAN_TYPES } from "@/convex/schema";
 
 interface CreateFlowDialogProps {
   open: boolean;
@@ -25,8 +27,10 @@ interface CreateFlowDialogProps {
 }
 
 export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "all_reels" }: CreateFlowDialogProps) {
+  const { user } = useAuth();
   const createFlow = useMutation(api.flows.create);
-  
+  const isPaidPlan = user?.planType === "pro" || user?.planType === "ultimate" || user?.planType === "business";
+
   const [flowName, setFlowName] = useState("");
   const [flowDescription, setFlowDescription] = useState("");
   const [triggerType, setTriggerType] = useState<string>("instagram_comment");
@@ -61,7 +65,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
 
       toast.success("Flow created successfully!");
       onOpenChange(false);
-      
+
       // Reset form
       setFlowName("");
       setFlowDescription("");
@@ -103,7 +107,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
               onChange={(e) => setFlowDescription(e.target.value)}
             />
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="trigger">Trigger Type</Label>
@@ -121,7 +125,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="post">Specific Reel (Optional)</Label>
               <Select value={selectedPostId} onValueChange={setSelectedPostId}>
@@ -153,14 +157,22 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 border p-3 rounded-md bg-secondary/20">
-            <Switch 
-              id="require-follow" 
+          <div className={`flex items-center space-x-2 border p-3 rounded-md ${!isPaidPlan ? "bg-slate-100 opacity-70" : "bg-secondary/20"}`}>
+            <Switch
+              id="require-follow"
               checked={requireFollow}
               onCheckedChange={setRequireFollow}
+              disabled={!isPaidPlan}
             />
             <div className="flex-1">
-              <Label htmlFor="require-follow" className="font-medium cursor-pointer">Require user to follow before DM</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="require-follow" className="font-medium cursor-pointer">Require user to follow before DM</Label>
+                {!isPaidPlan && (
+                  <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-medium border border-blue-200">
+                    PRO
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-muted-foreground">
                 If enabled, the DM will only be sent if the user follows your account.
               </p>
