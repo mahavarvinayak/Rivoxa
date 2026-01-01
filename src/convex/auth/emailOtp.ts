@@ -7,20 +7,33 @@ export const emailOtp = Email({
   generateVerificationToken() {
     return generateRandomString(6, alphabet("0-9"));
   },
-  async sendVerificationRequest({ identifier: email, provider, token, url }) {
+  async sendVerificationRequest(params) {
+    console.log("📧 sendVerificationRequest called with params:", Object.keys(params));
+    
+    const { identifier: email, token } = params;
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
+    console.log("🔐 Email OTP Config:");
+    console.log("  - Email:", email);
+    console.log("  - Token:", token);
+    console.log("  - From:", fromEmail);
+    console.log("  - API Key exists:", !!resendApiKey);
+
     if (!resendApiKey) {
-      console.error("🚨 RESEND_API_KEY not found");
-      throw new Error("Resend API key not configured");
+      const err = "RESEND_API_KEY environment variable is not set";
+      console.error("❌", err);
+      throw new Error(err);
+    }
+
+    if (!email || !token) {
+      const err = `Missing email or token: email=${email}, token=${token}`;
+      console.error("❌", err);
+      throw new Error(err);
     }
 
     try {
-      console.log("🔐 Sending OTP via Resend");
-      console.log("📧 From:", fromEmail);
-      console.log("📮 To:", email);
-      console.log("🔑 Token:", token);
+      console.log("🚀 Sending email via Resend API...");
 
       const emailHtml = `
         <!DOCTYPE html>
@@ -58,19 +71,21 @@ export const emailOtp = Email({
         }),
       });
 
+      console.log("📬 Resend response status:", response.status);
+
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error("❌ Resend API error:", response.status, errorData);
-        throw new Error(`Resend error: ${response.status} - ${errorData}`);
+        const errorText = await response.text();
+        console.error("❌ Resend API failed:", response.status, errorText);
+        throw new Error(`Resend API error (${response.status}): ${errorText}`);
       }
 
       const result = await response.json();
-      console.log("✅ Email sent successfully, ID:", result.id);
+      console.log("✅ Email sent successfully!");
+      console.log("   Email ID:", result.id);
     } catch (error) {
-      console.error("🚨 Failed to send email:", error);
-      throw new Error(
-        `Failed to send verification email: ${error instanceof Error ? error.message : String(error)}`
-      );
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error("🚨 Email sending failed:", errorMessage);
+      throw new Error(`Failed to send verification email: ${errorMessage}`);
     }
   },
 });
