@@ -17,7 +17,7 @@ export function QuickActions() {
     },
     {
       title: "Connect Account",
-      description: "Link your social media accounts to ChatFlow",
+      description: "Link your social media accounts to Rivoxa",
       icon: Activity,
       path: "/integrations",
       gradient: "from-purple-500 to-pink-600",
@@ -34,13 +34,13 @@ export function QuickActions() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: action.delay }}
         >
-          <Card 
+          <Card
             className="group relative overflow-hidden border-slate-200/60 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer bg-white"
             onClick={() => navigate(action.path)}
           >
             <div className={`absolute inset-0 bg-gradient-to-r ${action.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
             <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${action.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-            
+
             <CardHeader className="flex flex-row items-center gap-6">
               <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${action.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                 <action.icon className="h-7 w-7 text-white" />

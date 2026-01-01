@@ -7,17 +7,17 @@ import { useRef } from "react";
 export function Hero() {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
   });
-  
+
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   return (
     <section ref={containerRef} className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-      <motion.div 
+      <motion.div
         style={{ y }}
         className="container mx-auto px-4 text-center relative z-10"
       >
@@ -33,7 +33,7 @@ export function Hero() {
           </span>
         </motion.div>
 
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
@@ -46,33 +46,33 @@ export function Hero() {
           </span>
         </motion.h1>
 
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed"
         >
-          Automate your Instagram & WhatsApp customer interactions with intelligent flows. 
+          Automate your Instagram & WhatsApp customer interactions with intelligent flows.
           Scale your social commerce without losing the personal touch.
         </motion.p>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
-          <Button 
-            size="lg" 
-            onClick={() => navigate("/auth")} 
+          <Button
+            size="lg"
+            onClick={() => navigate("/auth")}
             className="h-14 px-8 text-lg rounded-full shadow-xl bg-slate-900 hover:bg-slate-800 text-white border-0 hover:scale-105 transition-all duration-300 hover:shadow-slate-900/25"
           >
             Start Free Trial
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
-          <Button 
-            size="lg" 
-            variant="outline" 
+          <Button
+            size="lg"
+            variant="outline"
             className="h-14 px-8 text-lg rounded-full border-2 border-slate-200 bg-white/50 hover:bg-white hover:border-slate-300 text-slate-700 hover:scale-105 transition-all duration-300 backdrop-blur-sm"
           >
             <PlayCircle className="mr-2 h-5 w-5" />
@@ -108,7 +108,7 @@ export function Hero() {
           className="mx-auto max-w-6xl perspective-1000 relative"
         >
           {/* Floating Elements */}
-          <motion.div 
+          <motion.div
             animate={{ y: [-10, 10, -10] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -left-12 top-1/4 z-20 hidden lg:block"
@@ -129,7 +129,7 @@ export function Hero() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             animate={{ y: [10, -10, 10] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             className="absolute -right-12 top-1/3 z-20 hidden lg:block"
@@ -158,7 +158,7 @@ export function Hero() {
                   <div className="w-3 h-3 rounded-full bg-amber-400/80" />
                   <div className="w-3 h-3 rounded-full bg-green-400/80" />
                 </div>
-                <div className="flex-1 text-center text-xs font-medium text-slate-400">ChatFlow Dashboard</div>
+                <div className="flex-1 text-center text-xs font-medium text-slate-400">Rivoxa Dashboard</div>
               </div>
               <div className="aspect-[16/9] bg-slate-50/50 p-8 grid grid-cols-12 gap-6">
                 {/* Sidebar */}

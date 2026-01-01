@@ -57,7 +57,7 @@ export default function Privacy() {
 
             <h3>5. Contact Us</h3>
             <p>
-              If you have any questions about this privacy policy or our privacy practices, please contact us at: privacy@chatflow.ai
+              If you have any questions about this privacy policy or our privacy practices, please contact us at: help@thepilab.in
             </p>
           </CardContent>
         </Card>

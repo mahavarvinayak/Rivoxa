@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
-import { 
-  LayoutDashboard, 
-  GitGraph, 
-  Link2, 
-  Settings, 
-  LifeBuoy, 
+import {
+  LayoutDashboard,
+  GitGraph,
+  Link2,
+  Settings,
+  LifeBuoy,
   LogOut,
   ChevronRight
 } from "lucide-react";
@@ -35,7 +35,7 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
     <div className={cn("flex flex-col h-full bg-white/80 backdrop-blur-xl border-r border-slate-200/60", className)}>
       <div className="p-6 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
         <Logo size="md" />
-        <span className="font-bold text-xl tracking-tight text-slate-900">ChatFlow</span>
+        <span className="font-bold text-xl tracking-tight text-slate-900">Rivoxa</span>
       </div>
 
       <div className="flex-1 px-4 py-6 space-y-2">
@@ -75,8 +75,8 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
             <p className="text-xs text-slate-500 truncate">{user?.email}</p>
           </div>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full justify-start gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 border-red-100"
           onClick={onSignOut}
         >
