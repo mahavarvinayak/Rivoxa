@@ -43,8 +43,8 @@ export const emailOtp = Email({
         </head>
         <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
           <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <h2 style="color: #333; margin-top: 0;">Your ChatFlow AI Verification Code</h2>
-            <p style="color: #666; font-size: 16px;">Use this code to sign in to ChatFlow AI:</p>
+            <h2 style="color: #333; margin-top: 0;">Your Rivoxa Verification Code</h2>
+            <p style="color: #666; font-size: 16px;">Use this code to sign in to Rivoxa:</p>
             <div style="background-color: #f0f0f0; padding: 25px; border-radius: 8px; text-align: center; margin: 30px 0; border: 2px solid #007bff;">
               <h1 style="font-size: 40px; font-weight: bold; letter-spacing: 10px; color: #333; margin: 0; font-family: 'Courier New', monospace;">${token}</h1>
             </div>
@@ -66,7 +66,7 @@ export const emailOtp = Email({
         body: JSON.stringify({
           from: fromEmail,
           to: email,
-          subject: "Your ChatFlow AI Verification Code",
+          subject: "Your Rivoxa Verification Code",
           html: emailHtml,
         }),
       });

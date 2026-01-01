@@ -15,7 +15,7 @@ export default function About() {
             Our Story
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
-            About ChatFlow AI
+            About Rivoxa
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
             We're on a mission to revolutionize how businesses interact with their customers through smart automation.
@@ -23,7 +23,7 @@ export default function About() {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-16">
-          <motion.section 
+          <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="grid md:grid-cols-2 gap-12 items-center"
@@ -31,7 +31,7 @@ export default function About() {
             <div>
               <h2 className="text-3xl font-bold mb-4 text-slate-900">Who We Are</h2>
               <p className="text-slate-600 leading-relaxed mb-4">
-                ChatFlow AI was founded by a team of engineers and designers passionate about solving the communication gap between businesses and customers. We believe that automation shouldn't feel robotic—it should feel personal, timely, and helpful.
+                Rivoxa was founded by a team of engineers and designers passionate about solving the communication gap between businesses and customers. We believe that automation shouldn't feel robotic—it should feel personal, timely, and helpful.
               </p>
               <p className="text-slate-600 leading-relaxed">
                 Proudly developed in India by THE Π LAB, we are building the tools for businesses worldwide to process conversations efficiently with our state-of-the-art automation technology.
@@ -45,7 +45,7 @@ export default function About() {
             </div>
           </motion.section>
 
-          <motion.section 
+          <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}

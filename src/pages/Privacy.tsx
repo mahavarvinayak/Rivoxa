@@ -26,7 +26,7 @@ export default function Privacy() {
           <CardContent className="p-8 md:p-12 prose prose-slate max-w-none">
             <h3>1. Introduction</h3>
             <p>
-              Welcome to ChatFlow AI. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
+              Welcome to Rivoxa. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.
             </p>
 
             <h3>2. Data We Collect</h3>

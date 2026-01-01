@@ -6,9 +6,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
-import { 
+import {
   ArrowLeft,
-  Loader2, 
+  Loader2,
   Settings as SettingsIcon,
   User,
   CreditCard,
@@ -44,7 +44,7 @@ export default function Settings() {
   const handleUpgradePlan = async (planType: "pro" | "ultimate" | "business") => {
     try {
       const order = await createPaymentOrder({ planType });
-      
+
       // Load Razorpay checkout script
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -54,7 +54,7 @@ export default function Settings() {
           order_id: order.orderId,
           amount: order.amount,
           currency: order.currency,
-          name: "ChatFlow AI",
+          name: "Rivoxa",
           description: `${planType.charAt(0).toUpperCase() + planType.slice(1)} Plan Subscription`,
           handler: async (response: any) => {
             const verified = await verifyPayment({
@@ -63,7 +63,7 @@ export default function Settings() {
               signature: response.razorpay_signature,
               planType,
             });
-            
+
             if (verified.verified) {
               toast.success("Payment successful! Plan upgraded.");
               window.location.reload();
@@ -78,7 +78,7 @@ export default function Settings() {
             color: "#8b5cf6",
           },
         };
-        
+
         const checkout = new (window as any).Razorpay(options);
         checkout.open();
       };
@@ -210,25 +210,25 @@ export default function Settings() {
                       {user?.planType === "business" && "Unlimited messages"}
                     </p>
                   </div>
-                  
+
                   {(!user?.planType || user?.planType === "free") && (
                     <div className="space-y-3">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full"
                         onClick={() => handleUpgradePlan("pro")}
                       >
                         Upgrade to Pro - ₹499/month
                       </Button>
-                      <Button 
-                        variant="default" 
+                      <Button
+                        variant="default"
                         className="w-full"
                         onClick={() => handleUpgradePlan("ultimate")}
                       >
                         Upgrade to Ultimate - ₹999/month
                       </Button>
-                      <Button 
-                        variant="default" 
+                      <Button
+                        variant="default"
                         className="w-full bg-slate-900 hover:bg-slate-800"
                         onClick={() => handleUpgradePlan("business")}
                       >
@@ -236,18 +236,18 @@ export default function Settings() {
                       </Button>
                     </div>
                   )}
-                  
+
                   {user?.planType === "pro" && (
                     <div className="space-y-3">
-                      <Button 
-                        variant="default" 
+                      <Button
+                        variant="default"
                         className="w-full"
                         onClick={() => handleUpgradePlan("ultimate")}
                       >
                         Upgrade to Ultimate - ₹999/month
                       </Button>
-                      <Button 
-                        variant="default" 
+                      <Button
+                        variant="default"
                         className="w-full bg-slate-900 hover:bg-slate-800"
                         onClick={() => handleUpgradePlan("business")}
                       >
@@ -258,8 +258,8 @@ export default function Settings() {
 
                   {user?.planType === "ultimate" && (
                     <div className="space-y-3">
-                      <Button 
-                        variant="default" 
+                      <Button
+                        variant="default"
                         className="w-full bg-slate-900 hover:bg-slate-800"
                         onClick={() => handleUpgradePlan("business")}
                       >

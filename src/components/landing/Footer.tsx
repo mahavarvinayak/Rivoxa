@@ -9,7 +9,7 @@ export function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <Logo size="sm" />
-              <span className="font-bold text-xl text-slate-900">ChatFlow AI</span>
+              <span className="font-bold text-xl text-slate-900">Rivoxa</span>
             </div>
             <p className="text-slate-600 mb-6 max-w-sm">
               The complete automation platform for Instagram and WhatsApp. Scale your business with intelligent automation workflows.
@@ -34,7 +34,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-          
+
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">Product</h3>
             <ul className="space-y-3 text-sm text-slate-600">
@@ -44,7 +44,7 @@ export function Footer() {
               <li><a href="/changelog" className="hover:text-blue-600 transition-colors">Changelog</a></li>
             </ul>
           </div>
-          
+
           <div>
             <h3 className="font-semibold text-slate-900 mb-4">Company</h3>
             <ul className="space-y-3 text-sm text-slate-600">
@@ -55,9 +55,9 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="pt-8 border-t border-slate-200 text-center text-sm text-slate-500">
-          <p>© 2024 ChatFlow AI by THE Π LAB. All rights reserved.</p>
+          <p>© 2024 Rivoxa by THE Π LAB. All rights reserved.</p>
         </div>
       </div>
     </footer>

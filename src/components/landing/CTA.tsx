@@ -28,12 +28,12 @@ export function CTA() {
                 Ready to Automate Your Business?
               </h2>
               <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-                Join thousands of businesses using ChatFlow AI to scale their social commerce and improve customer satisfaction.
+                Join thousands of businesses using Rivoxa to scale their social commerce and improve customer satisfaction.
               </p>
               <div className="flex flex-col items-center gap-6">
-                <Button 
-                  size="lg" 
-                  onClick={() => navigate("/auth")} 
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/auth")}
                   className="h-14 px-8 text-lg rounded-full bg-white text-slate-900 hover:bg-slate-100 border-0 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-white/25"
                 >
                   Start Free Trial

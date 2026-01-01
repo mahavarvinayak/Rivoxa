@@ -86,8 +86,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
       {/* Header with Back Button */}
       <header className="border-b bg-white/80 backdrop-blur-lg shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => navigate("/")}
             className="gap-2"
           >
@@ -97,7 +97,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           <div className="flex items-center gap-3">
             <Logo size="md" />
             <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              ChatFlow AI
+              Rivoxa
             </span>
           </div>
         </div>

@@ -10,7 +10,7 @@ export function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -22,7 +22,7 @@ export function Navbar() {
             <Logo size="md" />
           </div>
           <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            ChatFlow AI
+            Rivoxa
           </span>
         </div>
         <div className="flex items-center gap-4">
