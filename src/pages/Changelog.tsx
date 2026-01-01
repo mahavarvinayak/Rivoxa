@@ -8,6 +8,18 @@ import { motion } from "framer-motion";
 export default function Changelog() {
   const changes = [
     {
+      version: "v2.1.0",
+      date: "January 1, 2026",
+      title: "Rebranding to Rivoxa",
+      type: "Major",
+      items: [
+        "Official rebranding to Rivoxa",
+        "Updated UI with new Blue Identity",
+        "Enhanced Authentication System (Resend)",
+        "Security & Performance Improvements"
+      ]
+    },
+    {
       version: "v2.0.0",
       date: "October 24, 2023",
       title: "Major Platform Overhaul",

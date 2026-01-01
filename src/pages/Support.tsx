@@ -6,10 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/use-auth";
 import { motion } from "framer-motion";
-import { 
-  ArrowRight, 
-  Mail, 
-  MessageSquare, 
+import {
+  ArrowRight,
+  Mail,
+  MessageSquare,
   Search,
   HelpCircle,
   FileText,
@@ -72,15 +72,15 @@ export default function Support() {
             <p className="text-xl text-slate-600 mb-10 leading-relaxed">
               Search our knowledge base, join the community, or contact our support team directly.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
               </div>
-              <Input 
-                type="text" 
-                placeholder="Search for answers, guides, and troubleshooting..." 
+              <Input
+                type="text"
+                placeholder="Search for answers, guides, and troubleshooting..."
                 className="pl-12 h-14 text-lg shadow-xl border-slate-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white/80 backdrop-blur-xl rounded-2xl transition-all"
               />
             </div>
@@ -157,8 +157,8 @@ export default function Support() {
                   <p className="text-slate-600 mb-6">
                     Our team typically responds within 24 hours for all technical inquiries.
                   </p>
-                  <a href="mailto:thepilab77@gmail.com" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform">
-                    thepilab77@gmail.com <ArrowRight className="ml-1 h-4 w-4" />
+                  <a href="mailto:help@thepilab.in" className="inline-flex items-center text-green-600 hover:text-green-700 font-medium group-hover:translate-x-1 transition-transform">
+                    help@thepilab.in <ArrowRight className="ml-1 h-4 w-4" />
                   </a>
                 </CardContent>
               </Card>
