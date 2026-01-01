@@ -53,7 +53,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
       // Pre-select trigger from template logic (first node)
       const firstTrigger = template.nodes.find(n => n.type === 'trigger');
       if (firstTrigger?.data?.triggerType) {
-        setTriggerType(firstTrigger.data.triggerType);
+        setTriggerType(firstTrigger.data.triggerType as string);
       }
     } else {
       setFlowName("");
@@ -85,7 +85,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
         // "Blank" flow logic: Create basic Trigger -> Action nodes
         nodes = [
           { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType } },
-          { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: dmMessage } } }
+          { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: dmMessage } } },
         ];
         edges = [
           { id: 'e1-2', source: '1', target: '2' }
