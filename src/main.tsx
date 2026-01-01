@@ -24,6 +24,7 @@ import Privacy from "./pages/Privacy.tsx";
 import "./types/global.d.ts";
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+console.log("Convex URL:", import.meta.env.VITE_CONVEX_URL);
 
 function RouteSyncer() {
   const location = useLocation();
