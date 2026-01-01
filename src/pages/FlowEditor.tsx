@@ -26,7 +26,7 @@ export default function FlowEditor() {
     const updateFlow = useMutation(api.flows.update);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
     const [isSaving, setIsSaving] = useState(false);
 
     // Load initial data
