@@ -20,10 +20,10 @@ export function Logo({ className = "", size = "md", showText = false }: LogoProp
       transition={{ type: "spring", stiffness: 300 }}
     >
       <div className={`${sizeClasses[size]} flex items-center justify-center`}>
-        <img 
-          src="https://i.postimg.cc/cLL5mhWH/Screenshot-2025-12-30-234754.png" 
-          alt="Logo" 
-          className="w-full h-full object-cover rounded"
+        <img
+          src="/logo.png"
+          alt="Logo"
+          className="w-full h-full object-contain"
           loading="eager"
         />
       </div>
