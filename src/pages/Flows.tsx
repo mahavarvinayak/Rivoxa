@@ -4,10 +4,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
-import { 
+import {
   ArrowLeft,
-  Bot, 
-  Loader2, 
+  Bot,
+  Loader2,
   Plus,
   Settings,
   Trash2,
@@ -157,7 +157,7 @@ export default function Flows() {
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
               <Logo size="md" />
-              <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
+              <h1 className="text-xl font-bold tracking-tight">Rivoxa</h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -458,8 +458,8 @@ export default function Flows() {
                         <CardHeader className="p-0">
                           <div className="aspect-video bg-secondary rounded-t-lg overflow-hidden">
                             {reel.thumbnailUrl ? (
-                              <img 
-                                src={reel.thumbnailUrl} 
+                              <img
+                                src={reel.thumbnailUrl}
                                 alt={reel.caption}
                                 className="w-full h-full object-cover"
                               />

@@ -104,7 +104,7 @@ export default function Settings() {
             </Button>
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
               <Logo size="md" />
-              <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
+              <h1 className="text-xl font-bold tracking-tight">Rivoxa</h1>
             </div>
           </div>
           <Button variant="outline" onClick={() => navigate("/dashboard")}>

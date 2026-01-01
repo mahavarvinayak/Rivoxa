@@ -5,12 +5,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { motion } from "framer-motion";
-import { 
+import {
   AlertCircle,
+  ArrowLeft,
   CheckCircle2,
-  Instagram, 
-  Loader2, 
-  MessageSquare, 
+  Instagram,
+  Loader2,
+  MessageSquare,
   Settings,
   Unplug
 } from "lucide-react";
@@ -59,13 +60,13 @@ export default function Integrations() {
     const height = 700;
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
-    
+
     const popup = window.open(
       "",
       `${platform}_oauth`,
       `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
     );
-    
+
     if (!popup) {
       toast.error("Popup blocked. Please allow popups for this site.");
       return;
@@ -83,7 +84,7 @@ export default function Integrations() {
         </body>
       </html>
     `);
-    
+
     try {
       // Get the correct auth URL from backend (uses SITE_URL)
       const authUrl = await getAuthUrl({ platform });
@@ -94,7 +95,7 @@ export default function Integrations() {
       toast.error(error.message || "Failed to initialize connection. Check your environment variables.");
       return;
     }
-    
+
     // Listen for OAuth callback
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "oauth-success" && event.data?.platform === platform) {
@@ -107,9 +108,9 @@ export default function Integrations() {
         window.removeEventListener("message", handleMessage);
       }
     };
-    
+
     window.addEventListener("message", handleMessage);
-    
+
     // Clean up listener after 5 minutes
     setTimeout(() => {
       window.removeEventListener("message", handleMessage);
@@ -132,9 +133,14 @@ export default function Integrations() {
       {/* Header */}
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <Logo size="md" />
-            <h1 className="text-xl font-bold tracking-tight">AutoFlow.AI</h1>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+              <Logo size="md" />
+              <h1 className="text-xl font-bold tracking-tight">Rivoxa</h1>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
@@ -204,8 +210,8 @@ export default function Integrations() {
                       <p><strong>Username:</strong> @{instagramIntegration.platformUsername || "N/A"}</p>
                       <p><strong>Account ID:</strong> {instagramIntegration.platformUserId}</p>
                     </div>
-                    <Button 
-                      variant="destructive" 
+                    <Button
+                      variant="destructive"
                       onClick={() => setDisconnectingId(instagramIntegration._id)}
                       className="w-full sm:w-auto"
                     >
@@ -214,7 +220,7 @@ export default function Integrations() {
                     </Button>
                   </div>
                 ) : (
-                  <Button 
+                  <Button
                     onClick={() => handleConnect("instagram")}
                     className="w-full sm:w-auto"
                   >
@@ -266,8 +272,8 @@ export default function Integrations() {
                       <p><strong>Business Account:</strong> {whatsappIntegration.businessAccountId || "N/A"}</p>
                       <p><strong>Phone Number ID:</strong> {whatsappIntegration.phoneNumberId || "N/A"}</p>
                     </div>
-                    <Button 
-                      variant="destructive" 
+                    <Button
+                      variant="destructive"
                       onClick={() => setDisconnectingId(whatsappIntegration._id)}
                       className="w-full sm:w-auto"
                     >
@@ -276,7 +282,7 @@ export default function Integrations() {
                     </Button>
                   </div>
                 ) : (
-                  <Button 
+                  <Button
                     onClick={() => handleConnect("whatsapp")}
                     className="w-full sm:w-auto"
                   >
