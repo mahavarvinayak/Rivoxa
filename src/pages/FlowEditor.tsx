@@ -1,7 +1,7 @@
 import { FlowBuilder } from "@/components/flows/builder/FlowBuilder";
 import { Button } from "@/components/ui/button";
 import { NodePropertiesPanel } from "@/components/flows/builder/NodePropertiesPanel";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Zap } from "lucide-react";
 import { useParams, useNavigate } from "react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -48,6 +48,19 @@ export default function FlowEditor() {
             toast.error("Failed to save flow");
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleToggleStatus = async (newStatus: 'active' | 'draft') => {
+        if (!flowId) return;
+        try {
+            await updateFlow({
+                id: flowId as any,
+                status: newStatus,
+            });
+            toast.success(newStatus === 'active' ? "Automation is LIVE! 🚀" : "Automation stopped.");
+        } catch (error) {
+            toast.error("Failed to update status.");
         }
     };
 
@@ -100,11 +113,40 @@ export default function FlowEditor() {
                         <p className="text-xs text-slate-500">Visual Flow Editor</p>
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button onClick={handleSave} disabled={isSaving}>
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleSave}
+                        disabled={isSaving}
+                        className="h-9"
+                    >
                         {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                        Save Flow
+                        Save
                     </Button>
+
+                    {/* GO LIVE CONTROLS */}
+                    {flow.status === 'active' ? (
+                        <Button
+                            variant="destructive"
+                            size="sm"
+                            className="h-9 gap-2 shadow-sm font-semibold"
+                            onClick={() => handleToggleStatus('draft')}
+                        >
+                            <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                            Stop Automation
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="default"
+                            size="sm"
+                            className="h-9 gap-2 bg-green-600 hover:bg-green-700 text-white font-bold shadow-md hover:shadow-lg transition-all"
+                            onClick={() => handleToggleStatus('active')}
+                        >
+                            <Zap className="h-4 w-4 fill-current" />
+                            Go Live
+                        </Button>
+                    )}
                 </div>
             </header>
 
