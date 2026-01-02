@@ -1,5 +1,4 @@
 import { Handle, Position } from "@xyflow/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 
@@ -16,51 +15,77 @@ interface BaseNodeProps {
     };
 }
 
-const colors: Record<string, string> = {
-    blue: "border-blue-500 bg-blue-50",
-    green: "border-green-500 bg-green-50",
-    orange: "border-orange-500 bg-orange-50",
-    purple: "border-purple-500 bg-purple-50",
-    red: "border-red-500 bg-red-50",
-    default: "border-slate-200 bg-card",
-};
-
-const headerColors: Record<string, string> = {
-    blue: "text-blue-700",
-    green: "text-green-700",
-    orange: "text-orange-700",
-    purple: "text-purple-700",
-    red: "text-red-700",
-    default: "text-foreground",
+// Modern, saturated colors for "Kadak" look
+const colorMap: Record<string, { bg: string, text: string, border: string, iconBg: string }> = {
+    blue: { bg: "bg-blue-50", text: "text-blue-900", border: "border-blue-200", iconBg: "bg-blue-500 text-white" },
+    green: { bg: "bg-emerald-50", text: "text-emerald-900", border: "border-emerald-200", iconBg: "bg-emerald-500 text-white" },
+    orange: { bg: "bg-orange-50", text: "text-orange-900", border: "border-orange-200", iconBg: "bg-orange-500 text-white" },
+    purple: { bg: "bg-purple-50", text: "text-purple-900", border: "border-purple-200", iconBg: "bg-purple-600 text-white" },
+    red: { bg: "bg-red-50", text: "text-red-900", border: "border-red-200", iconBg: "bg-red-500 text-white" },
+    default: { bg: "bg-white", text: "text-zinc-900", border: "border-zinc-200", iconBg: "bg-zinc-800 text-white" },
 };
 
 export function BaseNode({ data, selected, title, icon: Icon, color = "default", children, handles = { source: true, target: true } }: BaseNodeProps) {
+    const theme = colorMap[color] || colorMap.default;
+
     return (
-        <Card className={cn(
-            "w-[280px] shadow-md transition-shadow",
-            selected ? "ring-2 ring-primary border-primary" : "",
-            colors[color] || colors.default
+        <div className={cn(
+            "relative w-[300px] rounded-2xl bg-white transition-all duration-300 group",
+            "border-2",
+            selected ? "border-indigo-500 shadow-2xl ring-4 ring-indigo-500/10 scale-[1.02]" : "border-transparent shadow-xl hover:shadow-2xl hover:-translate-y-1",
+            "font-sans"
         )}>
+            {/* Top Handle - Input */}
             {handles.target && (
-                <Handle type="target" position={Position.Top} className="w-3 h-3 bg-slate-400" />
+                <Handle
+                    type="target"
+                    position={Position.Top}
+                    className="!w-4 !h-4 !-top-3 !bg-zinc-800 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                />
             )}
 
-            <CardHeader className="p-3 pb-2 flex flex-row items-center gap-2 space-y-0">
-                <div className={cn("p-1.5 rounded-md bg-white shadow-sm", headerColors[color] || headerColors.default)}>
-                    {Icon && <Icon className="h-4 w-4" />}
+            {/* Header Section */}
+            <div className={cn(
+                "flex items-center gap-3 p-4 rounded-t-xl border-b",
+                theme.bg,
+                theme.border
+            )}>
+                <div className={cn(
+                    "flex h-10 w-10 items-center justify-center rounded-xl shadow-sm",
+                    theme.iconBg
+                )}>
+                    {Icon && <Icon className="h-5 w-5" />}
                 </div>
-                <CardTitle className="text-sm font-semibold">{title}</CardTitle>
-            </CardHeader>
+                <div>
+                    <h3 className={cn("text-sm font-bold tracking-tight", theme.text)}>{title}</h3>
+                    <p className="text-[10px] uppercase tracking-wider font-semibold opacity-60">
+                        {data.triggerType ? 'Trigger' : 'Action'}
+                    </p>
+                </div>
+            </div>
 
-            <CardContent className="p-3 pt-1">
-                <div className="text-xs text-muted-foreground">
+            {/* Body Section */}
+            <div className="p-4 bg-white rounded-b-xl">
+                <div className="text-xs text-zinc-600 font-medium leading-relaxed">
                     {children}
                 </div>
-            </CardContent>
+            </div>
 
-            {handles.source && (
-                <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-slate-400" />
+            {/* Status Indicator (Optional, can be used for runtime status later) */}
+            {data.stats && (
+                <div className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white shadow-lg ring-2 ring-white">
+                    {data.stats.executions || 0}
+                </div>
             )}
-        </Card>
+
+            {/* Bottom Handle - Output */}
+            {handles.source && (
+                <Handle
+                    type="source"
+                    position={Position.Bottom}
+                    className="!w-4 !h-4 !-bottom-3 !bg-zinc-800 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                />
+            )}
+        </div>
     );
 }
