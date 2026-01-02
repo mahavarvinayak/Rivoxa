@@ -11,7 +11,8 @@ import {
   ChevronRight,
   Megaphone,
   BarChart3,
-  LayoutTemplate
+  LayoutTemplate,
+  MessageSquare
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
@@ -32,6 +33,7 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
     { icon: GitGraph, label: "Flows", path: "/flows" },
     { icon: Megaphone, label: "Broadcasts", path: "/broadcasts" },
+    { icon: MessageSquare, label: "WhatsApp", path: "/whatsapp", badge: "Soon" },
     { icon: Link2, label: "Integrations", path: "/integrations" },
     { icon: Settings, label: "Settings", path: "/settings" },
     { icon: LifeBuoy, label: "Support", path: "/support" },
@@ -50,12 +52,14 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
           return (
             <Button
               key={item.path}
+              disabled={item.path === '/whatsapp'}
               variant={isActive ? "secondary" : "ghost"}
               className={cn(
                 "w-full justify-start gap-3 relative overflow-hidden group transition-all duration-300",
-                isActive ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                isActive ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50",
+                item.path === '/whatsapp' && "opacity-70 cursor-not-allowed hover:bg-transparent"
               )}
-              onClick={() => navigate(item.path)}
+              onClick={() => item.path !== '/whatsapp' && navigate(item.path)}
             >
               {isActive && (
                 <motion.div
@@ -65,7 +69,14 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
               )}
               <item.icon className={cn("h-5 w-5", isActive ? "text-blue-600" : "text-slate-500 group-hover:text-slate-700")} />
               <span className="font-medium">{item.label}</span>
-              {isActive && <ChevronRight className="ml-auto h-4 w-4 opacity-50" />}
+              {/* @ts-ignore */}
+              {item.badge && (
+                <span className="ml-auto px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-orange-100 text-orange-600 rounded-md">
+                  {/* @ts-ignore */}
+                  {item.badge}
+                </span>
+              )}
+              {isActive && !item.badge && <ChevronRight className="ml-auto h-4 w-4 opacity-50" />}
             </Button>
           );
         })}

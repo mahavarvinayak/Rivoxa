@@ -283,11 +283,11 @@ export default function Integrations() {
                   </div>
                 ) : (
                   <Button
-                    onClick={() => handleConnect("whatsapp")}
-                    className="w-full sm:w-auto"
+                    disabled
+                    className="w-full sm:w-auto bg-zinc-100 text-zinc-400 hover:bg-zinc-100 border border-zinc-200"
                   >
                     <MessageSquare className="h-4 w-4 mr-2" />
-                    Connect WhatsApp
+                    WhatsApp Coming Soon 🚧
                   </Button>
                 )}
               </CardContent>
