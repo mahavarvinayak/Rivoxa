@@ -115,12 +115,5 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
                     draggable
                 >
                     <div className="w-8 h-8 rounded bg-blue-100 border border-blue-300 flex items-center justify-center text-blue-600 font-bold text-xs">
-                        MSG
-                    </div>
-                    <span className="text-sm font-medium">Add Message</span>
-                </div>
-            </div>
-        </div>
-    );
-}
-```
+
+                        ```

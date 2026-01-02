@@ -5,15 +5,15 @@ import { internal } from "./_generated/api";
 // Helper to find the next node(s) connected to the current node
 export const getNextNodes = async (ctx: QueryCtx, flowId: any, currentNodeId: string) => {
     const flow = await ctx.db.get(flowId);
-    if (!flow || !flow.edges) return [];
+    if (!flow || !(flow as any).edges) return [];
 
     // Find edges where source is the current node
-    const edges = flow.edges.filter((edge: any) => edge.source === currentNodeId);
+    const edges = (flow as any).edges.filter((edge: any) => edge.source === currentNodeId);
 
     // Return the target node IDs
     return edges.map((edge: any) => {
         // Find the node object for the target ID
-        return flow.nodes.find((node: any) => node.id === edge.target);
+        return (flow as any).nodes.find((node: any) => node.id === edge.target);
     }).filter(Boolean);
 };
 
@@ -26,9 +26,9 @@ export const executeNode = internalMutation({
     },
     handler: async (ctx, args) => {
         const flow = await ctx.db.get(args.flowId);
-        if (!flow || !flow.nodes) return;
+        if (!flow || !(flow as any).nodes) return;
 
-        const node = flow.nodes.find((n: any) => n.id === args.nodeId);
+        const node = (flow as any).nodes.find((n: any) => n.id === args.nodeId);
         if (!node) return;
 
         console.log(`Executing Node [${node.type}]: ${node.id}`, node.data);
@@ -97,11 +97,11 @@ export const startFlow = internalMutation({
     },
     handler: async (ctx, args) => {
         const flow = await ctx.db.get(args.flowId);
-        if (!flow || !flow.nodes) return;
+        if (!flow || !(flow as any).nodes) return;
 
         // Find the start node for this trigger type
         // In our visual builder, the trigger node is the entry point.
-        const startNode = flow.nodes.find((n: any) =>
+        const startNode = (flow as any).nodes.find((n: any) =>
             n.type === 'trigger' &&
             n.data.triggerType === args.triggerType
         );

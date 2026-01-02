@@ -97,11 +97,7 @@ export const checkUserFollowsBusiness = internalAction({
       console.error("Error checking follow status:", error);
       return false;
     }
-  } catch(error) {
-    console.error("Error checking follow status:", error);
-    return false;
-  }
-},
+  },
 });
 
 export const sendDirectMessage = internalAction({
