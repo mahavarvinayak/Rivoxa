@@ -1,5 +1,5 @@
 
-import { MessageSquare, Mail, Zap, Clock, ShoppingBag, Gift, Star, Users, Phone, Calendar, HelpCircle, Trophy } from "lucide-react";
+import { MessageSquare, Mail, Zap, Clock, ShoppingBag, Gift, Star, Users, Phone, Calendar, HelpCircle, Trophy, Unplug } from "lucide-react";
 import { Node, Edge } from "@xyflow/react";
 
 export interface FlowTemplate {
@@ -13,6 +13,7 @@ export interface FlowTemplate {
 }
 
 export const FLOW_TEMPLATES: FlowTemplate[] = [
+    // --- ESSENTIALS ---
     {
         id: "welcome-message",
         name: "Welcome & Discount",
@@ -42,6 +43,26 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
         ]
     },
     {
+        id: "away-message",
+        name: "Away Message",
+        description: "Auto-reply differently during off-hours (e.g. 5 PM - 9 AM).",
+        icon: Clock,
+        color: "bg-teal-500",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'time_window', config: { startTime: '09:00', endTime: '17:00' } } },
+            { id: '3', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'We are currently closed. We will reply at 9 AM!' } } }, // False path
+            { id: '4', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Thanks for contacting us! How can we help?' } } }, // True path
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3', sourceHandle: 'false' }, // Connect to Closed
+            { id: 'e2-4', source: '2', target: '4', sourceHandle: 'true' }   // Connect to Open
+        ]
+    },
+
+    // --- GROWTH & SALES ---
+    {
         id: "lead-magnet",
         name: "E-Book Lead Magnet",
         description: "Offer a free guide in exchange for an email address.",
@@ -57,6 +78,22 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
             { id: 'e1-2', source: '1', target: '2' },
             { id: 'e2-3', source: '2', target: '3' },
             { id: 'e3-4', source: '3', target: '4' }
+        ]
+    },
+    {
+        id: "smart-followup",
+        name: "Smart Sales Follow-up",
+        description: "Wait 24h, then check if they bought. If not, offer discount.",
+        icon: Clock,
+        color: "bg-purple-600",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'delay', config: { duration: 24, unit: 'hours' } } },
+            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Hey! Still interested? Use code SAVE5 for 5% off.' } } },
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3' }
         ]
     },
     {
@@ -76,11 +113,88 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
         ]
     },
     {
-        id: "support-triage",
-        name: "Customer Support Hero",
-        description: "Route customers to Sales or Support based on keywords.",
-        icon: HelpCircle,
+        id: "webinar-signup",
+        name: "Webinar Registration",
+        description: "Register users for your next live event entirely in DMs.",
+        icon: Calendar,
+        color: "bg-indigo-500",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_story_mention' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: 'Ready for the masterclass? Reply YES to reserve your spot.' } } },
+            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'collect_email', config: {} } },
+            { id: '4', type: 'action', position: { x: 250, y: 450 }, data: { actionType: 'webhook', config: { url: 'https://zoom.us/api/register', method: 'POST' } } },
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3' },
+            { id: 'e3-4', source: '3', target: '4' }
+        ]
+    },
+
+    // --- INTERACTIVE ---
+    {
+        id: "product-recommend",
+        name: "Product Quiz",
+        description: "Ask users questions to recommend the perfect product.",
+        icon: ShoppingBag,
+        color: "bg-violet-500",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_comment' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: 'Do you have Oily or Dry skin?' } } },
+            { id: '3', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'For Oily skin, we recommend our Matte Gel!' } } }, // Path A
+            { id: '4', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'send_dm', config: { message: 'For Dry skin, try our Hydration Cream!' } } }, // Path B
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            // In a real scenario, these would be conditional edges
+            { id: 'e2-3', source: '2', target: '3' },
+            { id: 'e2-4', source: '2', target: '4' }
+        ]
+    },
+    {
+        id: "ab-testing",
+        name: "A/B Testing",
+        description: "Randomly split traffic to test two different messages.",
+        icon: Zap,
+        color: "bg-indigo-600",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'randomizer', config: { percentage: 50 } } },
+            { id: '3', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Offer A: Get 10% Off Now!' } } },
+            { id: '4', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Offer B: Buy 1 Get 1 Free!' } } },
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3', sourceHandle: 'true' },
+            { id: 'e2-4', source: '2', target: '4', sourceHandle: 'false' }
+        ]
+    },
+
+    // --- SUPPORT & ADVANCED ---
+    {
+        id: "vip-sentiment",
+        name: "VIP Support Triage",
+        description: "Prioritize angry customers for admin review.",
+        icon: Star,
         color: "bg-rose-500",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'sentiment', config: { targetSentiment: 'negative' } } },
+            { id: '3', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'notify', config: { email: 'admin@rivoxa.in', message: 'Angry Customer Alert!' } } },
+            { id: '4', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Thanks for reaching out! We will be with you shortly.' } } },
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3', sourceHandle: 'true' }, // Negative -> Notify
+            { id: 'e2-4', source: '2', target: '4', sourceHandle: 'false' } // Neutral/Positive -> Standard Reply
+        ]
+    },
+    {
+        id: "support-triage",
+        name: "Sales vs Support",
+        description: "Route customers to the right team based on keywords.",
+        icon: HelpCircle,
+        color: "bg-slate-500",
         nodes: [
             { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
             { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: 'Hi! Are you looking for Support or Sales? (Reply with one)' } } },
@@ -93,16 +207,34 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
         ]
     },
     {
-        id: "webinar-signup",
-        name: "Webinar Registration",
-        description: "Register users for your next live event entirely in DMs.",
-        icon: Calendar,
-        color: "bg-indigo-500",
+        id: "feedback-loop",
+        name: "Feedback Collector",
+        description: "Ask customers to rate their experience after purchase.",
+        icon: Users,
+        color: "bg-cyan-500",
         nodes: [
-            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_story_mention' } },
-            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: 'Ready for the masterclass? Reply YES to reserve your spot.' } } },
-            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'collect_email', config: {} } },
-            { id: '4', type: 'action', position: { x: 250, y: 450 }, data: { actionType: 'webhook', config: { url: 'https://zoom.us/api/register', method: 'POST' } } },
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'delay', config: { duration: 24, unit: 'hours' } } },
+            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'send_dm', config: { message: 'How was your experience? Rate us 1-5!' } } },
+            { id: '4', type: 'action', position: { x: 250, y: 450 }, data: { actionType: 'sentiment', config: { targetSentiment: 'negative' } } },
+        ],
+        edges: [
+            { id: 'e1-2', source: '1', target: '2' },
+            { id: 'e2-3', source: '2', target: '3' },
+            { id: 'e3-4', source: '3', target: '4' }
+        ]
+    },
+    {
+        id: "webhook-sync",
+        name: "Lead Sync (Zapier)",
+        description: "Send collected emails directly to Zapier.",
+        icon: Unplug,
+        color: "bg-orange-600",
+        nodes: [
+            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
+            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'collect_email', config: { message: 'Share your email to enroll!' } } },
+            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'webhook', config: { url: 'https://hooks.zapier.com/...', method: 'POST', body: '{\\"email\\": \\"{{last_input}}\\"}' } } },
+            { id: '4', type: 'action', position: { x: 250, y: 450 }, data: { actionType: 'send_dm', config: { message: 'You have been enrolled!' } } },
         ],
         edges: [
             { id: 'e1-2', source: '1', target: '2' },
@@ -129,43 +261,6 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
         ]
     },
     {
-        id: "product-recommend",
-        name: "Product Quiz",
-        description: "Ask users questions to recommend the perfect product.",
-        icon: ShoppingBag,
-        color: "bg-violet-500",
-        nodes: [
-            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_comment' } },
-            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'send_dm', config: { message: 'Do you have Oily or Dry skin?' } } },
-            { id: '3', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'For Oily skin, we recommend our Matte Gel!' } } }, // Path A
-            { id: '4', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'send_dm', config: { message: 'For Dry skin, try our Hydration Cream!' } } }, // Path B
-        ],
-        edges: [
-            { id: 'e1-2', source: '1', target: '2' },
-            // In a real scenario, these would be conditional edges
-            { id: 'e2-3', source: '2', target: '3' },
-            { id: 'e2-4', source: '2', target: '4' }
-        ]
-    },
-    {
-        id: "feedback-loop",
-        name: "Feedback Collector",
-        description: "Ask customers to rate their experience after purchase.",
-        icon: Users,
-        color: "bg-cyan-500",
-        nodes: [
-            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
-            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'delay', config: { duration: 24, unit: 'hours' } } },
-            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'send_dm', config: { message: 'How was your experience? Rate us 1-5!' } } },
-            { id: '4', type: 'action', position: { x: 250, y: 450 }, data: { actionType: 'sentiment', config: { targetSentiment: 'negative' } } },
-        ],
-        edges: [
-            { id: 'e1-2', source: '1', target: '2' },
-            { id: 'e2-3', source: '2', target: '3' },
-            { id: 'e3-4', source: '3', target: '4' }
-        ]
-    },
-    {
         id: "birthday-club",
         name: "Birthday Club",
         description: "Collect user birthdays for special yearly offers.",
@@ -181,40 +276,6 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
             { id: 'e1-2', source: '1', target: '2' },
             { id: 'e2-3', source: '2', target: '3' },
             { id: 'e3-4', source: '3', target: '4' }
-        ]
-    },
-    {
-        id: "smart-followup",
-        name: "Smart Sales Follow-up",
-        description: "Wait 24h, then check if they bought. If not, offer discount.",
-        icon: Clock,
-        color: "bg-purple-600",
-        nodes: [
-            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
-            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'delay', config: { duration: 24, unit: 'hours' } } },
-            { id: '3', type: 'action', position: { x: 250, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Hey! Still interested? Use code SAVE5 for 5% off.' } } },
-        ],
-        edges: [
-            { id: 'e1-2', source: '1', target: '2' },
-            { id: 'e2-3', source: '2', target: '3' }
-        ]
-    },
-    {
-        id: "ab-testing",
-        name: "A/B Testing",
-        description: "Randomly split traffic to test two different messages.",
-        icon: Zap,
-        color: "bg-indigo-600",
-        nodes: [
-            { id: '1', type: 'trigger', position: { x: 250, y: 0 }, data: { triggerType: 'instagram_dm' } },
-            { id: '2', type: 'action', position: { x: 250, y: 150 }, data: { actionType: 'randomizer', config: { percentage: 50 } } },
-            { id: '3', type: 'action', position: { x: 50, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Offer A: Get 10% Off Now!' } } },
-            { id: '4', type: 'action', position: { x: 450, y: 300 }, data: { actionType: 'send_dm', config: { message: 'Offer B: Buy 1 Get 1 Free!' } } },
-        ],
-        edges: [
-            { id: 'e1-2', source: '1', target: '2' },
-            { id: 'e2-3', source: '2', target: '3', sourceHandle: 'true' },
-            { id: 'e2-4', source: '2', target: '4', sourceHandle: 'false' }
         ]
     }
 ];
