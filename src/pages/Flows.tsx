@@ -12,7 +12,8 @@ import {
   RefreshCw,
   Search,
   Settings,
-  Zap
+  Zap,
+  Trash2
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -38,7 +39,21 @@ export default function Flows() {
   const flows = useQuery(api.flows.list);
   const userReels = useQuery(api.media.listReels);
   const createFlow = useMutation(api.flows.create);
+  const removeFlow = useMutation(api.flows.remove);
   const syncMedia = useAction(api.media.syncInstagramMedia);
+
+  const handleDelete = async (e: React.MouseEvent, flowId: string, flowName: string) => {
+    e.stopPropagation();
+    if (confirm(`Are you sure you want to delete "${flowName}"? This cannot be undone.`)) {
+      try {
+        await removeFlow({ id: flowId as any });
+        toast.success("Flow deleted.");
+      } catch (error) {
+        toast.error("Failed to delete flow.");
+        console.error(error);
+      }
+    }
+  };
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [flowName, setFlowName] = useState("");
@@ -266,7 +281,15 @@ export default function Flows() {
                         <div>
                           <span className="font-semibold text-slate-900">{flow.totalExecutions || 0}</span> runs
                         </div>
-                        <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                            onClick={(e) => handleDelete(e, flow._id, flow.name)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                           <Button variant="ghost" size="sm" className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/flows/${flow._id}/editor`);

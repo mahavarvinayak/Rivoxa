@@ -380,38 +380,76 @@ export function CreateFlowDialog({ open, onOpenChange }: CreateFlowDialogProps) 
                   </div>
                 )}
 
-                {/* REEL SELECTOR FOR TEMPLATES */}
+                {/* REEL VISUAL GRID SELECTOR (Advanced Mode) */}
                 {(triggerType === 'instagram_comment' || (selectedTemplate && selectedTemplate.nodes[0]?.data?.triggerType === 'instagram_comment')) && (
                   <div className="mt-4 pt-4 border-t border-dashed border-zinc-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <Label className="text-sm font-medium">Specific Post / Reel</Label>
+                    <div className="flex items-center justify-between mb-4">
+                      <Label className="text-sm font-medium">Select a Post for Automation</Label>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
-                        className="h-6 text-[10px]"
+                        className="h-6 text-[10px] text-zinc-500 hover:text-indigo-600"
                         onClick={() => syncMedia()}
                         disabled={isSyncing}
                       >
-                        {isSyncing ? "Syncing..." : "Sync Posts 🔄"}
+                        {isSyncing ? "Syncing..." : "Refresh Posts 🔄"}
                       </Button>
                     </div>
-                    <Select value={selectedPostId} onValueChange={setSelectedPostId}>
-                      <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Select a post (Optional)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all_reels">All Posts / Reels</SelectItem>
-                        {userReels?.map((reel: any) => (
-                          <SelectItem key={reel.mediaId} value={reel.mediaId}>
-                            <div className="flex items-center gap-2 max-w-[300px]">
-                              {reel.thumbnailUrl && <img src={reel.thumbnailUrl} className="w-6 h-6 rounded object-cover" />}
-                              <span className="truncate">{reel.caption || "Untitled Reel"}</span>
+
+                    <div className="grid grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      {/* Option: All Reels */}
+                      <div
+                        onClick={() => setSelectedPostId("all_reels")}
+                        className={cn(
+                          "cursor-pointer aspect-square rounded-lg border-2 flex flex-col items-center justify-center p-2 transition-all",
+                          selectedPostId === "all_reels" ? "border-indigo-600 bg-indigo-50" : "border-zinc-200 hover:border-zinc-300"
+                        )}
+                      >
+                        <LayoutTemplate className={cn("h-6 w-6 mb-2", selectedPostId === "all_reels" ? "text-indigo-600" : "text-zinc-400")} />
+                        <span className={cn("text-[10px] font-medium text-center leading-tight", selectedPostId === "all_reels" ? "text-indigo-700" : "text-zinc-500")}>
+                          All Posts
+                        </span>
+                      </div>
+
+                      {/* Reel Items */}
+                      {userReels?.map((reel: any) => (
+                        <div
+                          key={reel.mediaId}
+                          onClick={() => setSelectedPostId(reel.mediaId)}
+                          className={cn(
+                            "cursor-pointer group relative aspect-square rounded-lg border-2 overflow-hidden transition-all",
+                            selectedPostId === reel.mediaId ? "border-indigo-600 ring-2 ring-indigo-600 ring-offset-1" : "border-transparent"
+                          )}
+                        >
+                          {reel.thumbnailUrl ? (
+                            <img src={reel.thumbnailUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Reel" />
+                          ) : (
+                            <div className="w-full h-full bg-zinc-100 flex items-center justify-center">
+                              <span className="text-xs text-zinc-400">No Img</span>
                             </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <p className="text-[10px] text-zinc-400 mt-1">Select logic applies only to this specific post.</p>
+                          )}
+
+                          {/* Overlay Selection Indicator */}
+                          {selectedPostId === reel.mediaId && (
+                            <div className="absolute inset-0 bg-indigo-900/40 flex items-center justify-center">
+                              <div className="bg-indigo-600 text-white rounded-full p-1">
+                                <Sparkles className="h-4 w-4" fill="currentColor" />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Caption Tooltip on Hover */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <p className="text-[10px] text-white truncate">{reel.caption || "Untitled"}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-zinc-400 mt-2 text-center">
+                      {selectedPostId === "all_reels"
+                        ? "Automation will run on ALL posts."
+                        : "Automation limited to the selected post."}
+                    </p>
                   </div>
                 )}
               </div>
