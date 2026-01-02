@@ -30,11 +30,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
+import { cn } from "@/lib/utils";
 
 export default function Flows() {
   const { isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const flows = useQuery(api.flows.list);
+  const userReels = useQuery(api.media.listReels);
   const createFlow = useMutation(api.flows.create);
   const syncMedia = useAction(api.media.syncInstagramMedia);
 
@@ -102,6 +104,8 @@ export default function Flows() {
       setIsSyncing(false);
     }
   };
+
+
 
   const filteredFlows = flows?.filter(flow =>
     flow.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -210,7 +214,17 @@ export default function Flows() {
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredFlows.map((flow, idx) => (
+            {filteredFlows.map((flow, idx) => {
+              const triggerNode = flow.nodes.find((node: any) => node.type === 'trigger');
+              const mediaId = triggerNode?.data?.mediaId;
+              const reel = userReels?.find(r => r.mediaId === mediaId);
+
+              return (
+                <motion.div
+                  key={flow._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
               <motion.div
                 key={flow._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -219,8 +233,24 @@ export default function Flows() {
                 onClick={() => navigate(`/flows/${flow._id}/editor`)}
                 className="group cursor-pointer"
               >
-                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 overflow-hidden">
-                  <CardHeader className="pb-3 border-b border-slate-50 bg-slate-50/50">
+                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-slate-200 overflow-hidden flex flex-col">
+                  {/* REEL COVER IMAGE IF EXISTS */}
+                  {associatedReel && associatedReel.thumbnailUrl && (
+                     <div className="h-32 w-full bg-slate-100 relative overflow-hidden">
+                        <img 
+                          src={associatedReel.thumbnailUrl} 
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" 
+                          alt="Reel Cover" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                           <p className="text-white text-xs font-medium truncate w-full flex items-center gap-1">
+                             <Settings className="h-3 w-3" /> Linked to Post
+                           </p>
+                        </div>
+                     </div>
+                  )}
+
+                  <CardHeader className={cn("pb-3 border-b border-slate-50 bg-slate-50/50", associatedReel ? "pt-3" : "")}>
                     <div className="flex justify-between items-start mb-1">
                       <div className={`p-2 rounded-lg ${flow.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
                         <Zap className="h-4 w-4" />
@@ -236,24 +266,25 @@ export default function Flows() {
                       {flow.description || "No description provided."}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-4">
+                  <CardContent className="pt-4 mt-auto">
                     <div className="flex justify-between items-center text-sm text-slate-500">
                       <div>
                         <span className="font-semibold text-slate-900">{flow.totalExecutions || 0}</span> runs
                       </div>
-                      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="sm" className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/flows/${flow._id}/editor`);
-                        }}>
-                          Edit <ArrowRight className="h-3 w-3 ml-1" />
-                        </Button>
+                        <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="sm" className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/flows/${flow._id}/editor`);
+                          }}>
+                             Edit <ArrowRight className="h-3 w-3 ml-1" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </main>

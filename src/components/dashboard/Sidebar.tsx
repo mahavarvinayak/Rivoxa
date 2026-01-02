@@ -10,7 +10,8 @@ import {
   LogOut,
   ChevronRight,
   Megaphone,
-  BarChart3
+  BarChart3,
+  LayoutTemplate
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
@@ -27,6 +28,7 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: LayoutTemplate, label: "Templates", path: "/templates" },
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
     { icon: GitGraph, label: "Flows", path: "/flows" },
     { icon: Megaphone, label: "Broadcasts", path: "/broadcasts" },

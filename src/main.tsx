@@ -11,6 +11,7 @@ import "./index.css";
 import Landing from "./pages/Landing.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Analytics from "./pages/Analytics.tsx";
+import Templates from "./pages/Templates.tsx";
 import Integrations from "./pages/Integrations.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Settings from "./pages/Settings.tsx";
@@ -65,6 +66,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/templates" element={<Templates />} />
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/flows" element={<Flows />} />
