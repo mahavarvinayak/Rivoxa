@@ -246,7 +246,7 @@ export const executeNode = internalMutation({
                     .replace("{{name}}", args.context.name || "");
 
                 // Schedule the external action
-                await ctx.scheduler.runAfter(0, internal.actions.sendWebhook, {
+                await ctx.scheduler.runAfter(0, (internal as any).remoteActions.sendWebhook, {
                     url,
                     method,
                     body,
