@@ -17,7 +17,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { FLOW_TEMPLATES, FlowTemplate } from "@/lib/templates";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, Sparkles, Zap, GitBranch, LayoutTemplate, MessageCircle, Bot } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap, LayoutTemplate, Share2 } from "lucide-react";
 import { useNavigate } from "react-router";
 
 interface CreateFlowDialogProps {
@@ -54,19 +54,24 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
   };
 
   const handleTemplateSelect = (template: FlowTemplate | null) => {
-    setSelectedTemplate(template);
-    if (template) {
-      setFlowName(template.name);
-      setFlowDescription(template.description);
-      const firstTrigger = template.nodes.find(n => n.type === 'trigger');
-      if (firstTrigger?.data?.triggerType) {
-        setTriggerType(firstTrigger.data.triggerType as string);
+    try {
+      setSelectedTemplate(template);
+      if (template) {
+        setFlowName(template.name);
+        setFlowDescription(template.description);
+        const firstTrigger = template.nodes.find((n: any) => n.type === 'trigger');
+        if (firstTrigger?.data?.triggerType) {
+          setTriggerType(firstTrigger.data.triggerType as string);
+        }
+      } else {
+        setFlowName("");
+        setFlowDescription("Custom flow started from scratch.");
       }
-    } else {
-      setFlowName("");
-      setFlowDescription("Custom flow started from scratch.");
+      setMode('template_config');
+    } catch (e) {
+      console.error("Template selection error", e);
+      toast.error("Error selecting template");
     }
-    setMode('template_config');
   };
 
   const handleCreate = async () => {
@@ -92,8 +97,8 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
           { id: 'e1', source: 'start', target: 'action-1' }
         ];
       } else if (selectedTemplate) {
-        nodes = selectedTemplate.nodes;
-        edges = selectedTemplate.edges;
+        nodes = selectedTemplate.nodes || [];
+        edges = selectedTemplate.edges || [];
       } else {
         // Advanced Blank
         nodes = [
@@ -101,6 +106,8 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
         ];
         edges = [];
       }
+
+      console.log("Creating Flow with:", { name: flowName, triggerType, nodesCount: nodes.length });
 
       const flowId = await createFlow({
         name: flowName,
@@ -111,20 +118,15 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
           postId: selectedPostId && selectedPostId !== "all_reels" ? selectedPostId : undefined,
         },
         actions: [],
-        nodes,
-        edges,
+        nodes: nodes,
+        edges: edges,
       });
 
       toast.success("Flow created successfully! 🚀");
       onOpenChange(false);
 
       // Navigation Logic
-      if (mode === 'quick') {
-        // For quick mode, maybe just stay on list or go to editor?
-        // User said "won't have time to build workflow", so assume they want it done.
-        // But let's open editor so they see it works.
-        navigate(`/flows/${flowId}`);
-      } else {
+      if (flowId) {
         navigate(`/flows/${flowId}`);
       }
 
@@ -133,8 +135,8 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
       setSelectedTemplate(null);
 
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to create flow. Please try again.");
+      console.error("Create Flow Error:", error);
+      toast.error("Failed to create flow. Please see console.");
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +190,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
                 className="group relative cursor-pointer rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 p-6 hover:border-purple-500 hover:bg-slate-50/50 hover:shadow-xl transition-all duration-300"
               >
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                  <GitBranch className="h-6 w-6" />
+                  <Share2 className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">Visual Flow Editor</h3>
                 <p className="text-sm text-zinc-500">Full drag-and-drop canvas. Use logic, delays, conditions, and templates. The Pro choice.</p>
@@ -242,8 +244,8 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
                 <h3 className="font-semibold text-zinc-900">Start Blank</h3>
               </div>
 
-              {FLOW_TEMPLATES.map((template) => {
-                const Icon = template.icon;
+              {FLOW_TEMPLATES && FLOW_TEMPLATES.map((template) => {
+                const Icon = template.icon ? template.icon : LayoutTemplate;
                 return (
                   <div
                     key={template.id}
