@@ -40,7 +40,7 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
   ];
 
   return (
-    <div className={cn("flex flex-col h-full bg-white/80 backdrop-blur-xl border-r border-slate-200/60", className)}>
+    <div className={cn("flex flex-col h-full bg-white/95 md:bg-white/80 backdrop-blur-md md:backdrop-blur-xl border-r border-slate-200/60", className)}>
       <div className="p-6 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
         <Logo size="md" />
         <span className="font-bold text-xl tracking-tight text-slate-900">Rivoxa</span>

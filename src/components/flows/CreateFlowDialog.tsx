@@ -254,8 +254,8 @@ export function CreateFlowDialog({ open, onOpenChange }: CreateFlowDialogProps) 
         {/* SPLIT VIEW LAYOUT FOR CONFIGURATION */}
         {(mode === 'quick' || mode === 'template_config') && (
           <div className="flex h-full min-h-[500px]">
-            {/* LEFT: PHONE PREVIEW */}
-            <div className="w-1/3 min-w-[320px] bg-zinc-100 dark:bg-zinc-900/50 p-6 flex flex-col items-center justify-center border-r border-zinc-200 dark:border-zinc-800">
+            {/* LEFT: PHONE PREVIEW (Hidden on Mobile) */}
+            <div className="hidden md:flex md:w-1/3 min-w-[320px] bg-zinc-100 dark:bg-zinc-900/50 p-6 flex-col items-center justify-center border-r border-zinc-200 dark:border-zinc-800">
               <h3 className="text-sm font-semibold text-zinc-500 mb-4 uppercase tracking-wider">Preview Automation</h3>
 
               {/* PHONE MOCKUP */}
