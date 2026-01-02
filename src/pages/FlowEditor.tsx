@@ -17,7 +17,7 @@ export default function FlowEditor() {
     const flow = useQuery(api.flows.get, { id: flowId as any });
     const updateFlow = useMutation(api.flows.update);
 
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);

@@ -15,6 +15,7 @@ import type * as broadcasts from "../broadcasts.js";
 import type * as contacts from "../contacts.js";
 import type * as crons from "../crons.js";
 import type * as flowEngine from "../flowEngine.js";
+import type * as flowEngineGraph from "../flowEngineGraph.js";
 import type * as flowEngine_queries from "../flowEngine_queries.js";
 import type * as flows from "../flows.js";
 import type * as health from "../health.js";
@@ -54,6 +55,7 @@ declare const fullApi: ApiFromModules<{
   contacts: typeof contacts;
   crons: typeof crons;
   flowEngine: typeof flowEngine;
+  flowEngineGraph: typeof flowEngineGraph;
   flowEngine_queries: typeof flowEngine_queries;
   flows: typeof flows;
   health: typeof health;
