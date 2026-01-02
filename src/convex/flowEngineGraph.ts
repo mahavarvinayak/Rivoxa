@@ -136,6 +136,130 @@ export const executeNode = internalMutation({
                     pageId: args.context.pageId,
                 });
                 console.log(`Sent Email Prompt: ${prompt}`);
+            } else if (actionType === 'time_window') {
+                // TIME WINDOW Logic
+                // Check if current time is within range
+                const now = new Date();
+                // Basic implementation: Parse HH:MM and compare
+                // A better approach would use a library for timezone support
+                const currentHour = now.getUTCHours();
+                const currentMin = now.getUTCMinutes();
+                // For MVP, simplistic check ignoring timezone complexity or assume Inputs are UTC
+                // TODO: Add proper timezone offset handling if needed
+
+                // Let's assume user inputs are in UTC for now to simplify
+                const [startH, startM] = (config.startTime || "09:00").split(':').map(Number);
+                const [endH, endM] = (config.endTime || "17:00").split(':').map(Number);
+
+                const currentTotal = currentHour * 60 + currentMin;
+                const startTotal = startH * 60 + startM;
+                const endTotal = endH * 60 + endM;
+
+                const isOpen = currentTotal >= startTotal && currentTotal <= endTotal;
+                const nextHandle = isOpen ? 'true' : 'false';
+
+                // Custom logic to find specific edge handle for branching
+                const edges = (flow as any).edges.filter((edge: any) =>
+                    edge.source === args.nodeId && edge.sourceHandle === nextHandle
+                );
+                const nextNodeIds = edges.map((e: any) => e.target);
+
+                if (nextNodeIds.length > 0) {
+                    await ctx.scheduler.runAfter(0, internal.flowEngineGraph.executeNode, {
+                        flowId: args.flowId,
+                        nodeId: nextNodeIds[0],
+                        context: args.context
+                    });
+                }
+                return; // EXIT, handled branching manually
+
+            } else if (actionType === 'randomizer') {
+                // RANDOMIZER Logic
+                const percentage = config.percentage || 50;
+                const r = Math.random() * 100;
+                const isPathA = r < percentage;
+
+                const nextHandle = isPathA ? 'true' : 'false';
+
+                // Custom logic to find specific edge handle for branching
+                const edges = (flow as any).edges.filter((edge: any) =>
+                    edge.source === args.nodeId && edge.sourceHandle === nextHandle
+                );
+                const nextNodeIds = edges.map((e: any) => e.target);
+
+                if (nextNodeIds.length > 0) {
+                    await ctx.scheduler.runAfter(0, internal.flowEngineGraph.executeNode, {
+                        flowId: args.flowId,
+                        nodeId: nextNodeIds[0],
+                        context: args.context
+                    });
+                }
+                return; // EXIT, handled branching manually
+
+            } else if (actionType === 'sentiment') {
+                // SENTIMENT CHECK Logic (Free, Local)
+                const target = config.targetSentiment || 'negative';
+                const msg = (args.context.message || "").toLowerCase();
+
+                // Simple keyword lists (English)
+                const negativeWords = ["bad", "hate", "angry", "worst", "slow", "scam", "stupid", "useless", "broken", "fail", "terrible", "horrible", "refund", "cancel"];
+                const positiveWords = ["good", "love", "awesome", "great", "fast", "thanks", "helpful", "amazing", "happy", "best", "excellent", "working"];
+                const urgentWords = ["help", "urgent", "emergency", "stuck", "call", "agent", "human", "support", "asap"];
+
+                let detected = 'neutral';
+                if (urgentWords.some(w => msg.includes(w))) detected = 'urgent';
+                else if (negativeWords.some(w => msg.includes(w))) detected = 'negative';
+                else if (positiveWords.some(w => msg.includes(w))) detected = 'positive';
+
+                // Check if detected matches target (e.g. if looking for 'negative' and we found 'negative', go true)
+                // Or if looking for 'urgent' etc.
+                const isMatch = detected === target;
+
+                console.log(`Sentiment: "${msg}" -> Detected: ${detected} (Target: ${target}) => Match: ${isMatch}`);
+
+                const nextHandle = isMatch ? 'true' : 'false';
+                // Custom logic to find specific edge handle for branching
+                const edges = (flow as any).edges.filter((edge: any) =>
+                    edge.source === args.nodeId && edge.sourceHandle === nextHandle
+                );
+                const nextNodeIds = edges.map((e: any) => e.target);
+
+                if (nextNodeIds.length > 0) {
+                    await ctx.scheduler.runAfter(0, internal.flowEngineGraph.executeNode, {
+                        flowId: args.flowId,
+                        nodeId: nextNodeIds[0],
+                        context: args.context
+                    });
+                }
+                return; // EXIT, handled branching manually
+
+            } else if (actionType === 'webhook') {
+                // WEBHOOK Logic (Fire and Forget)
+                const url = config.url;
+                const method = config.method || 'POST';
+                const bodyRaw = config.body || "{}";
+
+                // Basic variable substitution
+                let body = bodyRaw
+                    .replace("{{user_id}}", args.context.userId || "")
+                    .replace("{{message}}", args.context.message || "")
+                    .replace("{{name}}", args.context.name || "");
+
+                // Schedule the external action
+                await ctx.scheduler.runAfter(0, internal.actions.sendWebhook, {
+                    url,
+                    method,
+                    body,
+                });
+                console.log(`Webhook Scheduled: ${method} ${url}`);
+
+                // Flow continues to next node automatically below
+
+            } else if (actionType === 'notify') {
+                // NOTIFY ADMIN Logic
+                const email = config.email;
+                const message = config.message;
+                console.log(`[NOTIFICATION] To: ${email}, Msg: ${message}`);
             }
         }
 

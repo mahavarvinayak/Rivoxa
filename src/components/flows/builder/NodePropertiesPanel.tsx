@@ -131,6 +131,11 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
                                         <SelectItem value="add_tag">Add Tag</SelectItem>
                                         <SelectItem value="collect_email">Collect Email</SelectItem>
                                         <SelectItem value="condition">Condition</SelectItem>
+                                        <SelectItem value="time_window">Time Window</SelectItem>
+                                        <SelectItem value="sentiment">Sentiment Check</SelectItem>
+                                        <SelectItem value="randomizer">Randomizer</SelectItem>
+                                        <SelectItem value="webhook">Webhook (API)</SelectItem>
+                                        <SelectItem value="notify">Notify Admin</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -149,6 +154,174 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
                                     <p className="text-xs text-slate-500">
                                         Response sent to the user.
                                     </p>
+                                </div>
+                            )}
+
+                            {/* Sentiment Config */}
+                            {data.actionType === 'sentiment' && (
+                                <div className="space-y-4">
+                                    <div className="p-3 bg-rose-50 border border-rose-100 rounded-md text-xs text-rose-700">
+                                        Detects message tone. Connect <strong>TRUE</strong> if match, <strong>FALSE</strong> otherwise.
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Check for Sentiment</Label>
+                                        <Select
+                                            value={data.config?.targetSentiment || "negative"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, targetSentiment: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="negative">Negative / Angry</SelectItem>
+                                                <SelectItem value="positive">Positive / Happy</SelectItem>
+                                                <SelectItem value="urgent">Urgent / Help</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Sensitivity</Label>
+                                        <Select
+                                            value={data.config?.sensitivity || "medium"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, sensitivity: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="low">Low (Strict)</SelectItem>
+                                                <SelectItem value="medium">Medium</SelectItem>
+                                                <SelectItem value="high">High (Loose)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Webhook Config */}
+                            {data.actionType === 'webhook' && (
+                                <div className="space-y-4">
+                                    <div className="p-3 bg-cyan-50 border border-cyan-100 rounded-md text-xs text-cyan-700">
+                                        Send data to external APIs (Zapier, Make, etc).
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Target URL</Label>
+                                        <Input
+                                            value={data.config?.url || ""}
+                                            onChange={(e) => handleChange("config", { ...data.config, url: e.target.value })}
+                                            placeholder="https://hooks.zapier.com/..."
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Method</Label>
+                                        <Select
+                                            value={data.config?.method || "POST"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, method: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="POST">POST</SelectItem>
+                                                <SelectItem value="GET">GET</SelectItem>
+                                                <SelectItem value="PUT">PUT</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>JSON Body (Optional)</Label>
+                                        <Textarea
+                                            value={data.config?.body || "{}"}
+                                            onChange={(e) => handleChange("config", { ...data.config, body: e.target.value })}
+                                            rows={4}
+                                            placeholder='{"user": "{{user_id}}", "msg": "{{message}}"}'
+                                            className="font-mono text-xs"
+                                        />
+                                        <p className="text-[10px] text-slate-400">
+                                            Supports templating variables.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Time Window Config */}
+                            {data.actionType === 'time_window' && (
+                                <div className="space-y-4">
+                                    <div className="p-3 bg-teal-50 border border-teal-100 rounded-md text-xs text-teal-700">
+                                        Route users based on time of day. TRUE = Open, FALSE = Closed.
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-3">
+                                            <Label>Start Time</Label>
+                                            <Input
+                                                type="time"
+                                                value={data.config?.startTime || "09:00"}
+                                                onChange={(e) => handleChange("config", { ...data.config, startTime: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="space-y-3">
+                                            <Label>End Time</Label>
+                                            <Input
+                                                type="time"
+                                                value={data.config?.endTime || "17:00"}
+                                                onChange={(e) => handleChange("config", { ...data.config, endTime: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Timezone</Label>
+                                        <Select
+                                            value={data.config?.timezone || "UTC"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, timezone: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="UTC">UTC</SelectItem>
+                                                <SelectItem value="IST">India (IST)</SelectItem>
+                                                <SelectItem value="EST">US Eastern (EST)</SelectItem>
+                                                <SelectItem value="PST">US Pacific (PST)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Randomizer Config */}
+                            {data.actionType === 'randomizer' && (
+                                <div className="space-y-4">
+                                    <div className="p-3 bg-violet-50 border border-violet-100 rounded-md text-xs text-violet-700">
+                                        Split traffic randomly. Connect TRUE (A) and FALSE (B).
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Path A Percentage ({data.config?.percentage || 50}%)</Label>
+                                        <Input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={data.config?.percentage || 50}
+                                            onChange={(e) => handleChange("config", { ...data.config, percentage: parseInt(e.target.value) })}
+                                        />
+                                        <div className="flex justify-between text-xs text-slate-500 font-medium">
+                                            <span>Path B (False)</span>
+                                            <span>Path A (True)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Notify Admin Config */}
+                            {data.actionType === 'notify' && (
+                                <div className="space-y-4">
+                                    <div className="space-y-3">
+                                        <Label>Admin Email</Label>
+                                        <Input
+                                            value={data.config?.email || ""}
+                                            onChange={(e) => handleChange("config", { ...data.config, email: e.target.value })}
+                                            placeholder="admin@example.com"
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <Label>Notification Message</Label>
+                                        <Input
+                                            value={data.config?.message || "New lead detected!"}
+                                            onChange={(e) => handleChange("config", { ...data.config, message: e.target.value })}
+                                            placeholder="Subject or body..."
+                                        />
+                                    </div>
                                 </div>
                             )}
 

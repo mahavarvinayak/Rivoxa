@@ -97,9 +97,9 @@ export function BaseNode({ data, selected, title, icon: Icon, color = "default",
                         position={Position.Bottom}
                         id="true"
                         style={{ left: '30%' }}
-                        className="!w-4 !h-4 !-bottom-3 !bg-emerald-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                        className="!w-4 !h-4 !-bottom-3 !bg-emerald-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125 !z-50"
                     />
-                    <div className="absolute -bottom-8 left-[25%] text-[10px] font-bold text-emerald-600 bg-white px-1 rounded shadow-sm border border-emerald-100">
+                    <div className="absolute -bottom-8 left-[25%] text-[10px] font-bold text-emerald-600 bg-white px-1 rounded shadow-sm border border-emerald-100 pointer-events-none">
                         TRUE
                     </div>
 
@@ -109,9 +109,9 @@ export function BaseNode({ data, selected, title, icon: Icon, color = "default",
                         position={Position.Bottom}
                         id="false"
                         style={{ left: '70%' }}
-                        className="!w-4 !h-4 !-bottom-3 !bg-red-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                        className="!w-4 !h-4 !-bottom-3 !bg-red-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125 !z-50"
                     />
-                    <div className="absolute -bottom-8 left-[65%] text-[10px] font-bold text-red-600 bg-white px-1 rounded shadow-sm border border-red-100">
+                    <div className="absolute -bottom-8 left-[65%] text-[10px] font-bold text-red-600 bg-white px-1 rounded shadow-sm border border-red-100 pointer-events-none">
                         FALSE
                     </div>
                 </>

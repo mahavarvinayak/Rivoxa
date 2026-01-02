@@ -8,12 +8,13 @@ import {
     BackgroundVariant,
     useReactFlow,
     Panel,
+    ConnectionMode,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { TriggerNode } from './nodes/TriggerNode';
 import { ActionNode } from './nodes/ActionNode';
-import { MessageSquare, Clock, GitBranch, Mail, Tag, Zap, Plus, GripVertical } from 'lucide-react';
+import { MessageSquare, Clock, GitBranch, Mail, Tag, Zap, Plus, GripVertical, Bell, Calendar, Shuffle, HeartHandshake, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const nodeTypes = {
@@ -37,6 +38,11 @@ const TOOLBAR_ITEMS = [
     { type: 'action', actionType: 'add_tag', label: 'Add Tag', icon: Tag, color: 'bg-green-100 text-green-600 border-green-200' },
     { type: 'action', actionType: 'collect_email', label: 'Collect Email', icon: Mail, color: 'bg-purple-100 text-purple-600 border-purple-200' },
     { type: 'action', actionType: 'condition', label: 'Condition', icon: GitBranch, color: 'bg-pink-100 text-pink-600 border-pink-200' },
+    { type: 'action', actionType: 'time_window', label: 'Time Window', icon: Calendar, color: 'bg-teal-100 text-teal-600 border-teal-200' },
+    { type: 'action', actionType: 'randomizer', label: 'Randomizer', icon: Shuffle, color: 'bg-violet-100 text-violet-600 border-violet-200' },
+    { type: 'action', actionType: 'sentiment', label: 'Sentiment Check', icon: HeartHandshake, color: 'bg-rose-100 text-rose-600 border-rose-200' },
+    { type: 'action', actionType: 'webhook', label: 'Webhook (API)', icon: Globe, color: 'bg-cyan-100 text-cyan-600 border-cyan-200' },
+    { type: 'action', actionType: 'notify', label: 'Notify Admin', icon: Bell, color: 'bg-amber-100 text-amber-600 border-amber-200' },
 ];
 
 export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodeClick, setNodes }: FlowBuilderProps) {
@@ -96,6 +102,7 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onConn
                 onDragOver={onDragOver}
                 onDrop={onDrop}
                 fitView
+                connectionMode={ConnectionMode.Loose}
                 defaultEdgeOptions={{
                     type: 'smoothstep',
                     animated: true,
