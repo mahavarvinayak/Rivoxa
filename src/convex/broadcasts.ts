@@ -68,12 +68,37 @@ export const send = mutation({
 
     // Get eligible contacts (simplified: all contacts for platform)
     // In real app: apply targetAudience filters
-    const contacts = await ctx.db
+    const allContacts = await ctx.db
       .query("contacts")
       .withIndex("by_user_and_platform", (q) =>
         q.eq("userId", broadcast.userId).eq("platform", broadcast.platform)
       )
       .collect();
+
+    // Apply Target Audience Filtering
+    let contacts = allContacts;
+    const audience = broadcast.targetAudience;
+
+    if (audience) {
+      // 1. Filter by INCLUDED tags (OR logic: has at least one)
+      if (audience.tags && audience.tags.length > 0) {
+        contacts = contacts.filter(contact => {
+          const contactTags = contact.tags || [];
+          return audience.tags!.some(tag => contactTags.includes(tag));
+        });
+      }
+
+      // 2. Filter by EXCLUDED tags (NOT logic: has none)
+      if (audience.excludeTags && audience.excludeTags.length > 0) {
+        contacts = contacts.filter(contact => {
+          const contactTags = contact.tags || [];
+          return !audience.excludeTags!.some(tag => contactTags.includes(tag));
+        });
+      }
+
+      // 3. Filter by Segments (TBD)
+      // if (audience.segments && ...)
+    }
 
     if (contacts.length === 0) {
       await ctx.db.patch(args.id, { status: "completed", totalRecipients: 0 });

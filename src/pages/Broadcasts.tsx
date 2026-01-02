@@ -24,6 +24,8 @@ export default function Broadcasts() {
     const [isCreating, setIsCreating] = useState(false);
     const [name, setName] = useState("");
     const [message, setMessage] = useState("");
+    const [includedTags, setIncludedTags] = useState("");
+    const [excludedTags, setExcludedTags] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (isLoading) {
@@ -51,16 +53,25 @@ export default function Broadcasts() {
         }
         setIsSubmitting(true);
         try {
+            const tags = includedTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+            const exclude = excludedTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+
             const id = await createBroadcast({
                 name,
                 message,
-                platform: "instagram"
+                platform: "instagram",
+                targetAudience: {
+                    tags: tags.length > 0 ? tags : undefined,
+                    excludeTags: exclude.length > 0 ? exclude : undefined
+                }
             });
             await sendBroadcast({ id });
             toast.success("Broadcast started! 🚀");
             setIsCreating(false);
             setName("");
             setMessage("");
+            setIncludedTags("");
+            setExcludedTags("");
         } catch (error) {
             toast.error("Failed to start broadcast");
             console.error(error);
@@ -108,6 +119,29 @@ export default function Broadcasts() {
                                             value={name}
                                             onChange={e => setName(e.target.value)}
                                         />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Filter Audience (Optional)</Label>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1">
+                                                <Input
+                                                    placeholder="Include Tags (e.g. vip, lead)"
+                                                    value={includedTags}
+                                                    onChange={e => setIncludedTags(e.target.value)}
+                                                    className="text-sm"
+                                                />
+                                                <p className="text-[10px] text-slate-400">Match ANY of these tags</p>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <Input
+                                                    placeholder="Exclude Tags (e.g. blocked)"
+                                                    value={excludedTags}
+                                                    onChange={e => setExcludedTags(e.target.value)}
+                                                    className="text-sm"
+                                                />
+                                                <p className="text-[10px] text-slate-400">Exclude ANY of these tags</p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Message</Label>

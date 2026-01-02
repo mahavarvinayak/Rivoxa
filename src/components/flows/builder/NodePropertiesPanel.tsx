@@ -215,22 +215,52 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
 
                             {/* Condition Config */}
                             {data.actionType === 'condition' && (
-                                <div className="space-y-3">
-                                    <Label>If Condition</Label>
-                                    <div className="p-3 bg-slate-50 rounded border text-sm text-slate-600">
-                                        Condition logic is currently visualized via connections.
-                                        Future update will add complex rules here.
+                                <div className="space-y-4">
+                                    <div className="p-3 bg-blue-50 border border-blue-100 rounded-md text-xs text-blue-700">
+                                        Condition nodes split the flow. Connect the <strong>TRUE</strong> handle to one node and <strong>FALSE</strong> to another.
                                     </div>
-                                    <Select
-                                        value={data.config?.conditionType || "has_tag"}
-                                        onValueChange={(val) => handleChange("config", { ...data.config, conditionType: val })}
-                                    >
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="has_tag">User has Tag</SelectItem>
-                                            <SelectItem value="is_follower">User follows me</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+
+                                    <div className="space-y-3">
+                                        <Label>Variable</Label>
+                                        <Select
+                                            value={data.config?.variable || "message_text"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, variable: val })}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Select variable" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="message_text">Message Text</SelectItem>
+                                                <SelectItem value="user_tag">User Tag</SelectItem>
+                                                <SelectItem value="follower_count">Follower Count</SelectItem>
+                                                <SelectItem value="is_follower">Is Follower</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <Label>Operator</Label>
+                                        <Select
+                                            value={data.config?.operator || "contains"}
+                                            onValueChange={(val) => handleChange("config", { ...data.config, operator: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="equals">Equals</SelectItem>
+                                                <SelectItem value="contains">Contains</SelectItem>
+                                                <SelectItem value="starts_with">Starts With</SelectItem>
+                                                <SelectItem value="greater_than">Greater Than (Numbers)</SelectItem>
+                                                <SelectItem value="less_than">Less Than (Numbers)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <Label>Value</Label>
+                                        <Input
+                                            value={data.config?.value || ""}
+                                            onChange={(e) => handleChange("config", { ...data.config, value: e.target.value })}
+                                            placeholder="Value to check against..."
+                                        />
+                                    </div>
                                 </div>
                             )}
 

@@ -65,6 +65,77 @@ export const executeNode = internalMutation({
                     });
                     return; // EXIT, do not continue immediately
                 }
+            } else if (actionType === 'condition') {
+                // CONDITIONAL LOGIC EXECUTION
+                const variable = config.variable || 'message_text';
+                const operator = config.operator || 'contains';
+                const value = config.value?.toLowerCase() || '';
+
+                // 1. Resolve Variable
+                let actualValue = '';
+                if (variable === 'message_text') actualValue = (args.context.message || '').toLowerCase();
+                else if (variable === 'user_tag') actualValue = (args.context.tags || []).join(',').toLowerCase();
+                else if (variable === 'follower_count') actualValue = args.context.followerCount || 0;
+                else if (variable === 'is_follower') actualValue = args.context.isFollower ? 'true' : 'false';
+
+                // 2. Evaluate Condition
+                let result = false;
+                if (operator === 'equals') result = actualValue == value;
+                else if (operator === 'contains') result = actualValue.includes(value);
+                else if (operator === 'starts_with') result = actualValue.toString().startsWith(value);
+                else if (operator === 'greater_than') result = Number(actualValue) > Number(value);
+                else if (operator === 'less_than') result = Number(actualValue) < Number(value);
+
+                console.log(`Condition Checked: ${variable} (${actualValue}) ${operator} ${value} = ${result}`);
+
+                // 3. Find Next Node based on Result Handle
+                const targetHandle = result ? 'true' : 'false';
+
+                // Custom logic to find specific edge handle
+                // We access the raw flow object to check edge handles
+                const edges = (flow as any).edges.filter((edge: any) =>
+                    edge.source === args.nodeId && edge.sourceHandle === targetHandle
+                );
+
+                const nextNodeIds = edges.map((e: any) => e.target);
+
+                if (nextNodeIds.length > 0) {
+                    await ctx.scheduler.runAfter(0, internal.flowEngineGraph.executeNode, {
+                        flowId: args.flowId,
+                        nodeId: nextNodeIds[0], // Follow the first matching path
+                        context: args.context,
+                    });
+                }
+                return; // EXIT, handled branching manually
+            } else if (actionType === 'add_tag') {
+                // ADD TAG LOGIC
+                // We need to find the specific contact and update them
+                // This assumes contacts table exists and uses platformUserId
+                const tagName = config.tag;
+                if (tagName) {
+                    const contact = await ctx.db.query("contacts")
+                        .withIndex("by_platform_user", (q) => q.eq("platformUserId", args.context.userId))
+                        .first();
+
+                    if (contact) {
+                        const currentTags = contact.tags || [];
+                        if (!currentTags.includes(tagName)) {
+                            await ctx.db.patch(contact._id, { tags: [...currentTags, tagName] });
+                        }
+                    }
+                }
+                console.log(`Added Tag: ${tagName}`);
+
+            } else if (actionType === 'collect_email') {
+                // COLLECT EMAIL LOGIC
+                const prompt = config.message || "Please share your email address";
+
+                await ctx.scheduler.runAfter(0, internal.instagram.sendDirectMessage, {
+                    userId: args.context.userId,
+                    message: prompt,
+                    pageId: args.context.pageId,
+                });
+                console.log(`Sent Email Prompt: ${prompt}`);
             }
         }
 

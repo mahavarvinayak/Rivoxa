@@ -30,7 +30,7 @@ export function ActionNode({ data, selected }: any) {
             title={config.label}
             icon={config.icon}
             color={config.color}
-            handles={{ source: true, target: true }}
+            handles={{ source: true, target: true, split: actionType === 'condition' }}
         >
             <div className="line-clamp-2 text-slate-600">
                 {data.config?.message || data.config?.tag || (actionType === 'condition' ? 'Check logic...' : "Configure this action")}

@@ -12,6 +12,7 @@ interface BaseNodeProps {
     handles?: {
         source?: boolean;
         target?: boolean;
+        split?: boolean;
     };
 }
 
@@ -78,13 +79,42 @@ export function BaseNode({ data, selected, title, icon: Icon, color = "default",
                 </div>
             )}
 
-            {/* Bottom Handle - Output */}
-            {handles.source && (
+            {/* Bottom Handle - Standard Output */}
+            {handles.source && !handles.split && (
                 <Handle
                     type="source"
                     position={Position.Bottom}
                     className="!w-4 !h-4 !-bottom-3 !bg-zinc-800 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
                 />
+            )}
+
+            {/* Split Handles for Conditions (True/False) */}
+            {handles.split && (
+                <>
+                    {/* TRUE Handle */}
+                    <Handle
+                        type="source"
+                        position={Position.Bottom}
+                        id="true"
+                        style={{ left: '30%' }}
+                        className="!w-4 !h-4 !-bottom-3 !bg-emerald-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                    />
+                    <div className="absolute -bottom-8 left-[25%] text-[10px] font-bold text-emerald-600 bg-white px-1 rounded shadow-sm border border-emerald-100">
+                        TRUE
+                    </div>
+
+                    {/* FALSE Handle */}
+                    <Handle
+                        type="source"
+                        position={Position.Bottom}
+                        id="false"
+                        style={{ left: '70%' }}
+                        className="!w-4 !h-4 !-bottom-3 !bg-red-500 !border-2 !border-white !rounded-full transition-transform hover:scale-125"
+                    />
+                    <div className="absolute -bottom-8 left-[65%] text-[10px] font-bold text-red-600 bg-white px-1 rounded shadow-sm border border-red-100">
+                        FALSE
+                    </div>
+                </>
             )}
         </div>
     );
