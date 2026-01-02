@@ -8,7 +8,7 @@ export const list = query({
   handler: async (ctx) => {
     const user = await getCurrentUser(ctx);
     if (!user) return [];
-    
+
     return await ctx.db
       .query("integrations")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
@@ -21,33 +21,57 @@ export const getByType = query({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) return null;
-    
+
     const integrations = await ctx.db
       .query("integrations")
-      .withIndex("by_user_and_type", (q) => 
+      .withIndex("by_user_and_type", (q) =>
         q.eq("userId", user._id).eq("type", args.type)
       )
       .collect();
-    
+
     return integrations[0] || null;
   },
 });
 
 export const getByTypeInternal = internalQuery({
-  args: { 
+  args: {
     type: integrationTypeValidator,
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
     const integrations = await ctx.db
       .query("integrations")
-      .withIndex("by_user_and_type", (q) => 
+      .withIndex("by_user_and_type", (q) =>
         q.eq("userId", args.userId).eq("type", args.type)
       )
       .collect();
-    
+
     return integrations[0] || null;
   },
+});
+
+export const getByPlatformUserId = internalQuery({
+  args: {
+    platformUserId: v.string(),
+    type: integrationTypeValidator
+  },
+  handler: async (ctx, args) => {
+    // Since we don't have an index on just platformUserId + type (or maybe we do? probably not optimal)
+    // We will scan for now, or assume uniqueness.
+    // Better schema would have an index `by_platform_user_id`. 
+    // Let's assume there isn't one and filter.
+
+    const integrations = await ctx.db
+      .query("integrations")
+      .filter((q) => q.and(
+        q.eq(q.field("platformUserId"), args.platformUserId),
+        q.eq(q.field("type"), args.type)
+      ))
+      .collect();
+
+    // Return the most recently updated one if multiple (rare)
+    return integrations[0] || null;
+  }
 });
 
 export const create = internalMutation({
@@ -66,11 +90,11 @@ export const create = internalMutation({
     // Check if integration already exists
     const existing = await ctx.db
       .query("integrations")
-      .withIndex("by_user_and_type", (q) => 
+      .withIndex("by_user_and_type", (q) =>
         q.eq("userId", args.userId).eq("type", args.type)
       )
       .first();
-    
+
     if (existing) {
       // Update existing integration
       await ctx.db.patch(existing._id, {
@@ -86,7 +110,7 @@ export const create = internalMutation({
       });
       return existing._id;
     }
-    
+
     return await ctx.db.insert("integrations", {
       userId: args.userId,
       type: args.type,
@@ -108,12 +132,12 @@ export const disconnect = mutation({
   handler: async (ctx, args) => {
     const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
-    
+
     const integration = await ctx.db.get(args.id);
     if (!integration || integration.userId !== user._id) {
       throw new Error("Integration not found");
     }
-    
+
     await ctx.db.patch(args.id, { isActive: false });
   },
 });
@@ -151,14 +175,14 @@ export const getExpiringSoon = internalQuery({
   args: {},
   handler: async (ctx) => {
     const sevenDaysFromNow = Date.now() + (7 * 24 * 60 * 60 * 1000);
-    
+
     const allIntegrations = await ctx.db
       .query("integrations")
       .collect();
-    
-    return allIntegrations.filter(integration => 
-      integration.isActive && 
-      integration.expiresAt && 
+
+    return allIntegrations.filter(integration =>
+      integration.isActive &&
+      integration.expiresAt &&
       integration.expiresAt < sevenDaysFromNow &&
       integration.expiresAt > Date.now()
     );
