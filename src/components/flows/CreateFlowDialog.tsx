@@ -439,6 +439,7 @@ export function CreateFlowDialog({ open, onOpenChange }: CreateFlowDialogProps) 
                           <SelectContent>
                             <SelectItem value="instagram_comment">Instagram Comment</SelectItem>
                             <SelectItem value="instagram_dm">Instagram DM</SelectItem>
+                            <SelectItem value="whatsapp" disabled className="text-zinc-400">WhatsApp (Coming Soon 🚧)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
