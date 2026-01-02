@@ -6,14 +6,14 @@ import { useParams, useNavigate } from "react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useState, useEffect, useCallback } from "react";
-import { useNodesState, useEdgesState, Node, Edge, ReactFlowProvider } from "@xyflow/react";
+import { useNodesState, useEdgesState, Node, Edge, ReactFlowProvider, addEdge, OnConnect } from "@xyflow/react";
 import { toast } from "sonner";
 
 export default function FlowEditor() {
     const { flowId } = useParams();
     const navigate = useNavigate();
 
-    // Check if we are creating new or editing
+    // Check if we are crearating new or editing
     const flow = useQuery(api.flows.get, { id: flowId as any });
     const updateFlow = useMutation(api.flows.update);
 
@@ -50,6 +50,11 @@ export default function FlowEditor() {
             setIsSaving(false);
         }
     };
+
+    const onConnect: OnConnect = useCallback(
+        (params) => setEdges((eds) => addEdge(params, eds)),
+        [setEdges],
+    );
 
     const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
         setSelectedNodeId(node.id);
@@ -112,6 +117,7 @@ export default function FlowEditor() {
                             edges={edges}
                             onNodesChange={onNodesChange}
                             onEdgesChange={onEdgesChange}
+                            onConnect={onConnect}
                             onNodeClick={handleNodeClick}
                             setNodes={setNodes}
                         />

@@ -26,6 +26,7 @@ interface FlowBuilderProps {
     edges: any[];
     onNodesChange: any;
     onEdgesChange: any;
+    onConnect: any;
     onNodeClick?: (event: React.MouseEvent, node: any) => void;
     setNodes: any;
 }
@@ -38,7 +39,7 @@ const TOOLBAR_ITEMS = [
     { type: 'action', actionType: 'condition', label: 'Condition', icon: GitBranch, color: 'bg-pink-100 text-pink-600 border-pink-200' },
 ];
 
-export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNodeClick, setNodes }: FlowBuilderProps) {
+export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onConnect, onNodeClick, setNodes }: FlowBuilderProps) {
     const { screenToFlowPosition } = useReactFlow();
 
     const onDragOver = useCallback((event: React.DragEvent) => {
@@ -89,6 +90,7 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
                 edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
                 onNodeClick={onNodeClick}
                 nodeTypes={nodeTypes}
                 onDragOver={onDragOver}

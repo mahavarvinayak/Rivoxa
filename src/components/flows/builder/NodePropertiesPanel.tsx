@@ -127,14 +127,15 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="send_dm">Send Message</SelectItem>
-                                        <SelectItem value="delay">Time Delay</SelectItem>
+                                        <SelectItem value="delay">Smart Delay</SelectItem>
                                         <SelectItem value="add_tag">Add Tag</SelectItem>
-                                        <SelectItem value="email">Send Email</SelectItem>
+                                        <SelectItem value="collect_email">Collect Email</SelectItem>
+                                        <SelectItem value="condition">Condition</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
-                            {/* Dynamic Action Fields */}
+                            {/* Send DM Config */}
                             {data.actionType === 'send_dm' && (
                                 <div className="space-y-3">
                                     <Label>Message Text</Label>
@@ -151,6 +152,7 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
                                 </div>
                             )}
 
+                            {/* Delay Config */}
                             {data.actionType === 'delay' && (
                                 <div className="flex gap-2">
                                     <div className="space-y-3 flex-1">
@@ -175,6 +177,60 @@ export function NodePropertiesPanel({ selectedNode, onUpdateNode, onDeleteNode, 
                                             </SelectContent>
                                         </Select>
                                     </div>
+                                </div>
+                            )}
+
+                            {/* Add Tag Config */}
+                            {data.actionType === 'add_tag' && (
+                                <div className="space-y-3">
+                                    <Label>Tag Name</Label>
+                                    <Input
+                                        value={data.config?.tag || ""}
+                                        onChange={(e) => handleChange("config", { ...data.config, tag: e.target.value })}
+                                        placeholder="e.g. interested_pro"
+                                    />
+                                    <p className="text-xs text-slate-500">
+                                        Tag applied to the user.
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Collect Email Config */}
+                            {data.actionType === 'collect_email' && (
+                                <div className="space-y-3">
+                                    <Label>Prompt Message</Label>
+                                    <Textarea
+                                        value={data.config?.message || "Please share your email address:"}
+                                        onChange={(e) => handleChange("config", { ...data.config, message: e.target.value })}
+                                        rows={3}
+                                    />
+                                    <Label className="mt-2 block">Success Message</Label>
+                                    <Input
+                                        value={data.config?.successMessage || "Thanks! We've saved your email."}
+                                        onChange={(e) => handleChange("config", { ...data.config, successMessage: e.target.value })}
+                                        placeholder="Confirmation reply"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Condition Config */}
+                            {data.actionType === 'condition' && (
+                                <div className="space-y-3">
+                                    <Label>If Condition</Label>
+                                    <div className="p-3 bg-slate-50 rounded border text-sm text-slate-600">
+                                        Condition logic is currently visualized via connections.
+                                        Future update will add complex rules here.
+                                    </div>
+                                    <Select
+                                        value={data.config?.conditionType || "has_tag"}
+                                        onValueChange={(val) => handleChange("config", { ...data.config, conditionType: val })}
+                                    >
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="has_tag">User has Tag</SelectItem>
+                                            <SelectItem value="is_follower">User follows me</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             )}
 
