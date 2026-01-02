@@ -1,5 +1,5 @@
 import { BaseNode } from "./BaseNode";
-import { MessageSquare, Mail, UserPlus, Clock } from "lucide-react";
+import { MessageSquare, Mail, Tag, Clock, GitBranch } from "lucide-react";
 
 export function ActionNode({ data, selected }: any) {
     const actionType = data.actionType || "send_dm";
@@ -9,11 +9,13 @@ export function ActionNode({ data, selected }: any) {
             case "send_dm":
                 return { icon: MessageSquare, label: "Send DM", color: "blue" };
             case "collect_email":
-                return { icon: Mail, label: "Collect Email", color: "orange" };
+                return { icon: Mail, label: "Collect Email", color: "purple" };
             case "add_tag":
-                return { icon: UserPlus, label: "Add Tag", color: "green" };
+                return { icon: Tag, label: "Add Tag", color: "green" };
             case "delay":
-                return { icon: Clock, label: "Delay", color: "default" };
+                return { icon: Clock, label: "Smart Delay", color: "orange" };
+            case "condition":
+                return { icon: GitBranch, label: "Condition", color: "pink" }; // Distinct color
             default:
                 return { icon: MessageSquare, label: "Action", color: "default" };
         }
@@ -31,7 +33,7 @@ export function ActionNode({ data, selected }: any) {
             handles={{ source: true, target: true }}
         >
             <div className="line-clamp-2 text-slate-600">
-                {data.config?.message || data.config?.tag || "Configure this action"}
+                {data.config?.message || data.config?.tag || (actionType === 'condition' ? 'Check logic...' : "Configure this action")}
             </div>
         </BaseNode>
     );

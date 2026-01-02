@@ -1,52 +1,25 @@
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import {
     ReactFlow,
     MiniMap,
     Controls,
     Background,
-    useNodesState,
-    useEdgesState,
-    addEdge,
-    Connection,
-    Edge,
-    Node,
     BackgroundVariant,
-    OnNodesChange,
-    OnEdgesChange,
-    OnConnect,
     useReactFlow,
+    Panel,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { TriggerNode } from './nodes/TriggerNode';
 import { ActionNode } from './nodes/ActionNode';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { MessageSquare, Clock, GitBranch, Mail, Tag, Zap, Plus, GripVertical } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const nodeTypes = {
     trigger: TriggerNode,
     action: ActionNode,
 };
-
-const initialNodes: Node[] = [
-    {
-        id: 'start',
-        type: 'trigger',
-        position: { x: 100, y: 100 },
-        data: { triggerType: 'instagram_comment', keywords: ['info'] }
-    },
-    {
-        id: '1',
-        type: 'action',
-        position: { x: 100, y: 300 },
-        data: { actionType: 'send_dm', config: { message: 'Hello! Here is the info.' } }
-    },
-];
-
-const initialEdges: Edge[] = [
-    { id: 'e1-2', source: 'start', target: '1' },
-];
 
 interface FlowBuilderProps {
     nodes: any[];
@@ -56,6 +29,14 @@ interface FlowBuilderProps {
     onNodeClick?: (event: React.MouseEvent, node: any) => void;
     setNodes: any;
 }
+
+const TOOLBAR_ITEMS = [
+    { type: 'action', actionType: 'send_dm', label: 'Message', icon: MessageSquare, color: 'bg-blue-100 text-blue-600 border-blue-200' },
+    { type: 'action', actionType: 'delay', label: 'Smart Delay', icon: Clock, color: 'bg-orange-100 text-orange-600 border-orange-200' },
+    { type: 'action', actionType: 'add_tag', label: 'Add Tag', icon: Tag, color: 'bg-green-100 text-green-600 border-green-200' },
+    { type: 'action', actionType: 'collect_email', label: 'Collect Email', icon: Mail, color: 'bg-purple-100 text-purple-600 border-purple-200' },
+    { type: 'action', actionType: 'condition', label: 'Condition', icon: GitBranch, color: 'bg-pink-100 text-pink-600 border-pink-200' },
+];
 
 export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNodeClick, setNodes }: FlowBuilderProps) {
     const { screenToFlowPosition } = useReactFlow();
@@ -69,10 +50,10 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
         (event: React.DragEvent) => {
             event.preventDefault();
 
-            const type = event.dataTransfer.getData('application/reactflow');
-            if (typeof type === 'undefined' || !type) {
-                return;
-            }
+            const type = event.dataTransfer.getData('application/reactflow/type');
+            const actionType = event.dataTransfer.getData('application/reactflow/actionType');
+
+            if (!type) return;
 
             const position = screenToFlowPosition({
                 x: event.clientX,
@@ -80,10 +61,14 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
             });
 
             const newNode = {
-                id: `${type}-${Date.now()}`, // Unique ID
+                id: `${type}-${Date.now()}`,
                 type,
                 position,
-                data: { label: `${type} node` },
+                data: {
+                    label: `New ${type}`,
+                    actionType: actionType || undefined, // Store the specific action type
+                    config: {}
+                },
             };
 
             setNodes((nds: any) => nds.concat(newNode));
@@ -91,8 +76,14 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
         [screenToFlowPosition, setNodes],
     );
 
+    const onDragStart = (event: React.DragEvent, nodeType: string, actionType: string) => {
+        event.dataTransfer.setData('application/reactflow/type', nodeType);
+        event.dataTransfer.setData('application/reactflow/actionType', actionType);
+        event.dataTransfer.effectAllowed = 'move';
+    };
+
     return (
-        <div className="h-full w-full bg-slate-50">
+        <div className="h-full w-full bg-slate-50 relative">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -103,24 +94,49 @@ export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNode
                 onDragOver={onDragOver}
                 onDrop={onDrop}
                 fitView
+                defaultEdgeOptions={{
+                    type: 'smoothstep',
+                    animated: true,
+                    style: { stroke: '#64748b', strokeWidth: 2 }
+                }}
             >
-                <Background />
-                <Controls />
-                <MiniMap />
-            </ReactFlow>
-            <div className="absolute top-4 left-4 z-10 bg-white p-2 rounded-lg shadow-md border border-slate-200">
-                <div
-                    className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded cursor-grab"
-                    onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'action')}
-                    draggable
-                >
-                    <div className="w-8 h-8 rounded bg-blue-100 border border-blue-300 flex items-center justify-center text-blue-600 font-bold text-xs">
+                <Background color="#94a3b8" gap={16} size={1} variant={BackgroundVariant.Dots} />
+                <Controls className="bg-white border-slate-200 shadow-md !text-slate-600" />
+                <MiniMap className="!bg-slate-50 border-slate-200" />
 
-                        MSG
+                {/* Floating Node Library Panel */}
+                <Panel position="top-left" className="m-4">
+                    <div className="bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-slate-200 w-64 flex flex-col gap-3 transition-opacity">
+                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                            <Zap className="h-4 w-4 text-slate-500" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Node Library</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-2">
+                            {TOOLBAR_ITEMS.map((item) => (
+                                <div
+                                    key={item.label}
+                                    className="group flex items-center gap-3 p-2 bg-white rounded-lg border border-slate-100 shadow-sm hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all cursor-grab active:cursor-grabbing"
+                                    onDragStart={(event) => onDragStart(event, item.type, item.actionType)}
+                                    draggable
+                                >
+                                    <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center transition-colors", item.color)}>
+                                        <item.icon className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-slate-700">{item.label}</p>
+                                    </div>
+                                    <GripVertical className="h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="pt-2 text-[10px] text-center text-slate-400">
+                            Drag & drop to canvas
+                        </div>
                     </div>
-                    <span className="text-sm font-medium">Add Message</span>
-                </div>
-            </div>
+                </Panel>
+            </ReactFlow>
         </div>
     );
 }
