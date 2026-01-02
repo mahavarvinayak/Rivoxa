@@ -241,8 +241,13 @@ export default function Flows() {
                       <div>
                         <span className="font-semibold text-slate-900">{flow.totalExecutions || 0}</span> runs
                       </div>
-                      <div className="flex items-center text-blue-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        Edit Flow <ArrowRight className="h-3 w-3 ml-1" />
+                      <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="sm" className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/flows/${flow._id}/editor`);
+                        }}>
+                          Edit <ArrowRight className="h-3 w-3 ml-1" />
+                        </Button>
                       </div>
                     </div>
                   </CardContent>

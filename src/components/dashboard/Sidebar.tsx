@@ -9,7 +9,8 @@ import {
   LifeBuoy,
   LogOut,
   ChevronRight,
-  Megaphone
+  Megaphone,
+  BarChart3
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { motion } from "framer-motion";
@@ -26,6 +27,7 @@ export function Sidebar({ className, onSignOut, user }: SidebarProps) {
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: BarChart3, label: "Analytics", path: "/analytics" },
     { icon: GitGraph, label: "Flows", path: "/flows" },
     { icon: Megaphone, label: "Broadcasts", path: "/broadcasts" },
     { icon: Link2, label: "Integrations", path: "/integrations" },
