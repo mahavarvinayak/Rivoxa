@@ -15,6 +15,7 @@ import {
     OnNodesChange,
     OnEdgesChange,
     OnConnect,
+    useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -48,33 +49,78 @@ const initialEdges: Edge[] = [
 ];
 
 interface FlowBuilderProps {
-    nodes: Node[];
-    edges: Edge[];
-    onNodesChange: OnNodesChange;
-    onEdgesChange: OnEdgesChange;
-    onConnect: OnConnect;
+    nodes: any[];
+    edges: any[];
+    onNodesChange: any;
+    onEdgesChange: any;
+    onNodeClick?: (event: React.MouseEvent, node: any) => void;
+    setNodes: any;
 }
 
-export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onConnect }: FlowBuilderProps) {
-    // The addActionNode logic and buttons are removed from here as they depend on local state
-    // that is now lifted up. They would need to be passed down as props or managed by the parent.
+export function FlowBuilder({ nodes, edges, onNodesChange, onEdgesChange, onNodeClick, setNodes }: FlowBuilderProps) {
+    const { screenToFlowPosition } = useReactFlow();
+
+    const onDragOver = useCallback((event: React.DragEvent) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, []);
+
+    const onDrop = useCallback(
+        (event: React.DragEvent) => {
+            event.preventDefault();
+
+            const type = event.dataTransfer.getData('application/reactflow');
+            if (typeof type === 'undefined' || !type) {
+                return;
+            }
+
+            const position = screenToFlowPosition({
+                x: event.clientX,
+                y: event.clientY,
+            });
+
+            const newNode = {
+                id: `${type}-${Date.now()}`, // Unique ID
+                type,
+                position,
+                data: { label: `${type} node` },
+            };
+
+            setNodes((nds: any) => nds.concat(newNode));
+        },
+        [screenToFlowPosition, setNodes],
+    );
 
     return (
-        <div className="w-full h-full bg-slate-50 relative border rounded-lg overflow-hidden">
-            {/* ... existing buttons can stay or move ... */}
+        <div className="h-full w-full bg-slate-50">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
+                onNodeClick={onNodeClick}
                 nodeTypes={nodeTypes}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
                 fitView
             >
+                <Background />
                 <Controls />
                 <MiniMap />
-                <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
             </ReactFlow>
+            <div className="absolute top-4 left-4 z-10 bg-white p-2 rounded-lg shadow-md border border-slate-200">
+                <div
+                    className="flex items-center gap-2 p-2 hover:bg-slate-100 rounded cursor-grab"
+                    onDragStart={(event) => event.dataTransfer.setData('application/reactflow', 'action')}
+                    draggable
+                >
+                    <div className="w-8 h-8 rounded bg-blue-100 border border-blue-300 flex items-center justify-center text-blue-600 font-bold text-xs">
+                        MSG
+                    </div>
+                    <span className="text-sm font-medium">Add Message</span>
+                </div>
+            </div>
         </div>
     );
 }
+```

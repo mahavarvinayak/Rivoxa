@@ -1,55 +1,43 @@
 import { FlowBuilder } from "@/components/flows/builder/FlowBuilder";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, Loader2, Plus } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
-import { useMutation, useQuery } from "convex/react";
+import { NodePropertiesPanel } from "@/components/flows/builder/NodePropertiesPanel";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { useParams, useNavigate } from "react-router";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useEffect, useCallback, useState } from "react";
-import { useNodesState, useEdgesState, addEdge, Connection, Edge, Node } from '@xyflow/react';
+import { useState, useEffect, useCallback } from "react";
+import { useNodesState, useEdgesState, Node, Edge } from "@xyflow/react";
 import { toast } from "sonner";
 
-const initialNodes: Node[] = [
-    {
-        id: 'start',
-        type: 'trigger',
-        position: { x: 100, y: 100 },
-        data: { triggerType: 'instagram_comment', keywords: ['info'] }
-    },
-];
-
 export default function FlowEditor() {
-    const navigate = useNavigate();
     const { flowId } = useParams();
+    const navigate = useNavigate();
 
     // Check if we are creating new or editing
-    const flow = useQuery(api.flows.get, flowId ? { id: flowId as any } : "skip");
+    const flow = useQuery(api.flows.get, { id: flowId as any });
     const updateFlow = useMutation(api.flows.update);
 
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
     // Load initial data
     useEffect(() => {
         if (flow) {
-            if (flow.nodes) setNodes(flow.nodes);
-            if (flow.edges) setEdges(flow.edges);
+            if (flow.nodes) {
+                setNodes(flow.nodes);
+            }
+            if (flow.edges) {
+                setEdges(flow.edges);
+            }
         }
     }, [flow, setNodes, setEdges]);
-
-    const onConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-        [setEdges],
-    );
 
     const handleSave = async () => {
         if (!flowId) return;
         setIsSaving(true);
         try {
-            // Also basic compile to legacy actions for compatibility (simple linear)
-            // Find start node, find connected action... this is complex.
-            // For now, just save graph data. Execution will need update.
-
             await updateFlow({
                 id: flowId as any,
                 nodes,
@@ -58,58 +46,85 @@ export default function FlowEditor() {
             toast.success("Flow saved!");
         } catch (error) {
             toast.error("Failed to save flow");
-            console.error(error);
         } finally {
             setIsSaving(false);
         }
     };
 
-    const addActionNode = () => {
-        const newNode: Node = {
-            id: Math.random().toString(),
-            type: 'action',
-            position: { x: 100, y: nodes.length * 150 + 100 },
-            data: { actionType: 'send_dm', config: { message: 'New message' } },
-        };
-        setNodes((nds) => [...nds, newNode]);
-    };
+    const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+        setSelectedNodeId(node.id);
+    }, []);
 
-    if (!flowId) return <div>Invalid Flow ID</div>;
+    const handleUpdateNode = useCallback((nodeId: string, newData: any) => {
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id === nodeId) {
+                    return { ...node, data: newData };
+                }
+                return node;
+            })
+        );
+    }, [setNodes]);
+
+    const handleDeleteNode = useCallback((nodeId: string) => {
+        setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+        setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+        setSelectedNodeId(null);
+    }, [setNodes, setEdges]);
+
+    if (!flow) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            </div>
+        );
+    }
+
+    const selectedNode = nodes.find(n => n.id === selectedNodeId) || null;
 
     return (
-        <div className="h-screen flex flex-col bg-background">
+        <div className="h-screen flex flex-col bg-slate-50">
             {/* Header */}
-            <header className="border-b bg-card shadow-sm px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <header className="h-14 border-b bg-white px-4 flex items-center justify-between shrink-0 z-10">
+                <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => navigate("/flows")}>
-                        <ArrowLeft className="h-5 w-5" />
+                        <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h1 className="text-lg font-semibold">Flow Editor</h1>
-                        <p className="text-xs text-muted-foreground">{flow?.name || "Loading..."}</p>
+                        <h1 className="font-semibold text-slate-900">{flow.name}</h1>
+                        <p className="text-xs text-slate-500">Visual Flow Editor</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button size="sm" variant="secondary" onClick={addActionNode}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Action
-                    </Button>
-                    <Button size="sm" onClick={handleSave} disabled={isSaving}>
-                        {isSaving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-                        Save Changes
+                <div className="flex gap-2">
+                    <Button onClick={handleSave} disabled={isSaving}>
+                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                        Save Flow
                     </Button>
                 </div>
             </header>
 
-            {/* Editor Canvas */}
-            <div className="flex-1 overflow-hidden p-4 bg-slate-100">
-                <FlowBuilder
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                />
+            {/* Main Content */}
+            <div className="flex-1 flex overflow-hidden">
+                <div className="flex-1 relative">
+                    <FlowBuilder
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onNodeClick={handleNodeClick}
+                        setNodes={setNodes}
+                    />
+                </div>
+
+                {/* Right Sidebar (Properties Panel) */}
+                {selectedNode && (
+                    <NodePropertiesPanel
+                        selectedNode={selectedNode}
+                        onUpdateNode={handleUpdateNode}
+                        onDeleteNode={handleDeleteNode}
+                        onClose={() => setSelectedNodeId(null)}
+                    />
+                )}
             </div>
         </div>
     );
