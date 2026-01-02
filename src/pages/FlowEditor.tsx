@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useState, useEffect, useCallback } from "react";
-import { useNodesState, useEdgesState, Node, Edge } from "@xyflow/react";
+import { useNodesState, useEdgesState, Node, Edge, ReactFlowProvider } from "@xyflow/react";
 import { toast } from "sonner";
 
 export default function FlowEditor() {
@@ -104,28 +104,30 @@ export default function FlowEditor() {
             </header>
 
             {/* Main Content */}
-            <div className="flex-1 flex overflow-hidden">
-                <div className="flex-1 relative">
-                    <FlowBuilder
-                        nodes={nodes}
-                        edges={edges}
-                        onNodesChange={onNodesChange}
-                        onEdgesChange={onEdgesChange}
-                        onNodeClick={handleNodeClick}
-                        setNodes={setNodes}
-                    />
-                </div>
+            <ReactFlowProvider>
+                <div className="flex-1 flex overflow-hidden">
+                    <div className="flex-1 relative">
+                        <FlowBuilder
+                            nodes={nodes}
+                            edges={edges}
+                            onNodesChange={onNodesChange}
+                            onEdgesChange={onEdgesChange}
+                            onNodeClick={handleNodeClick}
+                            setNodes={setNodes}
+                        />
+                    </div>
 
-                {/* Right Sidebar (Properties Panel) */}
-                {selectedNode && (
-                    <NodePropertiesPanel
-                        selectedNode={selectedNode}
-                        onUpdateNode={handleUpdateNode}
-                        onDeleteNode={handleDeleteNode}
-                        onClose={() => setSelectedNodeId(null)}
-                    />
-                )}
-            </div>
+                    {/* Right Sidebar (Properties Panel) */}
+                    {selectedNode && (
+                        <NodePropertiesPanel
+                            selectedNode={selectedNode}
+                            onUpdateNode={handleUpdateNode}
+                            onDeleteNode={handleDeleteNode}
+                            onClose={() => setSelectedNodeId(null)}
+                        />
+                    )}
+                </div>
+            </ReactFlowProvider>
         </div>
     );
 }
