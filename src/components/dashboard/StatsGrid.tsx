@@ -8,39 +8,33 @@ interface StatsGridProps {
 }
 
 export function StatsGrid({ stats, planLimits }: StatsGridProps) {
-  const currentLimit = planLimits[stats?.planType as keyof typeof planLimits] || 100;
-  const usagePercentage = currentLimit === Infinity 
-    ? 0 
-    : ((stats?.messagesUsedToday || 0) / currentLimit) * 100;
-
   const cards = [
     {
-      title: "Messages Today",
-      value: stats?.messagesUsedToday || 0,
-      subtext: `of ${currentLimit === Infinity ? "unlimited" : currentLimit} limit`,
-      icon: MessageSquare,
+      title: "Total Interactions",
+      value: stats?.totalExecutions || 0,
+      subtext: "Automated replies sent",
+      icon: Zap,
       color: "text-blue-600",
       bg: "bg-blue-50",
-      progress: Math.min(usagePercentage, 100),
-      progressColor: "bg-blue-600"
+      trend: "All time"
     },
     {
       title: "Active Flows",
-      value: stats?.activeFlowsCount || 0,
-      subtext: "Running automations",
-      icon: Zap,
+      value: stats?.activeFlows || 0,
+      subtext: `${stats?.totalFlows || 0} total flows created`,
+      icon: MessageSquare,
       color: "text-amber-600",
       bg: "bg-amber-50",
-      trend: "+2 this week"
+      trend: "Online"
     },
     {
-      title: "Connected Accounts",
-      value: stats?.integrationsCount || 0,
-      subtext: "Active channels",
+      title: "Audience Reach",
+      value: stats?.totalContacts || 0,
+      subtext: "People interacted with",
       icon: Instagram,
       color: "text-purple-600",
       bg: "bg-purple-50",
-      trend: "Healthy"
+      trend: "Growing"
     }
   ];
 
@@ -73,17 +67,7 @@ export function StatsGrid({ stats, planLimits }: StatsGridProps) {
                 )}
               </div>
               <p className="text-xs text-slate-500 mt-1">{card.subtext}</p>
-              
-              {card.progress !== undefined && (
-                <div className="w-full bg-slate-100 rounded-full h-1.5 mt-4 overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${card.progress}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className={`h-full rounded-full ${card.progressColor}`}
-                  />
-                </div>
-              )}
+
             </CardContent>
           </Card>
         </motion.div>
