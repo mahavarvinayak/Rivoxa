@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Settings from "./pages/Settings.tsx";
 import Flows from "./pages/Flows.tsx";
 import FlowEditor from "./pages/FlowEditor.tsx";
+import Broadcasts from "./pages/Broadcasts.tsx";
 import Pricing from "./pages/Pricing.tsx";
 import Support from "./pages/Support.tsx";
 import Features from "./pages/Features.tsx";
@@ -66,6 +67,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/settings" element={<Settings />} />
             <Route path="/flows" element={<Flows />} />
             <Route path="/flows/:flowId/editor" element={<FlowEditor />} />
+            <Route path="/broadcasts" element={<Broadcasts />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/support" element={<Support />} />
             <Route path="/features" element={<Features />} />

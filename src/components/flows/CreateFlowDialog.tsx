@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { FLOW_TEMPLATES, FlowTemplate } from "@/lib/templates";
 import { cn } from "@/lib/utils";
@@ -23,12 +23,12 @@ import { useNavigate } from "react-router";
 interface CreateFlowDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  reels?: any[];
-  defaultPostId?: string;
 }
 
-export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "all_reels" }: CreateFlowDialogProps) {
+export function CreateFlowDialog({ open, onOpenChange }: CreateFlowDialogProps) {
   const createFlow = useMutation(api.flows.create);
+  const syncMediaMutation = useAction(api.media.syncInstagramMedia);
+  const userReels = useQuery(api.media.listReels);
   const navigate = useNavigate();
 
   // Mode: 'selection' | 'quick' | 'advanced' | 'template_config'
@@ -41,8 +41,22 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
   const [triggerType, setTriggerType] = useState<string>("instagram_comment");
   const [keywords, setKeywords] = useState("");
   const [dmMessage, setDmMessage] = useState("");
-  const [selectedPostId, setSelectedPostId] = useState<string>(defaultPostId);
+  const [selectedPostId, setSelectedPostId] = useState<string>("all_reels");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const syncMedia = async () => {
+    setIsSyncing(true);
+    try {
+      await syncMediaMutation();
+      toast.success("Syncing your posts...");
+    } catch (e) {
+      toast.error("Failed to sync media. Is Instagram connected?");
+    } finally {
+      setTimeout(() => setIsSyncing(false), 2000);
+    }
+  };
+
 
   const handleModeSelect = (newMode: 'quick' | 'advanced') => {
     setMode(newMode);
@@ -201,6 +215,7 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
             </div>
           )}
 
+
           {mode === 'quick' && (
             <div className="space-y-6 max-w-lg mx-auto">
               <div className="space-y-4">
@@ -222,6 +237,42 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
                     </Select>
                     <Input placeholder={triggerType === 'instagram_comment' ? "Keyword (e.g. price)" : "Keyword"} value={keywords} onChange={e => setKeywords(e.target.value)} className="h-11" />
                   </div>
+
+                  {/* REEL SELECTOR */}
+                  {triggerType === 'instagram_comment' && (
+                    <div className="mt-4 pt-4 border-t border-dashed border-zinc-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <Label className="text-sm font-medium">Specific Post / Reel</Label>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-6 text-[10px]"
+                          onClick={() => syncMedia()}
+                          disabled={isSyncing}
+                        >
+                          {isSyncing ? "Syncing..." : "Sync Posts 🔄"}
+                        </Button>
+                      </div>
+                      <Select value={selectedPostId} onValueChange={setSelectedPostId}>
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="Select a post (Optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all_reels">All Posts / Reels</SelectItem>
+                          {userReels?.map((reel: any) => (
+                            <SelectItem key={reel.mediaId} value={reel.mediaId}>
+                              <div className="flex items-center gap-2 max-w-[300px]">
+                                {reel.thumbnailUrl && <img src={reel.thumbnailUrl} className="w-6 h-6 rounded object-cover" />}
+                                <span className="truncate">{reel.caption || "Untitled Reel"}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-[10px] text-zinc-400 mt-1">Select logic applies only to this specific post.</p>
+                    </div>
+                  )}
+
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Step 3: Reply Message</Label>
@@ -288,6 +339,41 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
                         <SelectItem value="keyword">Keyword</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                )}
+
+                {/* REEL SELECTOR FOR TEMPLATES */}
+                {(triggerType === 'instagram_comment' || (selectedTemplate && selectedTemplate.nodes[0]?.data?.triggerType === 'instagram_comment')) && (
+                  <div className="mt-4 pt-4 border-t border-dashed border-zinc-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <Label className="text-sm font-medium">Specific Post / Reel</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-6 text-[10px]"
+                        onClick={() => syncMedia()}
+                        disabled={isSyncing}
+                      >
+                        {isSyncing ? "Syncing..." : "Sync Posts 🔄"}
+                      </Button>
+                    </div>
+                    <Select value={selectedPostId} onValueChange={setSelectedPostId}>
+                      <SelectTrigger className="h-11">
+                        <SelectValue placeholder="Select a post (Optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all_reels">All Posts / Reels</SelectItem>
+                        {userReels?.map((reel: any) => (
+                          <SelectItem key={reel.mediaId} value={reel.mediaId}>
+                            <div className="flex items-center gap-2 max-w-[300px]">
+                              {reel.thumbnailUrl && <img src={reel.thumbnailUrl} className="w-6 h-6 rounded object-cover" />}
+                              <span className="truncate">{reel.caption || "Untitled Reel"}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-[10px] text-zinc-400 mt-1">Select logic applies only to this specific post.</p>
                   </div>
                 )}
               </div>
