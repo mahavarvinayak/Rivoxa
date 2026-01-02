@@ -390,7 +390,7 @@ export function CreateFlowDialog({ open, onOpenChange }: CreateFlowDialogProps) 
                     </div>
                   ) : (
                     <div className="pl-9 p-4 bg-zinc-50 rounded-lg border border-zinc-100 text-sm text-zinc-500">
-                      This trigger type ({(mode === 'quick' ? triggerType : (selectedTemplate?.nodes[0]?.data?.triggerType || triggerType))}) does not require a post selection.
+                      This trigger type ({String(mode === 'quick' ? triggerType : (selectedTemplate?.nodes?.[0]?.data?.triggerType || triggerType))}) does not require a post selection.
                     </div>
                   )}
                 </div>
