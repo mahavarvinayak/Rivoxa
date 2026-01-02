@@ -78,8 +78,8 @@ export function CreateFlowDialog({ open, onOpenChange, reels, defaultPostId = "a
     setIsLoading(true);
 
     try {
-      let nodes = [];
-      let edges = [];
+      let nodes: any[] = [];
+      let edges: any[] = [];
 
       // LOGIC GENERATION
       if (mode === 'quick') {
