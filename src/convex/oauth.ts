@@ -24,7 +24,7 @@ export const getAuthUrl = action({
     const redirectUri = `${siteUrl}/auth/callback/${args.platform}`;
 
     const scope = args.platform === "instagram"
-      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_manage_insights,pages_show_list,pages_read_engagement"
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
       : "whatsapp_business_management,whatsapp_business_messaging";
 
     // Force re-authentication to ensure we get a fresh code
