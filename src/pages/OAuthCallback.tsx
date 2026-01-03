@@ -5,7 +5,7 @@ import { useAction, useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Loader2, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 
 export default function OAuthCallback() {
     const { platform } = useParams();
