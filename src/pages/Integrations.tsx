@@ -36,6 +36,7 @@ export default function Integrations() {
   const integrations = useQuery(api.integrations.list);
   const disconnect = useMutation(api.integrations.disconnect);
   const getAuthUrl = useAction(api.oauth.getAuthUrl);
+  const connectInstagram = useAction(api.oauth.completeInstagramAuth);
   const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
   if (isLoading) {
@@ -97,15 +98,34 @@ export default function Integrations() {
     }
 
     // Listen for OAuth callback
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "oauth-success" && event.data?.platform === platform) {
-        toast.success(`${platform === "instagram" ? "Instagram" : "WhatsApp"} connected successfully!`);
+    // Listen for OAuth callback
+    const handleMessage = async (event: MessageEvent) => {
+      // Verify origin if possible, but mainly check data structure
+      const data = event.data;
+
+      if (data?.type === "oauth-code" && data?.platform === platform && data?.code) {
+        try {
+          toast.info("Connecting account...");
+          if (platform === "instagram") {
+            await connectInstagram({ code: data.code });
+            toast.success("Instagram Connected Successfully! 🎉");
+          } else if (platform === "whatsapp") {
+            // await connectWhatsApp({ code: data.code });
+            toast.success("WhatsApp Connected! (Mock)");
+          }
+          // Refresh integrations list
+          window.location.reload();
+        } catch (err: any) {
+          console.error("Link Error:", err);
+          toast.error(`Failed to link account: ${err.message}`);
+        } finally {
+          window.removeEventListener("message", handleMessage);
+          popup.close();
+        }
+      } else if (data?.type === "oauth-error") {
+        toast.error(`Authentication Failed: ${data.error}`);
         window.removeEventListener("message", handleMessage);
-        // Refresh integrations list
-        window.location.reload();
-      } else if (event.data?.type === "oauth-error" && event.data?.platform === platform) {
-        toast.error(`Failed to connect ${platform}: ${event.data.error}`);
-        window.removeEventListener("message", handleMessage);
+        popup.close();
       }
     };
 
