@@ -24,7 +24,7 @@ export const getAuthUrl = action({
     const redirectUri = `${siteUrl}/auth/callback/${args.platform}`;
 
     const scope = args.platform === "instagram"
-      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments,pages_show_list,pages_read_engagement"
       : "whatsapp_business_management,whatsapp_business_messaging";
 
     // Force re-authentication to ensure we get a fresh code
@@ -34,7 +34,7 @@ export const getAuthUrl = action({
   },
 });
 
-export const completeInstagramAuth = action({
+export const completeInstagramAuthV2 = action({
   args: {
     code: v.string(),
   },
@@ -64,33 +64,26 @@ export const completeInstagramAuth = action({
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
 
-    // Get user's Instagram Business Account
+    // Get user's pages and check for connected Instagram accounts
     const accountResponse = await fetch(
-      `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`
+      `https://graph.facebook.com/v18.0/me/accounts?fields=instagram_business_account,name,id&access_token=${accessToken}`
     );
 
     if (!accountResponse.ok) {
-      throw new Error("Failed to fetch Instagram account");
+      throw new Error("Failed to fetch Facebook Pages");
     }
 
     const accountData = await accountResponse.json();
-    const pageId = accountData.data[0]?.id;
+    console.log("Facebook Pages Response:", JSON.stringify(accountData, null, 2));
 
-    if (!pageId) {
-      throw new Error("No Instagram Business Account found. Please ensure you have a Facebook Page linked.");
+    // Find the first page that has a connected Instagram Business Account
+    const connectedPage = accountData.data?.find((page: any) => page.instagram_business_account);
+
+    if (!connectedPage) {
+      throw new Error("[v2-MultiPage] Found Facebook Pages, but none have a connected Instagram Business Account. Please check your Page settings.");
     }
 
-    // Get Instagram Business Account ID
-    const igResponse = await fetch(
-      `https://graph.facebook.com/v18.0/${pageId}?fields=instagram_business_account&access_token=${accessToken}`
-    );
-
-    const igData = await igResponse.json();
-    const igAccountId = igData.instagram_business_account?.id;
-
-    if (!igAccountId) {
-      throw new Error("No Instagram Business Account linked to this Facebook Page.");
-    }
+    const igAccountId = connectedPage.instagram_business_account.id;
 
     // Get Instagram username
     const profileResponse = await fetch(

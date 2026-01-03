@@ -36,7 +36,7 @@ export default function Integrations() {
   const integrations = useQuery(api.integrations.list);
   const disconnect = useMutation(api.integrations.disconnect);
   const getAuthUrl = useAction(api.oauth.getAuthUrl);
-  const connectInstagram = useAction(api.oauth.completeInstagramAuth);
+  const connectInstagram = useAction(api.oauth.completeInstagramAuthV2);
   const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
   if (isLoading) {
