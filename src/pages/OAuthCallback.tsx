@@ -1,9 +1,11 @@
-import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { useAction, useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function OAuthCallback() {
     const { platform } = useParams();
@@ -14,57 +16,58 @@ export default function OAuthCallback() {
 
     // Authentication State
     const { isAuthenticated, isLoading } = useConvexAuth();
+    const [status, setStatus] = useState("Initializing...");
 
-    // Use a ref to prevent double-execution in React Strict Mode
     const hasExecuted = useRef(false);
-
-    // Actions
     const connectInstagram = useAction(api.oauth.completeInstagramAuth);
-    // const connectWhatsApp = useAction(api.oauth.completeWhatsAppAuth);
 
     useEffect(() => {
-        if (hasExecuted.current) return;
+        if (isLoading) {
+            setStatus("Loading authentication...");
+            return;
+        }
 
-        // 1. Wait for Auth to load
-        if (isLoading) return;
-
-        // 2. Check if user is authenticated
         if (!isAuthenticated) {
-            toast.error("Session expired during redirect. Please log in again.");
-            // Redirect to auth, but remember where we were? 
-            // For now, just go to auth. The user will have to retry connecting.
-            navigate("/auth");
+            setStatus("Not Authenticated. Waiting for session...");
+            return;
+        }
+
+        if (hasExecuted.current) {
+            setStatus("Processing...");
             return;
         }
 
         if (error) {
-            toast.error(`Authentication Failed: ${error}`);
-            navigate("/integrations");
+            setStatus(`Error from Meta: ${error}`);
             return;
         }
 
         if (!code || !platform) {
-            navigate("/integrations");
+            setStatus("Missing code or platform.");
             return;
         }
 
+        // Only execute if authenticated and we have code
         hasExecuted.current = true;
+        setStatus("Exchanging code...");
 
         const handleAuth = async () => {
             try {
                 if (platform === "instagram") {
                     await connectInstagram({ code });
                     toast.success("Instagram Connected Successfully! 🎉");
-                } else if (platform === "whatsapp") {
-                    // await connectWhatsApp({ code });
-                    toast.success("WhatsApp Connected! (Mock)");
+                    // Close popup if possible, or redirect
+                    if (window.opener) {
+                        window.close();
+                    } else {
+                        navigate("/integrations");
+                    }
                 }
-                navigate("/integrations");
+                // Add other platforms here
             } catch (err: any) {
                 console.error("OAuth Error:", err);
-                // Show more specific error
-                toast.error(err.message || "Failed to connect account. Please try again.");
-                navigate("/integrations");
+                setStatus(`Failed: ${err.message}`);
+                hasExecuted.current = false; // Allow retry
             }
         };
 
@@ -72,13 +75,32 @@ export default function OAuthCallback() {
     }, [code, platform, error, navigate, connectInstagram, isLoading, isAuthenticated]);
 
     return (
-        <div className="h-screen w-full flex flex-col items-center justify-center bg-white dark:bg-zinc-950">
-            <Loader2 className="h-10 w-10 animate-spin text-purple-600 mb-4" />
-            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Connecting your account...</h2>
-            <p className="text-zinc-500 mt-2">Please wait while we secure your connection.</p>
-            {!isLoading && !isAuthenticated && (
-                <p className="text-red-500 mt-4">Session lost. Redirecting to login...</p>
-            )}
+        <div className="h-screen w-full flex flex-col items-center justify-center bg-white dark:bg-zinc-950 p-4 font-sans">
+            <div className="text-center space-y-4">
+                {status.includes("Failed") || status.includes("Error") ? (
+                    <div className="text-red-500 font-medium mb-4">{status}</div>
+                ) : (
+                    <>
+                        <Loader2 className="h-10 w-10 animate-spin text-purple-600 mx-auto mb-4" />
+                        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">Connecting Account</h2>
+                    </>
+                )}
+
+                <p className="text-zinc-500 text-sm">{status}</p>
+
+                <div className="text-xs text-zinc-400 bg-zinc-100 dark:bg-zinc-900 p-4 rounded text-left mt-4 max-w-md mx-auto overflow-auto">
+                    <p>Debug Info:</p>
+                    <p>Auth Loading: {isLoading ? "Yes" : "No"}</p>
+                    <p>Authenticated: {isAuthenticated ? "Yes" : "No"}</p>
+                    <p>Code Present: {code ? "Yes" : "No"}</p>
+                </div>
+
+                {!isAuthenticated && !isLoading && (
+                    <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">
+                        <RefreshCw className="mr-2 h-4 w-4" /> Reload Session
+                    </Button>
+                )}
+            </div>
         </div>
     );
 }
