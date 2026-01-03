@@ -27,6 +27,7 @@ import type * as oauth from "../oauth.js";
 import type * as payments from "../payments.js";
 import type * as payments_mutations from "../payments_mutations.js";
 import type * as products from "../products.js";
+import type * as remoteActions from "../remoteActions.js";
 import type * as sequences from "../sequences.js";
 import type * as tokenRefresh from "../tokenRefresh.js";
 import type * as users from "../users.js";
@@ -67,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   payments: typeof payments;
   payments_mutations: typeof payments_mutations;
   products: typeof products;
+  remoteActions: typeof remoteActions;
   sequences: typeof sequences;
   tokenRefresh: typeof tokenRefresh;
   users: typeof users;

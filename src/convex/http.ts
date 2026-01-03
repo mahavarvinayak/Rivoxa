@@ -7,88 +7,9 @@ const http = httpRouter();
 
 auth.addHttpRoutes(http);
 
-// OAuth callback handlers
-http.route({
-  path: "/api/oauth/callback/instagram",
-  method: "GET",
-  handler: httpAction(async (ctx, req) => {
-    const url = new URL(req.url);
-    const code = url.searchParams.get("code");
-    const error = url.searchParams.get("error");
-
-    if (error || !code) {
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-error', platform: 'instagram', error: '${error || 'No code received'}'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    }
-
-    try {
-      const userId = await ctx.auth.getUserIdentity();
-      
-      if (!userId) {
-        throw new Error("Not authenticated");
-      }
-
-      await ctx.runAction(internal.oauth.handleInstagramCallback, {
-        code,
-        userId: userId.subject as any,
-      });
-
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-success', platform: 'instagram'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    } catch (error) {
-      console.error("Instagram OAuth error:", error);
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-error', platform: 'instagram', error: '${error}'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    }
-  }),
-});
-
-http.route({
-  path: "/api/oauth/callback/whatsapp",
-  method: "GET",
-  handler: httpAction(async (ctx, req) => {
-    const url = new URL(req.url);
-    const code = url.searchParams.get("code");
-    const error = url.searchParams.get("error");
-
-    if (error || !code) {
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-error', platform: 'whatsapp', error: '${error || 'No code received'}'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    }
-
-    try {
-      const userId = await ctx.auth.getUserIdentity();
-      
-      if (!userId) {
-        throw new Error("Not authenticated");
-      }
-
-      await ctx.runAction(internal.oauth.handleWhatsAppCallback, {
-        code,
-        userId: userId.subject as any,
-      });
-
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-success', platform: 'whatsapp'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    } catch (error) {
-      console.error("WhatsApp OAuth error:", error);
-      return new Response(
-        `<html><body><script>window.opener.postMessage({type: 'oauth-error', platform: 'whatsapp', error: '${error}'}, '*'); window.close();</script></body></html>`,
-        { status: 200, headers: { "Content-Type": "text/html" } }
-      );
-    }
-  }),
-});
+// OAuth callback handlers - MOVED TO FRONTEND (Client Side)
+// The redirect_uri now points to /auth/callback/:platform
+// See src/pages/OAuthCallback.tsx and src/convex/oauth.ts
 
 // Instagram Webhook
 http.route({
@@ -99,13 +20,13 @@ http.route({
     const mode = url.searchParams.get("hub.mode");
     const token = url.searchParams.get("hub.verify_token");
     const challenge = url.searchParams.get("hub.challenge");
-    
-    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "autoflow_verify_token";
-    
+
+    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "RIVOXA";
+
     if (mode === "subscribe" && token === verifyToken) {
       return new Response(challenge, { status: 200 });
     }
-    
+
     return new Response("Forbidden", { status: 403 });
   }),
 });
@@ -116,12 +37,12 @@ http.route({
   handler: httpAction(async (ctx, req) => {
     const payload = await req.json();
     const signature = req.headers.get("x-hub-signature-256") || undefined;
-    
+
     await ctx.runAction(internal.webhooks.handleInstagramWebhook, {
       payload,
       signature,
     });
-    
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -138,13 +59,13 @@ http.route({
     const mode = url.searchParams.get("hub.mode");
     const token = url.searchParams.get("hub.verify_token");
     const challenge = url.searchParams.get("hub.challenge");
-    
-    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "autoflow_verify_token";
-    
+
+    const verifyToken = process.env.WEBHOOK_VERIFY_TOKEN || "RIVOXA";
+
     if (mode === "subscribe" && token === verifyToken) {
       return new Response(challenge, { status: 200 });
     }
-    
+
     return new Response("Forbidden", { status: 403 });
   }),
 });
@@ -155,12 +76,12 @@ http.route({
   handler: httpAction(async (ctx, req) => {
     const payload = await req.json();
     const signature = req.headers.get("x-hub-signature-256") || undefined;
-    
+
     await ctx.runAction(internal.webhooks.handleWhatsAppWebhook, {
       payload,
       signature,
     });
-    
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

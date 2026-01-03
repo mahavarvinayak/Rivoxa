@@ -20,28 +20,35 @@ export const getAuthUrl = action({
       throw new Error("SITE_URL is not configured in environment variables");
     }
 
-    const redirectUri = `${siteUrl}/api/oauth/callback/${args.platform}`;
-    
-    const scope = args.platform === "instagram" 
-      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments"
+    // Redirect to Frontend Callback Route
+    const redirectUri = `${siteUrl}/auth/callback/${args.platform}`;
+
+    const scope = args.platform === "instagram"
+      ? "instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_manage_insights,pages_show_list,pages_read_engagement"
       : "whatsapp_business_management,whatsapp_business_messaging";
-    
+
     // Force re-authentication to ensure we get a fresh code
     const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&response_type=code`;
-    
+
     return authUrl;
   },
 });
 
-export const handleInstagramCallback = internalAction({
+export const completeInstagramAuth = action({
   args: {
     code: v.string(),
-    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
+    const userId = await ctx.auth.getUserIdentity();
+
+    if (!userId) {
+      throw new Error("Not authenticated");
+    }
+
     const appId = process.env.META_APP_ID;
     const appSecret = process.env.META_APP_SECRET;
-    const redirectUri = `${process.env.SITE_URL}/api/oauth/callback/instagram`;
+    // Redirect URI must match exactly what was sent in getAuthUrl
+    const redirectUri = `${process.env.SITE_URL}/auth/callback/instagram`;
 
     // Exchange code for access token
     const tokenResponse = await fetch(
@@ -49,7 +56,9 @@ export const handleInstagramCallback = internalAction({
     );
 
     if (!tokenResponse.ok) {
-      throw new Error("Failed to exchange code for token");
+      const errorData = await tokenResponse.json();
+      console.error("Token Exchange Error:", errorData);
+      throw new Error(`Failed to exchange code: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const tokenData = await tokenResponse.json();
@@ -68,7 +77,7 @@ export const handleInstagramCallback = internalAction({
     const pageId = accountData.data[0]?.id;
 
     if (!pageId) {
-      throw new Error("No Instagram Business Account found");
+      throw new Error("No Instagram Business Account found. Please ensure you have a Facebook Page linked.");
     }
 
     // Get Instagram Business Account ID
@@ -80,7 +89,7 @@ export const handleInstagramCallback = internalAction({
     const igAccountId = igData.instagram_business_account?.id;
 
     if (!igAccountId) {
-      throw new Error("No Instagram Business Account linked to this page");
+      throw new Error("No Instagram Business Account linked to this Facebook Page.");
     }
 
     // Get Instagram username
@@ -96,7 +105,7 @@ export const handleInstagramCallback = internalAction({
       accessToken: accessToken,
       platformUserId: igAccountId,
       platformUsername: profileData.username,
-      userId: args.userId,
+      userId: userId.subject as any,
     });
 
     return { success: true };
